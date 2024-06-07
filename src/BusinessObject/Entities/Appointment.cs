@@ -1,0 +1,24 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using BusinessObject.Entities.Base;
+using Utility.Enum;
+
+namespace BusinessObject.Entities;
+
+[Table("Appointment")]
+public class Appointment : BaseEntity
+{
+    public int TimeTableId { get; set; }
+    public DateTimeOffset AppointmentDateTime { get; set; }
+    public string? Note { get; set; }
+    public AppointmentStatus Status { get; set; }
+    public AppointmentBookingType BookingType { get; set; }
+    public short? Rating { get; set; }
+    public string? Feedback { get; set; }
+    
+    [ForeignKey(nameof(TimeTableId))]
+    public virtual TimeTable TimeTable { get; set; }
+    
+    public virtual ICollection<Pet> Pets { get; set; }
+
+    public virtual ICollection<Service> Services { get; set; }
+}
