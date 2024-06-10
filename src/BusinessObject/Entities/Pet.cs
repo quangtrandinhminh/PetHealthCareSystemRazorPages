@@ -14,7 +14,8 @@ public class Pet : BaseEntity
 
     public int OwnerID { get; set; }
     [ForeignKey(nameof(OwnerID))] 
-    public virtual UserEntity UserEntity { get; set; }
-    
-    public virtual ICollection<MedicalRecord>? MedicalRecords { get; set; }
+    public virtual UserEntity Owner { get; set; }
+
+    public virtual ICollection<AppointmentPet> AppointmentPets { get; set; }
+    public virtual ICollection<MedicalRecord> MedicalRecords { get; set; }
 }

@@ -13,6 +13,7 @@ public class Cage : BaseEntity
     public string? Address { get; set; }
     public string? Description { get; set; }
     public string? Note { get; set; }
+    public bool IsAvailable { get; set; }
     
     public virtual ICollection<Hospitalization> Hospitalizations  { get; set; }
 }

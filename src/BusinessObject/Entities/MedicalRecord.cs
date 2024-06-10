@@ -18,11 +18,15 @@ public class MedicalRecord : BaseEntity
     [Column(TypeName = "decimal(5,2)")]
     [Range(0, Double.MaxValue)]
     public decimal PetWeight { get; set; }
-    
+    public virtual ICollection<MedicalItem>? MedicalItems { get; set; }
+
     [ForeignKey(nameof(PetId))]
     public virtual Pet Pet { get; set; }
-    
+
+    // Hospitalization
+    public DateTimeOffset? AddmissionDate { get; set; }
+    public DateTimeOffset? DischargeDate { get; set; }
     public virtual ICollection<Hospitalization>? Hospitalization { get; set; }
     
-    public virtual ICollection<MedicalItem>? MedicalItems { get; set; }
+
 }

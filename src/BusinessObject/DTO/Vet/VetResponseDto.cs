@@ -1,6 +1,8 @@
-﻿namespace BusinessObject.DTO.Vet;
+﻿using BusinessObject.DTO.User;
+using BusinessObject.Entities;
 
-public class VetResponseDto
+namespace BusinessObject.DTO.Vet;
+
+public class VetResponseDto : UserResponseDto
 {
-    
 }

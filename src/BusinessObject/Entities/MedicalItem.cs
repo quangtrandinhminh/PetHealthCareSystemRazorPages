@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography.X509Certificates;
 using BusinessObject.Entities.Base;
+using Utility.Enum;
 
 namespace BusinessObject.Entities;
 
@@ -20,4 +21,8 @@ public class MedicalItem : BaseEntity
     public decimal Price { get; set; }
     [Range(0, int.MaxValue)]
     public int Quantity { get; set; }
+    public string? Note { get; set; }
+    public MedicalItemType MedicalItemType { get; set; }
+
+    public virtual ICollection<MedicalRecord>? MedicalRecords { get; set; }
 }

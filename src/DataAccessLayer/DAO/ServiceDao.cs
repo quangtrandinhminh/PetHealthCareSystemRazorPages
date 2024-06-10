@@ -3,7 +3,7 @@ using DataAccessLayer.Base;
 
 namespace DataAccessLayer.DAO;
 
-public class ServiceDao : BaseDAO<Service>
+public class ServiceDao : BaseDao<Service>
 {
     
 }

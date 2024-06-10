@@ -1,5 +1,6 @@
 ﻿using BusinessObject.DTO.Pet;
 using BusinessObject.DTO.Service;
+using BusinessObject.DTO.TimeTable;
 using BusinessObject.DTO.User;
 using BusinessObject.DTO.Vet;
 using BusinessObject.Entities;
@@ -11,24 +12,17 @@ namespace BusinessObject.Mapper;
 [Mapper]
 public partial class MapperlyMapper
 {
-    //  public partial entity Map(dto request); --for create
-    // public partial dtoresponse Map(entity entity); --for get
-    // public partial IList<dtoresponse> Map(IList<entity> entity); --for get all
-    // public partial void Map(dto request, entity entity); --for update
+    //  public partial entity UserToLoginResponseDto(dto request); --for create
+    // public partial dtoresponse UserToLoginResponseDto(entity entity); --for get
+    // public partial IList<dtoresponse> UserToLoginResponseDto(IList<entity> entity); --for get all
+    // public partial void UserToLoginResponseDto(dto request, entity entity); --for update
 
     // user
     public partial UserEntity Map(RegisterDto request);
-    public partial LoginResponseDto Map(UserEntity entity);
-    public partial IList<LoginResponseDto> Map(IList<UserEntity> entity);
-    public partial void Map(UserEntity entity, UserResponseDto response);
-    public partial void Map(IList<UserEntity> entity, IList<UserResponseDto> response);
+    public partial LoginResponseDto UserToLoginResponseDto(UserEntity entity);
+    public partial UserResponseDto UserToUserResponseDto(UserEntity entity);
+    public partial IList<UserResponseDto> Map(IList<UserEntity> entity);
     public partial void Map(RegisterDto request, UserEntity entity);
-
-    // vet
-    public partial UserEntity Map(VetRequestDto request);
-    public partial void Map(UserEntity entity, VetResponseDto response);
-    public partial void Map(IList<UserEntity> entity, IList<VetResponseDto> response);
-    public partial void Map(VetRequestDto request, UserEntity entity);
 
     // pet 
     public partial Pet Map(PetRequestDto request);
@@ -42,4 +36,8 @@ public partial class MapperlyMapper
     public partial IList<ServiceResponseDto> Map(IList<Service> entity);
     public partial void Map(ServiceRequestDto request, Service entity);
 
+    // timetable
+    //public partial TimeTable UserToLoginResponseDto(TimeTableRequestDto request);
+    public partial TimeTableResponseDto Map(TimeTable entity);
+    public partial IList<TimeTableResponseDto> Map(IList<TimeTable> entity);
 }

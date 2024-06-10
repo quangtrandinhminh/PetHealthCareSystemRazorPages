@@ -10,7 +10,7 @@ public class Hospitalization : BaseEntity
     public int CageId { get; set; }
     public int? TimeTableId { get; set; }
     public DateTimeOffset Date { get; set; }
-    public HospitalizationStatus DateStatus { get; set; }
+    public HospitalizationStatus HospitalizationDateStatus { get; set; }
     public string? Reason { get; set; }
     public string? Diagnosis { get; set; }
     public string? Treatment { get; set; }

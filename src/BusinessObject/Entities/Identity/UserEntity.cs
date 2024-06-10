@@ -35,7 +35,7 @@ public class UserEntity : IdentityUser<int>
 
     // Identity Property
     public DateTimeOffset? Verified { get; set; }
-    public string OTP;
+    public string? OTP { get; set; }
     public DateTimeOffset? OTPExpired { get; set; }
     public bool IsActive => PhoneNumberConfirmed;
     public override bool PhoneNumberConfirmed => Verified.HasValue;
@@ -46,14 +46,11 @@ public class UserEntity : IdentityUser<int>
     public override string ConcurrencyStamp { get => base.ConcurrencyStamp; set => base.ConcurrencyStamp = value; }
 
     // for customer
-    public virtual ICollection<Pet>? Pets { get; set; }
-
-    // for staff and customer
-    public virtual ICollection<Appointment>? CreatedAppointments { get; set; }
+    public virtual ICollection<Pet> Pets { get; set; }
 
     // for vet
     public virtual ICollection<MedicalRecord>? MedicalRecords { get; set; }
-    public virtual ICollection<TimeTable>? TimeTables { get; set; }
+    public virtual ICollection<TimeTable>? TimeTables { get; set; } 
 }
 
 public class RoleEntity : IdentityRole<int>

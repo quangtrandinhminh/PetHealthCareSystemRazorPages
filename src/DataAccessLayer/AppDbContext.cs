@@ -1,13 +1,12 @@
-﻿using BusinessObject.Entities;
+﻿using BusinessObject;
+using BusinessObject.Entities;
 using BusinessObject.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Reflection.Emit;
 using Utility.Enum;
 
-namespace Repository;
+namespace DataAccessLayer;
 
 public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
 {
@@ -23,6 +22,7 @@ public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
 
     public DbSet<Pet> Pets { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
+    public DbSet<AppointmentPet> AppointmentPets { get; set; }
     public DbSet<MedicalRecord> MedicalRecords { get; set; }
     public DbSet<Service> Services { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
@@ -70,6 +70,33 @@ public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
                 .HasForeignKey(ur => ur.RoleId)
                 .IsRequired();
         });
+
+        modelBuilder.Entity<UserEntity>(b =>
+        {
+            b.HasMany(e => e.Pets)
+                .WithOne(e => e.Owner)
+                .HasForeignKey(ur => ur.OwnerID);
+        });
+
+        modelBuilder.Entity<Pet>()
+            .HasOne(p => p.Owner)
+            .WithMany(u => u.Pets)
+            .HasForeignKey(p => p.OwnerID);
+
+        modelBuilder.Entity<AppointmentPet>()
+            .HasKey(ap => new { ap.AppointmentId, ap.PetId });
+
+        modelBuilder.Entity<AppointmentPet>()
+            .HasOne(ap => ap.Appointment)
+            .WithMany(a => a.AppointmentPets)
+            .HasForeignKey(ap => ap.AppointmentId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<AppointmentPet>()
+            .HasOne(ap => ap.Pet)
+            .WithMany(p => p.AppointmentPets)
+            .HasForeignKey(ap => ap.PetId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         var roles = new List<RoleEntity>
         {
