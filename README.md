@@ -9,6 +9,8 @@ To get started with this project, follow these steps:
 - [.NET Core SDK](https://dotnet.microsoft.com/download)
 - [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/)
 - [Git](https://git-scm.com/)
+- [doc](https://drive.google.com/drive/folders/1uE6nTSeCOh9qmyg6kLeA76oeaghNkSp_)
+
 
 ### Installation
 
