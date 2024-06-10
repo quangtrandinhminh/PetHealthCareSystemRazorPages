@@ -1,7 +1,7 @@
 ﻿using BusinessObject.Entities;
-using Repository.IBase;
+using Repository.Base;
 
-namespace Repository.Interface;
+namespace Repository.Interfaces;
 
 public interface IPetRepository : IBaseRepository<Pet>
 {

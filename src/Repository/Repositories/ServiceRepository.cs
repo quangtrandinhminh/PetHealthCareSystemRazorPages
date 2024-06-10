@@ -1,6 +1,6 @@
 ﻿using BusinessObject.Entities;
 using Repository.Base;
-using Repository.Interface;
+using Repository.Interfaces;
 
 namespace Repository.Repositories;
 

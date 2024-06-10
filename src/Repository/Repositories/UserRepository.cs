@@ -4,11 +4,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using BusinessObject.Entities.Identity;
+using DataAccessLayer;
 using DataAccessLayer.DAO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Repository.Base;
-using Repository.Interface;
+using Repository.Interfaces;
 using Utility.Enum;
 
 namespace Repository.Repositories
@@ -23,6 +24,8 @@ namespace Repository.Repositories
         }
 
         public async Task<IdentityResult> CreateAsync(UserEntity userEntity) => await UserDao.CreateAsync(userEntity);
+
+        public async Task<IdentityResult> UpdateAsync(UserEntity userEntity) => await UserDao.UpdateAsync(userEntity);
 
         public async Task<UserEntity> GetUserByEmail(string email) => await UserDao.GetUserByEmailAsync(email);
 

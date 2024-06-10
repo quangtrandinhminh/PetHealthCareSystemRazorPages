@@ -1,4 +1,4 @@
-﻿namespace Repository.Interface;
+﻿namespace Repository.Interfaces;
 
 public interface IServiceRepository
 {

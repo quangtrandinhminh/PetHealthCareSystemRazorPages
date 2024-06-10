@@ -1,24 +1,27 @@
 ﻿using System.Linq.Expressions;
 using BusinessObject.Entities.Base;
 using Microsoft.EntityFrameworkCore;
-using Repository.IBase;
 using DataAccessLayer.Base;
 namespace Repository.Base
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity, new()
     {
-        public void Add(T entity) => BaseDAO<T>.Add(entity);
-
-        public IQueryable<T> GetAll() => BaseDAO<T>.GetAll();
-
-        public void Delete(T entity) => BaseDAO<T>.Delete(entity);
-
-        public void Update(T entity) => BaseDAO<T>.Update(entity);
-
-        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) => BaseDAO<T>.FindByCondition(expression);
-        
-        public void AddRange(IEnumerable<T> entities) => BaseDAO<T>.AddRange(entities);
-        
-        public void RemoveRange(IEnumerable<T> entities) => BaseDAO<T>.RemoveRange(entities);
+        public IQueryable<T?> GetAll() => BaseDao<T>.GetAll();
+        public async Task<IList<T>?> GetAllAsync() => await BaseDao<T>.GetAllAsync();
+        public T? GetById(int id) => BaseDao<T>.GetById(id);
+        public async Task<T?> GetByIdAsync(int id) => await BaseDao<T>.GetByIdAsync(id);
+        public void Add(T? entity) => BaseDao<T>.Add(entity);
+        public async Task<T> AddAsync(T entity) => await BaseDao<T>.AddAsync(entity);
+        public void AddRange(IEnumerable<T?> entities) => BaseDao<T>.AddRange(entities);
+        public async Task AddRangeAsync(IEnumerable<T?> entities) => await BaseDao<T>.AddRangeAsync(entities);
+        public void Update(T entity) => BaseDao<T>.Update(entity);
+        public async Task UpdateAsync(T entity) => await BaseDao<T>.UpdateAsync(entity);
+        public async Task UpdateRangeAsync(IEnumerable<T?> entities) => await BaseDao<T>.UpdateRangeAsync(entities);
+        public void Delete(T? entity) => BaseDao<T>.Delete(entity);
+        public async Task DeleteAsync(T entity) => await BaseDao<T>.DeleteAsync(entity);
+        public void RemoveRange(IEnumerable<T?> entities) => BaseDao<T>.RemoveRange(entities);
+        public async Task RemoveRangeAsync(IEnumerable<T?> entities) => await BaseDao<T>.RemoveRangeAsync(entities);
+        public IQueryable<T?> FindByCondition(Expression<Func<T?, bool>> expression) => BaseDao<T>.FindByCondition(expression);
+        public async Task<IList<T?>> FindByConditionAsync(Expression<Func<T?, bool>> expression) => await BaseDao<T>.FindByConditionAsync(expression);
     }
 }

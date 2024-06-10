@@ -1,5 +1,6 @@
 using System;
 using BusinessObject.Entities;
+using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Repository;
 using Serilog;
@@ -8,8 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSerilog(config => { config.ReadFrom.Configuration(builder.Configuration); });
 // Add database connection
-builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+/*builder.Services.AddDbContext<AppDbContext>(opt =>
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));*/
 
 // Add services to the container.
 

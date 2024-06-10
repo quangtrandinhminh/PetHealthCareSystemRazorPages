@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
-using Repository.Interface;
+using Repository.Interfaces;
 using Repository.Repositories;
 using Serilog;
 using Service.IServices;
@@ -102,7 +102,7 @@ namespace Service.Services
                 var roles = await _userManager.GetRolesAsync(account);
                 var token = await GenerateJwtToken(account, roles, 1);
                 var refreshToken = GenerateRefreshToken(account.Id, 12);
-                var response = _mapper.Map(account);
+                var response = _mapper.UserToLoginResponseDto(account);
                 response.Token = token;
                 response.RefreshToken = refreshToken.Token;
                 response.Role = roles;
