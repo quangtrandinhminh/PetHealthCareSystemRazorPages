@@ -8,14 +8,11 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSerilog(config => { config.ReadFrom.Configuration(builder.Configuration); });
-// Add database connection
-/*builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));*/
 
 // Add services to the container.
 
 // config root directory for razor pages
-builder.Services.AddRazorPages().AddRazorPagesOptions(opt => opt.RootDirectory= "/Pages");
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
