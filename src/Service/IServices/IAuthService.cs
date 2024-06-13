@@ -13,7 +13,6 @@ namespace Service.IServices
     {
         Task Register(RegisterDto dto);
         Task<LoginResponseDto> Authenticate(LoginDto dto);
-        Task<LoginResponseDto> RefreshToken(string token);
         Task VerifyEmail(VerifyEmailDto dto);
         Task ForgotPassword(ForgotPasswordDto model);
         Task ResetPassword(ResetPasswordDto model);

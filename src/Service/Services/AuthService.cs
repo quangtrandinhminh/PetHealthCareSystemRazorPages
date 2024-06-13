@@ -24,7 +24,6 @@ using Repository.Interfaces;
 using Repository.Repositories;
 using Serilog;
 using Service.IServices;
-using Service.Utils;
 using Utility.Config;
 using Utility.Constants;
 using Utility.Enum;
@@ -87,9 +86,6 @@ namespace Service.Services
             {
                 throw new AppException(ResponseCodeConstants.FAILED, e.Message, StatusCodes.Status400BadRequest);
             }
-
-
-            // send sms to phone number here
         }
 
         public async Task<LoginResponseDto> Authenticate(LoginDto dto)
@@ -106,39 +102,7 @@ namespace Service.Services
             try
             {
                 var roles = await _userManager.GetRolesAsync(account);
-                var token = await GenerateJwtToken(account, roles, 48);
-                var refreshToken = GenerateRefreshToken(account.Id, 12);
-                await RemoveOldRefreshTokens(account.RefreshTokens);
-                await _refreshTokenRepository.AddAsync(refreshToken);
                 var response = _mapper.UserToLoginResponseDto(account);
-                response.Token = token;
-                response.RefreshToken = refreshToken.Token;
-                response.Role = roles;
-                return response;
-            }
-            catch (Exception e)
-            {
-                throw new AppException(ResponseCodeConstants.FAILED, e.Message, StatusCodes.Status400BadRequest);
-            }
-        }
-
-        public async Task<LoginResponseDto> RefreshToken(string token)
-        {
-            var (refreshToken, account) = await GetRefreshToken(token);
-            var newRefreshToken = GenerateRefreshToken(account.Id, 12);
-
-            newRefreshToken.UserId = account.Id;
-            await _refreshTokenRepository.AddAsync(newRefreshToken);
-
-            await RemoveOldRefreshTokens(account.RefreshTokens);
-
-            try
-            {
-                var roles = await _userManager.GetRolesAsync(account);
-                var jwtToken = await GenerateJwtToken(account, roles, 48);
-                var response = _mapper.UserToLoginResponseDto(account);
-                response.Token = jwtToken;
-                response.RefreshToken = newRefreshToken.Token;
                 response.Role = roles;
                 return response;
             }
@@ -233,80 +197,6 @@ namespace Service.Services
                 Type = MailTypeEnum.Verify
             };
             _emailService.SendMail(mailRequest);*/
-        }
-
-        private async Task<string> GenerateJwtToken(UserEntity loggedUser, IList<string> roles, int hour)
-        {
-            var claims = new List<Claim>();
-            claims.AddRange(await _userManager.GetClaimsAsync(loggedUser));
-            // Add role claims
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-
-                // Use RoleManager to find the role and add its claims
-                var roleEntity = await _roleManager.FindByNameAsync(role);
-                if (roleEntity != null)
-                {
-                    var roleClaims = await _roleManager.GetClaimsAsync(roleEntity);
-                    claims.AddRange(roleClaims);
-                }
-            }
-
-            claims.AddRange(new[]
-            {
-                new Claim(ClaimTypes.Sid, loggedUser.Id.ToString()),
-                new Claim("UserName", loggedUser.UserName),
-                new Claim(ClaimTypes.Name, loggedUser.FullName),
-                new Claim(ClaimTypes.Email, loggedUser.Email),
-                new Claim(ClaimTypes.MobilePhone, loggedUser.PhoneNumber),
-                new Claim(ClaimTypes.Expired, CoreHelper.SystemTimeNow.AddHours(hour).Date.ToShortDateString())
-            });
-
-            return JwtUtils.GenerateToken(claims.Distinct(), hour);
-        }
-
-        private static RefreshToken GenerateRefreshToken(int userId, int hour)
-        {
-            var randomByte = new byte[64];
-            var rngCryptoServiceProvider = new RNGCryptoServiceProvider();
-            rngCryptoServiceProvider.GetBytes(randomByte);
-            var refreshToken = new RefreshToken
-            {
-                UserId = userId,
-                Token = Convert.ToBase64String(randomByte),
-                Expires = CoreHelper.SystemTimeNow.AddHours(hour),
-            };
-            return refreshToken;
-        }
-
-        private async Task RemoveOldRefreshTokens(ICollection<RefreshToken> refreshTokens)
-        {
-            var removeList = refreshTokens.Where(x => !x.IsActive 
-                                                      && x.CreatedTime.AddDays(2) <= CoreHelper.SystemTimeNow).ToList();
-            if (removeList.Any())
-            {
-                await _refreshTokenRepository.RemoveRangeAsync(removeList);
-            }
-        }
-
-        private async Task<(RefreshToken, UserEntity)> GetRefreshToken(string token)
-        {
-            var account = await _userRepository.GetSingleAsync(y
-                    => y.RefreshTokens.Any(t => t.Token == token)
-                , _ => _.RefreshTokens);
-            if (account == null || account.DeletedTime != null)
-            {
-                throw new AppException(ErrorCode.TokenInvalid, ReponseMessageIdentity.TOKEN_INVALID, StatusCodes.Status401Unauthorized);
-            }
-
-            var refreshToken = account.RefreshTokens.Single(x => x.Token == token);
-            if (!refreshToken.IsActive)
-            {
-                throw new AppException(ErrorCode.TokenExpired, ReponseMessageIdentity.TOKEN_INVALID, StatusCodes.Status401Unauthorized);
-            }
-
-            return (refreshToken, account);
         }
 
         private async Task<UserEntity?> GetUserByUserName(string userName, CancellationToken cancellationToken = default)
