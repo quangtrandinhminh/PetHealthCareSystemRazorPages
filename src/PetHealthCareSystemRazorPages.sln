@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "Utility\Utility.csproj", "{264069EE-9412-41ED-8136-6DE4748086D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetHealthCareSystemBlazorPages", "PetHealthCareSystemBlazorPages\PetHealthCareSystemBlazorPages.csproj", "{65AE4227-B2CB-43E2-B18A-7CA1FFF68836}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetHealthCareSystemRazorPages", "PetHealthCareSystemBlazorPages\PetHealthCareSystemRazorPages.csproj", "{65AE4227-B2CB-43E2-B18A-7CA1FFF68836}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
