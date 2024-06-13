@@ -2,8 +2,11 @@
 
 namespace BusinessObject.DTO.Pet;
 
-public class PetRequestDto
+public class PetUpdateRequestDto
 {
+    [Required]
+    public int Id { get; set; }
+
     [Required]
     [MinLength(2, ErrorMessage = "Tối thiểu 2 kí tự")]
     [MaxLength(50, ErrorMessage = "Tối đa 50 kí tự")]

@@ -1,18 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BusinessObject.DTO.User;
+﻿using BusinessObject.DTO.User;
 using BusinessObject.DTO.Vet;
-using BusinessObject.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
 
-namespace Service.IServices
+namespace Service.IServices;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        Task Register(RegisterDto dto);
-        Task<LoginResponseDto> Authenticate(LoginDto dto);
-        Task<VetResponseDto> CreateVet(VetRequestDto dto);
-    }
+    Task CreateVet(VetRequestDto dto);
+    Task<IList<UserResponseDto>> GetVets();
 }

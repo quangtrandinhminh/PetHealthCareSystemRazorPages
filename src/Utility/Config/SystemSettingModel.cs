@@ -48,4 +48,14 @@ namespace Utility.Config
         public string Username { get; set; }
         public string Password { get; set; }
     }
+
+    public class VnPaySetting
+    {
+        public static VnPaySetting Instance { get; set; }
+        public string VnPayUrl { get; set; }
+        public string VnPayReturnUrl { get; set; }
+        public string VnPayIPNUrl { get; set; }
+        public string VnPayTmnCode { get; set; }
+        public string VnPayHashSecret { get; set; }
+    }
 }

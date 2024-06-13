@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
+﻿using System.Web;
 
-namespace WaterCity.Core.Utils
+namespace Utility.Helpers
 {
     public static class ObjExtensions
     {

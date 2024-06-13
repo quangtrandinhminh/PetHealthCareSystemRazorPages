@@ -30,5 +30,7 @@ namespace Repository.Repositories
         public async Task<UserEntity> GetUserByEmail(string email) => await UserDao.GetUserByEmailAsync(email);
 
         public async Task<UserEntity> GetUserByUserName(string userName) => await UserDao.GetUserByUserNameAsync(userName);
+
+        public async Task<UserEntity?> GetSingleAsync(Expression<Func<UserEntity, bool>>? predicate = null, params Expression<Func<UserEntity, object>>[] includeProperties) => await UserDao.GetSingleAsync(predicate, includeProperties);
     }
 }

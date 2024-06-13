@@ -29,7 +29,7 @@ namespace BusinessObject.DTO.User
 
         [Required(ErrorMessage = ReponseMessageIdentity.PASSWORD_REQUIRED)]
         [DataType(DataType.Password)]
-        [MinLength(8, ErrorMessage = ReponseMessageIdentity.PASSWORD_NOT_MATCH)]
+        [MinLength(8, ErrorMessage = ReponseMessageIdentity.PASSSWORD_LENGTH)]
         [MaxLength(100)]
         public string Password { get; set; }
 

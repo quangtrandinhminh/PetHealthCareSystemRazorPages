@@ -7,15 +7,10 @@ namespace BusinessObject.Entities;
 [Table("TimeTable")]
 public class TimeTable : BaseEntity
 {
-    public int VetID { get; set; }
-    public DateTimeOffset DateTimeStart { get; set; }
-    public DateTimeOffset DateTimeEnd { get; set; }
+    public TimeOnly TimeStart { get; set; }
+    public TimeOnly TimeEnd { get; set; }
     public ICollection<DayOfWeek> DayOfWeeks { get; set; }
     public string? Note { get; set; }
-    
-    [ForeignKey(nameof(VetID))]
-    public virtual UserEntity Vet { get; set; }
-    
     public virtual ICollection<Hospitalization>? Hospitalizations { get; set; }
     public virtual ICollection<Appointment>? Appointments { get; set; }
 }

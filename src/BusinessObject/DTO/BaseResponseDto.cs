@@ -27,22 +27,22 @@ namespace BusinessObject.DTO
             this.Message = message;
         }
 
-        public static BaseResponseDto<T> OkResponseModel(T data, object? additionalData = null, string code = ResponseCodeConstants.SUCCESS)
+        public static BaseResponseDto<T> OkResponseDto(T data, object? additionalData = null, string code = ResponseCodeConstants.SUCCESS)
         {
             return new BaseResponseDto<T>(StatusCodes.Status200OK, code, data, additionalData);
         }
 
-        public static BaseResponseDto<T> NotFoundResponseModel(T? data, object? additionalData = null, string code = ResponseCodeConstants.NOT_FOUND)
+        public static BaseResponseDto<T> NotFoundResponseDto(T? data, object? additionalData = null, string code = ResponseCodeConstants.NOT_FOUND)
         {
             return new BaseResponseDto<T>(StatusCodes.Status404NotFound, code, data, additionalData);
         }
 
-        public static BaseResponseDto<T> BadRequestResponseModel(T? data, object? additionalData = null, string code = ResponseCodeConstants.FAILED)
+        public static BaseResponseDto<T> BadRequestResponseDto(T? data, object? additionalData = null, string code = ResponseCodeConstants.FAILED)
         {
             return new BaseResponseDto<T>(StatusCodes.Status400BadRequest, code, data, additionalData);
         }
 
-        public static BaseResponseDto<T> InternalErrorResponseModel(T? data, object? additionalData = null, string code = ResponseCodeConstants.FAILED)
+        public static BaseResponseDto<T> InternalErrorResponseDto(T? data, object? additionalData = null, string code = ResponseCodeConstants.FAILED)
         {
             return new BaseResponseDto<T>(StatusCodes.Status500InternalServerError, code, data, additionalData);
         }

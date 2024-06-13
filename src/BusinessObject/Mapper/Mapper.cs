@@ -1,4 +1,5 @@
-﻿using BusinessObject.DTO.Pet;
+﻿using System.Globalization;
+using BusinessObject.DTO.Pet;
 using BusinessObject.DTO.Service;
 using BusinessObject.DTO.TimeTable;
 using BusinessObject.DTO.User;
@@ -19,6 +20,7 @@ public partial class MapperlyMapper
 
     // user
     public partial UserEntity Map(RegisterDto request);
+    public partial UserEntity Map(VetRequestDto request);
     public partial LoginResponseDto UserToLoginResponseDto(UserEntity entity);
     public partial UserResponseDto UserToUserResponseDto(UserEntity entity);
     public partial IList<UserResponseDto> Map(IList<UserEntity> entity);
@@ -26,12 +28,32 @@ public partial class MapperlyMapper
 
     // pet 
     public partial Pet Map(PetRequestDto request);
-    public partial PetResponseDto Map(Pet entity);
-    public partial IList<PetResponseDto> Map(IList<Pet> entity);
+    // Custom mapping method for Pet to PetResponseDto with date formatting
+    public PetResponseDto Map(Pet entity)
+    {
+        var response = new PetResponseDto
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Species = entity.Species,
+            Breed = entity.Breed,
+            Gender = entity.Gender,
+            DateOfBirth = entity.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+            IsNeutered = entity.IsNeutered
+        };
+        return response;
+    }
+    // Custom mapping method for IList<Pet> to IList<PetResponseDto> with date formatting
+    public IList<PetResponseDto> Map(IList<Pet> entities)
+    {
+        return entities.Select(Map).ToList();
+    }
+    public partial Pet Map(PetUpdateRequestDto request);
     public partial void Map(PetRequestDto request, Pet entity);
 
     // service
     public partial Service Map(ServiceRequestDto request);
+    public partial Service Map(ServiceResponseDto request);
     public partial ServiceResponseDto Map(Service entity);
     public partial IList<ServiceResponseDto> Map(IList<Service> entity);
     public partial void Map(ServiceRequestDto request, Service entity);

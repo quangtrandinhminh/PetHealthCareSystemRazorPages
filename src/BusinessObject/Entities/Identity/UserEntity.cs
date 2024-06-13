@@ -50,7 +50,6 @@ public class UserEntity : IdentityUser<int>
 
     // for vet
     public virtual ICollection<MedicalRecord>? MedicalRecords { get; set; }
-    public virtual ICollection<TimeTable>? TimeTables { get; set; } 
 }
 
 public class RoleEntity : IdentityRole<int>

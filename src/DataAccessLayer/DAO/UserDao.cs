@@ -46,5 +46,30 @@ namespace DataAccessLayer.DAO
 
             return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
         }
+
+        public static async Task<UserEntity?> GetSingleAsync(Expression<Func<UserEntity, bool>>? predicate = null,
+            params Expression<Func<UserEntity, object>>[] includeProperties)
+        => await Get(predicate, includeProperties).FirstOrDefaultAsync();
+
+        public static IQueryable<UserEntity> Get(Expression<Func<UserEntity, bool>>? predicate = null, params Expression<Func<UserEntity, object>>[] includeProperties)
+        {
+            IQueryable<UserEntity> reault = _context.Users.AsNoTracking();
+            if (predicate != null)
+            {
+                reault = reault.Where(predicate);
+            }
+
+            includeProperties = includeProperties?.Distinct().ToArray();
+            if (includeProperties?.Any() ?? false)
+            {
+                Expression<Func<UserEntity, object>>[] array = includeProperties;
+                foreach (Expression<Func<UserEntity, object>> navigationPropertyPath in array)
+                {
+                    reault = reault.Include(navigationPropertyPath);
+                }
+            }
+
+            return reault.Where(x => x.DeletedTime == null);
+        }
     }
 }

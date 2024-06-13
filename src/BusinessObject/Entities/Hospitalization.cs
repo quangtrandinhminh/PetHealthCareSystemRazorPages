@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using BusinessObject.Entities.Base;
+using BusinessObject.Entities.Identity;
 using Utility.Enum;
 
 namespace BusinessObject.Entities;
@@ -15,13 +16,14 @@ public class Hospitalization : BaseEntity
     public string? Diagnosis { get; set; }
     public string? Treatment { get; set; }
     public string? Note { get; set; }
-    
+    public int VetId { get; set; }
+
     [ForeignKey(nameof(MedicalRecordId))]
     public virtual MedicalRecord MedicalRecord { get; set; }
-    
+
     [ForeignKey(nameof(CageId))]
     public virtual Cage Cage { get; set; }
-    
+
     [ForeignKey(nameof(TimeTableId))]
     public virtual TimeTable? TimeTable { get; set; }
 }

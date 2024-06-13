@@ -24,7 +24,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="DTO\Pet\" />
       <Folder Include="DTO\Vet\" />
     </ItemGroup>
 

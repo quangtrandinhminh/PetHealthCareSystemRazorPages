@@ -4,6 +4,7 @@ using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240612043512_PetChange")]
+    partial class PetChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,9 +100,6 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("TimeTableId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VetId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -261,9 +261,6 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<string>("Treatment")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("VetId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -640,9 +637,6 @@ namespace DataAccessLayer.Migrations
                     b.Property<DateTimeOffset?>("DeletedTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Gender")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsNeutered")
                         .HasColumnType("bit");
 
@@ -732,6 +726,12 @@ namespace DataAccessLayer.Migrations
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<DateTimeOffset>("DateTimeEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("DateTimeStart")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("DayOfWeeks")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -751,13 +751,12 @@ namespace DataAccessLayer.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeOnly>("TimeEnd")
-                        .HasColumnType("time");
-
-                    b.Property<TimeOnly>("TimeStart")
-                        .HasColumnType("time");
+                    b.Property<int>("VetID")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("VetID");
 
                     b.HasIndex(new[] { "Id" }, "Index_Id")
                         .IsUnique();
@@ -1152,6 +1151,17 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("BusinessObject.Entities.TimeTable", b =>
+                {
+                    b.HasOne("BusinessObject.Entities.Identity.UserEntity", "Vet")
+                        .WithMany("TimeTables")
+                        .HasForeignKey("VetID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Vet");
+                });
+
             modelBuilder.Entity("BusinessObject.Entities.Transaction", b =>
                 {
                     b.HasOne("BusinessObject.Entities.Appointment", "Appointment")
@@ -1290,6 +1300,8 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Pets");
 
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("TimeTables");
 
                     b.Navigation("UserRoles");
                 });

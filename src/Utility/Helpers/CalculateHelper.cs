@@ -1,4 +1,4 @@
-﻿namespace BussinessObject.Utils
+﻿namespace Utility.Helpers
 {
     public class CalculateHelper
     {

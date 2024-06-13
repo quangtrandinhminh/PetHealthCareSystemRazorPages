@@ -12,6 +12,7 @@ namespace BusinessObject.DTO.User
         public string Id { get; set; }
         public string FullName { get; set; }
         public string UserName { get; set; }
+        public virtual string? PhoneNumber { get; set; }
         public string? Token { get; set; }
         public string? RefreshToken { get; set; }
         public IList<string> Role { get; set; }

@@ -1,6 +1,12 @@
-﻿namespace Repository.Interfaces;
+﻿using BusinessObject.Entities;
+using Repository.Base;
 
-public interface IServiceRepository
+namespace Repository.Interfaces;
+
+public interface IServiceRepository : IBaseRepository<Service>
 {
-    
+    Task<List<Service>> GetAllService();
+    Task UpdateServiceAsync(Service service);
+    Task DeleteServiceAsync(Service service);
+    Task CreateServiceAsync(Service service);
 }

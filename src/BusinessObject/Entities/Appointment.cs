@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using BusinessObject.Entities.Base;
+using BusinessObject.Entities.Identity;
 using Utility.Enum;
 
 namespace BusinessObject.Entities;
@@ -14,7 +15,8 @@ public class Appointment : BaseEntity
     public AppointmentBookingType BookingType { get; set; }
     public short? Rating { get; set; }
     public string? Feedback { get; set; }
-    
+    public int VetId { get; set; }
+
     [ForeignKey(nameof(TimeTableId))]
     public virtual TimeTable TimeTable { get; set; }
     
