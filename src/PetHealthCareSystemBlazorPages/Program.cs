@@ -1,7 +1,9 @@
 using System;
 using BusinessObject.Entities;
+using BusinessObject.Entities.Identity;
 using BusinessObject.Mapper;
 using DataAccessLayer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Repository;
 using Repository.Interfaces;
@@ -14,6 +16,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSerilog(config => { config.ReadFrom.Configuration(builder.Configuration); });
 builder.Services.AddDbContext<AppDbContext>();
+
+builder.Services.AddIdentity<UserEntity, RoleEntity>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
 
 // Add services to the container.
 
