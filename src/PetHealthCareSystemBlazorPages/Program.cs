@@ -17,10 +17,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSerilog(config => { config.ReadFrom.Configuration(builder.Configuration); });
 builder.Services.AddDbContext<AppDbContext>();
 
-builder.Services.AddIdentity<UserEntity, RoleEntity>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
-
 // Add services to the container.
 
 // config root directory for razor pages
@@ -38,6 +34,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IService, ServiceService>();
 builder.Services.AddScoped<IPetService, PetService>();
+builder.Services.AddIdentity<UserEntity, RoleEntity>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
 
 var app = builder.Build();
 

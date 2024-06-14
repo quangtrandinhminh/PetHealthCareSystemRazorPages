@@ -31,13 +31,13 @@ public class PetService(IServiceProvider serviceProvider) : IPetService
 
     public async Task CreatePetAsync(PetRequestDto pet, int ownerId)
     {
-        var user = await _userManager.FindByIdAsync(ownerId.ToString());
+        //var user = await _userManager.FindByIdAsync(ownerId.ToString());
 
-        if (user == null)
-        {
-            throw new AppException(ResponseCodeConstants.FAILED, ReponseMessageConstantsPet.OWNER_NOT_FOUND,
-                StatusCodes.Status400BadRequest);
-        }
+        //if (user == null)
+        //{
+        //    throw new AppException(ResponseCodeConstants.FAILED, ReponseMessageConstantsPet.OWNER_NOT_FOUND,
+        //        StatusCodes.Status400BadRequest);
+        //}
 
         var createPet = _mapper.Map(pet);
         createPet.OwnerID = ownerId;
@@ -64,7 +64,7 @@ public class PetService(IServiceProvider serviceProvider) : IPetService
         if (user == null)
         {
             throw new AppException(ResponseCodeConstants.FAILED, ReponseMessageConstantsPet.OWNER_NOT_FOUND,
-                StatusCodes.Status400BadRequest);
+               StatusCodes.Status400BadRequest);
         }
 
         existPet.Breed = pet.Breed;
