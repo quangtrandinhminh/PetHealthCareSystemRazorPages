@@ -17,7 +17,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSerilog(config => { config.ReadFrom.Configuration(builder.Configuration); });
 builder.Services.AddDbContext<AppDbContext>();
 
-
 // Add services to the container.
 
 // config root directory for razor pages
