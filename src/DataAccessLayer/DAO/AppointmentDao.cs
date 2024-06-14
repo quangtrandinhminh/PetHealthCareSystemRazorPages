@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BusinessObject.Entities;
+using DataAccessLayer.Base;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.DAO;
 
-public class AppointmentDao
+public class AppointmentDao : BaseDao<Appointment>
 {
     private static readonly AppDbContext _context = new();
 

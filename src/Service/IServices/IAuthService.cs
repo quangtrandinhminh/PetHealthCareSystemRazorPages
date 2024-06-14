@@ -19,5 +19,6 @@ namespace Service.IServices
         Task ResetPassword(ResetPasswordDto model);
         Task ChangePassword(ChangePasswordDto dto);
         Task ReSendEmail(ResendEmailDto model);
+        Task StaffRegistor(RegisterDto dto);
     }
 }

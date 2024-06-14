@@ -59,7 +59,7 @@ namespace Utility.Constants
         public const string PHONENUMBER_LENGTH = "So dien thoai phai co chinh xac 10 so.";
         public const string PHONGBANID_REQUIRED = "Phong ban khong duoc de trong.";
         public const string NHAMAYIDS_REQUIRED = "Nha may khong duoc de trong.";
-        public const string ROLEIDS_REQUIRED = "Role khong duoc de trong.";
+        public const string ROLES_REQUIRED = "Role khong duoc de trong.";
 
     }
 
@@ -99,6 +99,7 @@ namespace Utility.Constants
         public const string UPDATE_PET_SUCCESS = "Cập nhật thú cưng thành công";
         public const string DELETE_PET_SUCCESS = "Xóa thú cưng thành công";
         public const string OWNER_NOT_FOUND = "Không tìm thấy chủ thú cưng";
+        public const string NOT_YOUR_PET = "Thú cưng không phải là của bạn";
     }
 
     public class ReponseMessageConstantsService
