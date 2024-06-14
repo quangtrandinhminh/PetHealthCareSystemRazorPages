@@ -6,7 +6,7 @@ namespace DataAccessLayer.Base
 {
     public class BaseDao<T> where T : BaseEntity, new()
     {
-        private static readonly AppDbContext _context = new ();
+        private static readonly AppDbContext _context = new();
         private static DbSet<T> _dbSet = _context.Set<T>();
 
         public static IQueryable<T?> GetAll()
@@ -33,6 +33,7 @@ namespace DataAccessLayer.Base
         {
             _dbSet.Add(entity);
             _context.SaveChanges();
+            _context.Entry(entity).State = EntityState.Detached;
             return entity;
         }
 
@@ -40,6 +41,7 @@ namespace DataAccessLayer.Base
         {
             await _dbSet.AddAsync(entity);
             await _context.SaveChangesAsync();
+            _context.Entry(entity).State = EntityState.Detached;
             return entity;
         }
 
@@ -53,6 +55,10 @@ namespace DataAccessLayer.Base
         {
             await _dbSet.AddRangeAsync(entities);
             await _context.SaveChangesAsync();
+            foreach (var entity in entities)
+            {
+                _context.Entry(entity).State = EntityState.Detached;
+            }
         }
 
         public static void Update(T entity)
@@ -60,6 +66,7 @@ namespace DataAccessLayer.Base
             var tracker = _context.Attach(entity);
             tracker.State = EntityState.Modified;
             _context.SaveChanges();
+            _context.Entry(entity).State = EntityState.Detached;
         }
 
         public static async Task UpdateAsync(T entity)
@@ -67,12 +74,17 @@ namespace DataAccessLayer.Base
             var tracker = _context.Attach(entity);
             tracker.State = EntityState.Modified;
             await _context.SaveChangesAsync();
+            _context.Entry(entity).State = EntityState.Detached;
         }
 
         public static async Task UpdateRangeAsync(IEnumerable<T?> entities)
         {
             _dbSet.UpdateRange(entities);
             await _context.SaveChangesAsync();
+            foreach (var entity in entities)
+            {
+                _context.Entry(entity).State = EntityState.Detached;
+            }
         }
 
         public static void Delete(T? entity)
