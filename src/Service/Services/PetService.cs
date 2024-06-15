@@ -29,15 +29,24 @@ public class PetService(IServiceProvider serviceProvider) : IPetService
         return listDto.ToList();
     }
 
+    public async Task<PetResponseDto> GetPetByID(int id)
+    {
+        var pet = await _petRepo.GetByIdAsync(id);
+
+        var petDto = _mapper.Map(pet);
+
+        return petDto;
+    }
+
     public async Task CreatePetAsync(PetRequestDto pet, int ownerId)
     {
-        //var user = await _userManager.FindByIdAsync(ownerId.ToString());
+        var user = await _userManager.FindByIdAsync(ownerId.ToString());
 
-        //if (user == null)
-        //{
-        //    throw new AppException(ResponseCodeConstants.FAILED, ReponseMessageConstantsPet.OWNER_NOT_FOUND,
-        //        StatusCodes.Status400BadRequest);
-        //}
+        if (user == null)
+        {
+            throw new AppException(ResponseCodeConstants.FAILED, ReponseMessageConstantsPet.OWNER_NOT_FOUND,
+                StatusCodes.Status400BadRequest);
+        }
 
         var createPet = _mapper.Map(pet);
         createPet.OwnerID = ownerId;
