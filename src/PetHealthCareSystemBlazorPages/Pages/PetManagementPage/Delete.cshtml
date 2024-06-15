@@ -1,0 +1,100 @@
+﻿@page
+@model PetHealthCareSystemRazorPages.Pages.PetManagementPage.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Pet</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pet.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pet.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pet.Species)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pet.Species)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pet.Breed)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pet.Breed)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pet.DateOfBirth)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pet.DateOfBirth)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pet.IsNeutered)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pet.IsNeutered)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pet.Gender)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pet.Gender)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pet.Owner)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pet.Owner.Id)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pet.CreatedBy)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pet.CreatedBy)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pet.LastUpdatedBy)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pet.LastUpdatedBy)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pet.DeletedBy)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pet.DeletedBy)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pet.CreatedTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pet.CreatedTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pet.LastUpdatedTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pet.LastUpdatedTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pet.DeletedTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pet.DeletedTime)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="Pet.Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
+</div>
