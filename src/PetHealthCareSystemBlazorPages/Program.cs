@@ -38,6 +38,17 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IService, ServiceService>();
 builder.Services.AddScoped<IPetService, PetService>();
+<<<<<<< Updated upstream
+=======
+builder.Services.AddIdentity<UserEntity, RoleEntity>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+builder.Services.AddSession(
+    options =>
+    {
+        options.IdleTimeout = TimeSpan.FromMinutes(10);
+    });
+>>>>>>> Stashed changes
 
 var app = builder.Build();
 
@@ -51,6 +62,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSession();
 
 app.UseRouting();
 
