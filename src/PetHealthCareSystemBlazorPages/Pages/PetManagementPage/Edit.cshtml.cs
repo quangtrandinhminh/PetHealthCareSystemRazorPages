@@ -59,7 +59,7 @@ namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
             try
             {
                 // Update the existing Pet entity using PetUpdateRequestDto (Pet)
-                await _petService.UpdatePetAsync(Pet);
+                //await _petService.UpdatePetAsync(Pet);
             }
             catch (Exception)
             {
