@@ -9,7 +9,7 @@ namespace BusinessObject.Entities;
 [Table("Transaction")]
 public class Transaction : BaseEntity
 {
-    protected Transaction()
+    public Transaction()
     {
         Status = TransactionStatus.Pending;
     }

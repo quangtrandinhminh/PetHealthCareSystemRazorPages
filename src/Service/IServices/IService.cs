@@ -11,7 +11,7 @@ namespace Service.IServices
 {
     public interface IService
     {
-        Task<List<ServiceResponseDto>> GetAllService();
+        Task<List<ServiceResponseDto>> GetAllServiceAsync();
         Task CreateServiceAsync(ServiceResponseDto service);
         Task UpdateServiceAsync(ServiceResponseDto service);
         Task DeleteServiceAsync(int id, int deleteBy);

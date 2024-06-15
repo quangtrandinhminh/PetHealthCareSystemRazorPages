@@ -9,7 +9,7 @@ namespace BusinessObject.Entities;
 [Table("MedicalItem")]
 public class MedicalItem : BaseEntity
 {
-    protected MedicalItem()
+    public MedicalItem()
     {
         Quantity = 0;
     }

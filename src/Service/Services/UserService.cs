@@ -25,7 +25,7 @@ public class UserService(IServiceProvider serviceProvider) : IUserService
     private readonly ILogger _logger = Log.Logger;
     private readonly SignInManager<UserEntity> _signInManager = serviceProvider.GetRequiredService<SignInManager<UserEntity>>();
 
-    public async Task<IList<UserResponseDto>> GetVets()
+    public async Task<IList<UserResponseDto>> GetVetsAsync()
     {
         var vets = await _userManager.GetUsersInRoleAsync(UserRole.Vet.ToString());
         if (vets == null || vets.Count == 0)
@@ -42,7 +42,37 @@ public class UserService(IServiceProvider serviceProvider) : IUserService
         return response;
     }
 
-    public async Task CreateVet(VetRequestDto dto)
+    public Task<IList<UserResponseDto>> GetStaffAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IList<UserResponseDto>> GetCustomersAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task CreateUserAsync(UserCreateRequestDto dto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateUserAsync(UserUpdateRequestDto dto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<UserResponseDto> GetByIdAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteUserAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task CreateVetAsync(VetRequestDto dto)
     {
         _logger.Information("Register new user: {@dto}", dto);
         // get user by name

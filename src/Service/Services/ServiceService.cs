@@ -34,7 +34,7 @@ namespace Service.Services
             throw new NotImplementedException();
         }
 
-        public async Task<List<ServiceResponseDto>> GetAllService()
+        public async Task<List<ServiceResponseDto>> GetAllServiceAsync()
         {
             var list = await _serviceRepo.GetAllService();
 

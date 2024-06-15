@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using BusinessObject.DTO.MedicalItem;
+using System.Globalization;
 using BusinessObject.DTO.Pet;
 using BusinessObject.DTO.Service;
 using BusinessObject.DTO.TimeTable;
@@ -62,4 +63,10 @@ public partial class MapperlyMapper
     //public partial TimeTable UserToLoginResponseDto(TimeTableRequestDto request);
     public partial TimeTableResponseDto Map(TimeTable entity);
     public partial IList<TimeTableResponseDto> Map(IList<TimeTable> entity);
+
+    // medicalItem
+    public partial MedicalItem Map(MedicalResponseDto request);
+    public partial MedicalResponseDto Map(MedicalItem entity);
+    public partial IList<MedicalResponseDto> Map(IList<MedicalItem> entity);
+    public partial void Map(ServiceRequestDto request, MedicalItem entity);
 }
