@@ -26,7 +26,12 @@ namespace DataAccessLayer.Base
 
         public static async Task<T?> GetByIdAsync(int id)
         {
-            return await _dbSet.FindAsync(id);
+            var entity = await _dbSet.FindAsync(id);
+            if (entity != null)
+            {
+                _context.Entry(entity).State = EntityState.Detached;
+            }
+            return entity;
         }
 
         public static T Add(T entity)

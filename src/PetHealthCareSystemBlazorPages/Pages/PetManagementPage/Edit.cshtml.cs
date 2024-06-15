@@ -1,27 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BusinessObject.Entities;
-using DataAccessLayer;
+using BusinessObject.DTO.Pet;
+using Service.IServices;
 
 namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
 {
     public class EditModel : PageModel
     {
-        private readonly DataAccessLayer.AppDbContext _context;
+        private readonly IPetService _petService;
 
-        public EditModel(DataAccessLayer.AppDbContext context)
+        public EditModel(IPetService petService)
         {
-            _context = context;
+            _petService = petService;
         }
 
         [BindProperty]
-        public Pet Pet { get; set; } = default!;
+        public PetUpdateRequestDto Pet { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,18 +26,29 @@ namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
                 return NotFound();
             }
 
-            var pet =  await _context.Pets.FirstOrDefaultAsync(m => m.Id == id);
-            if (pet == null)
+            // Load Pet details using PetService
+            var petResponse = await _petService.GetPetByID(id.Value);
+            if (petResponse == null)
             {
                 return NotFound();
             }
-            Pet = pet;
-           ViewData["OwnerID"] = new SelectList(_context.Users, "Id", "Id");
+
+            // Map properties from PetResponseDto to PetUpdateRequestDto (Pet)
+            Pet = new PetUpdateRequestDto
+            {
+                Id = petResponse.Id,
+                Name = petResponse.Name,
+                Species = petResponse.Species,
+                Breed = petResponse.Breed,
+                DateOfBirth = DateTime.Parse(petResponse.DateOfBirth), // Example assuming DateOfBirth is string
+                IsNeutered = petResponse.IsNeutered,
+                Gender = petResponse.Gender
+                // Add other properties as needed
+            };
+
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -49,30 +56,17 @@ namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
                 return Page();
             }
 
-            _context.Attach(Pet).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                // Update the existing Pet entity using PetUpdateRequestDto (Pet)
+                await _petService.UpdatePetAsync(Pet);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
-                if (!PetExists(Pet.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool PetExists(int id)
-        {
-            return _context.Pets.Any(e => e.Id == id);
         }
     }
 }

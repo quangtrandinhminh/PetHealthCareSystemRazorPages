@@ -3,57 +3,101 @@
 
 @{
     ViewData["Title"] = "Create";
+    var today = DateTime.Today;
+    var maxDate = today.ToString("yyyy-MM-dd");
+    var minDate = today.AddYears(-20).ToString("yyyy-MM-dd");
 }
 
-<h1>Create</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Pet Management</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/PetManagement/create.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="page-container">
+        <h1>Create</h1>
+        <h4>Pet</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Pet.Name" class="control-label">Name</label>
+                        <input asp-for="Pet.Name" class="form-control" />
+                        <span asp-validation-for="Pet.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Pet.Species" class="control-label">Species</label>
+                        <div class="select-container">
+                            <select asp-for="Pet.Species" class="form-control">
+                                <option value="Dog">Dog</option>
+                                <option value="Cat">Cat</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="Pet.Species" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Pet.Breed" class="control-label">Breed</label>
+                        <input asp-for="Pet.Breed" class="form-control" />
+                        <span asp-validation-for="Pet.Breed" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Pet.DateOfBirth" class="control-label">Date of Birth</label>
+                        <input asp-for="Pet.DateOfBirth" class="form-control" type="date" min="@minDate" max="@maxDate" />
+                        <span asp-validation-for="Pet.DateOfBirth" class="text-danger"></span>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="Pet.IsNeutered" /> Neutered
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Pet.Gender" class="control-label">Gender</label>
+                        <div class="select-container">
+                            <select asp-for="Pet.Gender" class="form-control">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="Pet.Gender" class="text-danger"></span>
+                    </div>
+                    <div class="create-btn-container">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div>
+            <a asp-page="Index">Back to List</a>
+        </div>
 
-<h4>Pet</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Pet.Name" class="control-label"></label>
-                <input asp-for="Pet.Name" class="form-control" />
-                <span asp-validation-for="Pet.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Pet.Species" class="control-label"></label>
-                <input asp-for="Pet.Species" class="form-control" />
-                <span asp-validation-for="Pet.Species" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Pet.Breed" class="control-label"></label>
-                <input asp-for="Pet.Breed" class="form-control" />
-                <span asp-validation-for="Pet.Breed" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Pet.DateOfBirth" class="control-label"></label>
-                <input asp-for="Pet.DateOfBirth" class="form-control" />
-                <span asp-validation-for="Pet.DateOfBirth" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Pet.IsNeutered" /> @Html.DisplayNameFor(model => model.Pet.IsNeutered)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="Pet.Gender" class="control-label"></label>
-                <input asp-for="Pet.Gender" class="form-control" />
-                <span asp-validation-for="Pet.Gender" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        @section Scripts {
+            @{
+                await Html.RenderPartialAsync("_ValidationScriptsPartial");
+            }
+        }
     </div>
-</div>
 
-<div>
-    <a asp-page="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('select').on('click', function () {
+                var $selectContainer = $(this).parent();
+                if ($selectContainer.hasClass('open')) {
+                    $selectContainer.removeClass('open');
+                } else {
+                    $('.select-container').removeClass('open');
+                    $selectContainer.addClass('open');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
