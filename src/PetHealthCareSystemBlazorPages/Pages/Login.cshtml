@@ -1,0 +1,39 @@
+﻿@page
+@model PetHealthCareSystemBlazorPages.Pages.LoginModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="d-flex align-items-center justify-content-center vh-100">
+    <div class="col-md-4" style="border: 1px solid black; border-radius: 10px; padding: 20px;">
+        <div>
+            <h1 class="text-center">Login</h1>
+        </div>
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+            <div class="form-group mb-3">
+                <label asp-for="LoginUser.Username"></label>
+                <input asp-for="LoginUser.Username" class="form-control" />
+                <span asp-validation-for="LoginUser.Username" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="LoginUser.Password"></label>
+                <input asp-for="LoginUser.Password" type="password" class="form-control" />
+                <span asp-validation-for="LoginUser.Password" class="text-danger"></span>
+            </div>
+            <div class="d-grid gap-2 mb-3">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
+        <div style="text-align: center;">
+            <a asp-page="/Forget_password" class="forget_password" style="text-decoration: none; display: inline-block; margin-bottom: 10px">Forget Password</a><br />
+            <span style="display: inline-block; margin: 0 2px;">Don't have an account?</span>
+            <a asp-page="/Register" class="register" style="text-decoration: none; display: inline-block">Register</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
