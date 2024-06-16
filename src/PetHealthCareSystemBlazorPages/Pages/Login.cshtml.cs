@@ -33,12 +33,11 @@ namespace PetHealthCareSystemBlazorPages.Pages
                     return Page();
                 }
 
-                HttpContext.Session.SetString("Token", response.Token);
                 HttpContext.Session.SetString("UserId", response.Id);
                 HttpContext.Session.SetString("Username", response.UserName);
                 HttpContext.Session.SetString("Role", string.Join(",", response.Role));
 
-                return RedirectToPage("/");
+                return RedirectToPage();
 
             }
             catch (AppException ex)
