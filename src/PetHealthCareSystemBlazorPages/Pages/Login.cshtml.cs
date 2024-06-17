@@ -37,7 +37,7 @@ namespace PetHealthCareSystemBlazorPages.Pages
                 HttpContext.Session.SetString("Username", response.UserName);
                 HttpContext.Session.SetString("Role", string.Join(",", response.Role));
 
-                return RedirectToPage();
+                return RedirectToPage("./Index");
 
             }
             catch (AppException ex)
