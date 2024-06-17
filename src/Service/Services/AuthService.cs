@@ -43,54 +43,54 @@ namespace Service.Services
         private readonly SignInManager<UserEntity> _signInManager = serviceProvider.GetRequiredService<SignInManager<UserEntity>>();
         private readonly IRefreshTokenRepository _refreshTokenRepository = serviceProvider.GetRequiredService<IRefreshTokenRepository>();
 
-        public async Task Register(RegisterDto dto)
-        { 
-            _logger.Information("Register new user: {@dto}", dto);
-            // get user by name
-            var validateUser = await _userManager.FindByNameAsync(dto.UserName);
-            if (validateUser != null)
-            {
-                throw new AppException(ResponseCodeConstants.EXISTED, ReponseMessageIdentity.EXISTED_USER, StatusCodes.Status400BadRequest);
-            }
+            public async Task Register(RegisterDto dto)
+            { 
+                _logger.Information("Register new user: {@dto}", dto);
+                // get user by name
+                var validateUser = await _userManager.FindByNameAsync(dto.UserName);
+                if (validateUser != null)
+                {
+                    throw new AppException(ResponseCodeConstants.EXISTED, ReponseMessageIdentity.EXISTED_USER, StatusCodes.Status400BadRequest);
+                }
 
-            var existingUserWithEmail = await _userManager.FindByEmailAsync(dto.Email);
-            if (existingUserWithEmail != null)
-            {
-                throw new AppException(ResponseCodeConstants.EXISTED, ReponseMessageIdentity.EXISTED_EMAIL, StatusCodes.Status400BadRequest);
-            }
+                var existingUserWithEmail = await _userManager.FindByEmailAsync(dto.Email);
+                if (existingUserWithEmail != null)
+                {
+                    throw new AppException(ResponseCodeConstants.EXISTED, ReponseMessageIdentity.EXISTED_EMAIL, StatusCodes.Status400BadRequest);
+                }
 
-            var existingUserWithPhone = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == dto.PhoneNumber);
-            if (existingUserWithPhone != null)
-            {
-                throw new AppException(ResponseCodeConstants.EXISTED, ReponseMessageIdentity.EXISTED_PHONE, StatusCodes.Status400BadRequest);
-            }
+                var existingUserWithPhone = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == dto.PhoneNumber);
+                if (existingUserWithPhone != null)
+                {
+                    throw new AppException(ResponseCodeConstants.EXISTED, ReponseMessageIdentity.EXISTED_PHONE, StatusCodes.Status400BadRequest);
+                }
 
-            if (!string.IsNullOrEmpty(dto.PhoneNumber) && !Regex.IsMatch(dto.PhoneNumber, @"^\d{10}$"))
-            {
-                throw new AppException(ResponseCodeConstants.INVALID_INPUT, ReponseMessageIdentity.PHONENUMBER_INVALID, StatusCodes.Status400BadRequest);
-            }
+                if (!string.IsNullOrEmpty(dto.PhoneNumber) && !Regex.IsMatch(dto.PhoneNumber, @"^\d{10}$"))
+                {
+                    throw new AppException(ResponseCodeConstants.INVALID_INPUT, ReponseMessageIdentity.PHONENUMBER_INVALID, StatusCodes.Status400BadRequest);
+                }
 
-            if (dto.Password != dto.ConfirmPassword)
-            {
-                throw new AppException(ResponseCodeConstants.INVALID_INPUT, ReponseMessageIdentity.PASSWORD_NOT_MATCH, StatusCodes.Status400BadRequest);
-            }
+                if (dto.Password != dto.ConfirmPassword)
+                {
+                    throw new AppException(ResponseCodeConstants.INVALID_INPUT, ReponseMessageIdentity.PASSWORD_NOT_MATCH, StatusCodes.Status400BadRequest);
+                }
 
-            try
-            {
-                var account = _mapper.Map(dto);
-                account.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-                account.SecurityStamp = Guid.NewGuid().ToString();
-                await _userRepository.CreateAsync(account);
-                await _userManager.AddToRoleAsync(account, "Customer");
-            }
-            catch (Exception e)
-            {
-                throw new AppException(ResponseCodeConstants.FAILED, e.Message, StatusCodes.Status400BadRequest);
-            }
+                try
+                {
+                    var account = _mapper.Map(dto);
+                    account.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+                    account.SecurityStamp = Guid.NewGuid().ToString();
+                    await _userRepository.CreateAsync(account);
+                    await _userManager.AddToRoleAsync(account, "Customer");
+                }
+                catch (Exception e)
+                {
+                    throw new AppException(ResponseCodeConstants.FAILED, e.Message, StatusCodes.Status400BadRequest);
+                }
 
 
-            // send sms to phone number here
-        }
+                // send sms to phone number here
+            }
 
         public async Task<LoginResponseDto> Authenticate(LoginDto dto)
         {
