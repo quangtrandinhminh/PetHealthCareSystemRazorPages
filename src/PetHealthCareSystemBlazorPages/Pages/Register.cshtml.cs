@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using BusinessObject.DTO.User;
 using Service.IServices;
@@ -35,7 +34,7 @@ namespace PetHealthCareSystemRazorPages.Pages
             try
             {
                 await _authService.Register(RegisterDto);
-                return RedirectToPage("./Index");
+                return RedirectToPage("./Login");
             }
             catch (AppException ex)
             {

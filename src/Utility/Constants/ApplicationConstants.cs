@@ -31,35 +31,36 @@ namespace Utility.Constants
     
     public class ReponseMessageIdentity
     {
-        public const string INVALID_USER = "Nguoi dung khong ton tai.";
-        public const string UNAUTHENTICATED = "Khong xac thuc.";
-        public const string PASSWORD_NOT_MATCH = "Mat khau khong giong nhau.";
-        public const string PASSWORD_WRONG = "Mat khau khong dung.";
-        public const string EXISTED_USER = "Nguoi dung da ton tai.";
-        public const string EXISTED_EMAIL = "Email da ton tai.";
-        public const string EXISTED_PHONE = "So dien thoai da ton tai.";
-        public const string TOKEN_INVALID = "token khong xac thuc.";
-        public const string TOKEN_EXPIRED = "token khong xac thuc hoac da het han.";
-        public const string TOKEN_INVALID_OR_EXPIRED = "token khong xac thuc hoac da het han.";
-        public const string EMAIL_VALIDATE = "Email da duoc xac thuc.";
-        public const string PHONE_VALIDATE = "Phone number is validated.";
-        public const string ROLE_INVALID = "Roles khong xac thuc.";
-        public const string CLAIM_NOTFOUND = "Khong tim thay claim.";
-        public const string EXISTED_ROLE = "Role da ton tai.";
+        public const String INVALID_USER = "Người dùng không tồn tại.";
+        public const String UNAUTHENTICATED = "Không xác thực.";
+        public const String PASSWORD_NOT_MATCH = "Mật khẩu không khớp nhau.";
+        public const String PASSWORD_WRONG = "Mật khẩu không đúng.";
+        public const String EXISTED_USER = "Người dùng đã tồn tại ";
+        public const String EXISTED_EMAIL = "Email đã tồn tại.";
+        public const String EXISTED_PHONE = "Số điện thoại đã tồn tại.";
+        public const String TOKEN_INVALID = "Token không xác thực.";
+        public const String TOKEN_EXPIRED = "Token không xác thực hoặc đã hết hạn.";
+        public const String TOKEN_INVALID_OR_EXPIRED = "Token không xác thực hoặc đã hết hạn.";
+        public const String EMAIL_VALIDATE = "Email đã được xác thực.";
+        public const String PHONE_VALIDATE = "Số điện thoại đã được xác thực.";
+        public const String ROLE_INVALID = "Quyền không xác thực.";
+        public const String CLAIM_NOTFOUND = "Không tìm thấy claim.";
+        public const String EXISTED_ROLE = "Role đã tồn tại.";
 
-        public const string USERNAME_REQUIRED = "Ten nguoi dung khong duoc de trong.";
-        public const string NAME_REQUIRED = "Ten khong duoc de trong.";
-        public const string USERCODE_REQUIRED = "Ma nguoi dung khong duoc de trong.";
-        public const string PASSWORD_REQUIRED = "Mat khau khong duoc de trong.";
-        public const string PASSSWORD_LENGTH = "Mat khau phai co it nhat 8 ky tu.";
-        public const string CONFIRM_PASSWORD_REQUIRED = "Xac nhan mat khau khong duoc de trong.";
-        public const string EMAIL_REQUIRED = "Email khong duoc de trong.";
-        public const string PHONENUMBER_REQUIRED = "So dien thoai khong duoc de trong.";
-        public const string PHONENUMBER_INVALID = "So dien thoai khong hop le.";
-        public const string PHONENUMBER_LENGTH = "So dien thoai phai co chinh xac 10 so.";
-        public const string PHONGBANID_REQUIRED = "Phong ban khong duoc de trong.";
-        public const string NHAMAYIDS_REQUIRED = "Nha may khong duoc de trong.";
-        public const string ROLES_REQUIRED = "Role khong duoc de trong.";
+        public const String USERNAME_REQUIRED = "Tên người dùng không được để trống.";
+        public const String NAME_REQUIRED = "Tên không được để trống.";
+        public const String USERCODE_REQUIRED = "Mã người dùng không được để trống.";
+        public const String PASSWORD_REQUIRED = "Mật khẩu không được để trống.";
+        public const String PASSSWORD_LENGTH = "Mật khẩu phải có ít nhất 8 ký tự.";
+        public const String CONFIRM_PASSWORD_REQUIRED = "Xác nhận mật khẩu không được để trống.";
+        public const String EMAIL_REQUIRED = "Email không được để trống.";
+        public const String PHONENUMBER_REQUIRED = "Số điện thoại không được để trống.";
+        public const String PHONENUMBER_INVALID = "Số điện thoại không hợp lệ.";
+        public const String PHONENUMBER_LENGTH = "Số điện thoại phải có chính xác 10 số.";
+        public const String PHONGBANID_REQUIRED = "Phòng ban không được để trống.";
+        public const String NHAMAYIDS_REQUIRED = "Nhà máy không được để trống.";
+        public const String ROLES_REQUIRED = "Quyền không được để trống.";
+
 
     }
 
