@@ -21,7 +21,7 @@ namespace PetHealthCareSystemRazorPages.Pages
             _userService = userService;
         }
 
-        public IList<UserResponseDto> List { get;set; } = default!;
+        public IList<UserResponseDto> List { get;set; } = new List<UserResponseDto>();
 
         public async Task OnGetAsync()
         {
