@@ -9,6 +9,7 @@ using BusinessObject.Entities;
 using DataAccessLayer;
 using Service.IServices;
 using BusinessObject.DTO.User;
+using Utility.Exceptions;
 
 namespace PetHealthCareSystemRazorPages.Pages
 {
@@ -25,7 +26,15 @@ namespace PetHealthCareSystemRazorPages.Pages
 
         public async Task OnGetAsync()
         {
-            List = await _userService.GetVetsAsync();
+            try
+            {
+                List = await _userService.GetVetsAsync();
+            }
+            catch (AppException ex) 
+            {
+                List = new List<UserResponseDto>();
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
         }
     }
 }
