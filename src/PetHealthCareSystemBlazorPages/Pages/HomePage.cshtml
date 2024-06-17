@@ -1,0 +1,459 @@
+﻿@page "/"
+@model PetHealthCareSystemRazorPages.Pages.HomePageModel
+
+@{
+    ViewData["Title"] = "HomePage";
+}
+
+@* <h1>HomePage</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].Species)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].Breed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].DateOfBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].IsNeutered)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].Gender)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].Owner)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].CreatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].LastUpdatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].DeletedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].CreatedTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].LastUpdatedTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].DeletedTime)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Pet) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Species)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Breed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsNeutered)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gender)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Owner.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeletedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdatedTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeletedTime)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+ *@
+<!--? Slider Area Start-->
+<div class="slider-area">
+    <div class="slider-active dot-style">
+        <!-- Slider Single -->
+        <div class="single-slider d-flex align-items-center slider-height">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-xl-7 col-lg-8 col-md-10 ">
+                        <!-- Video icon -->
+                        <div class="video-icon">
+                            <a class="popup-video btn-icon" href="https://www.youtube.com/watch?v=up68UAfH0d0" data-animation="bounceIn" data-delay=".4s">
+                                <i class="fas fa-play"></i>
+                            </a>
+                        </div>
+                        <div class="hero__caption">
+                            <span data-animation="fadeInUp" data-delay=".3s">We help to groom your pet</span>
+                            <h1 data-animation="fadeInUp" data-delay=".3s">We Care Your Pets.</h1>
+                            <p data-animation="fadeInUp" data-delay=".6s">Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna sectetur adipisci.</p>
+                            <a href="#" class="hero-btn" data-animation="fadeInLeft" data-delay=".3s">Contact Now<i class="ti-arrow-right"></i> </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Slider Single -->
+        <div class="single-slider d-flex align-items-center slider-height">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-xl-7 col-lg-8 col-md-10 ">
+                        <!-- Video icon -->
+                        <div class="video-icon">
+                            <a class="popup-video btn-icon" href="https://www.youtube.com/watch?v=1aP-TXUpNoU" data-animation="bounceIn" data-delay=".4s">
+                                <i class="fas fa-play"></i>
+                            </a>
+                        </div>
+                        <div class="hero__caption">
+                            <span data-animation="fadeInUp" data-delay=".3s">We help to groom your pet</span>
+                            <h1 data-animation="fadeInUp" data-delay=".3s">We Care Your Pets.</h1>
+                            <p data-animation="fadeInUp" data-delay=".6s">Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna sectetur adipisci.</p>
+                            <a href="#" class="hero-btn" data-animation="fadeInLeft" data-delay=".3s">Contact Now<i class="ti-arrow-right"></i> </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- slider Social -->
+    <div class="button-text d-none d-md-block">
+        <span>Screll</span>
+    </div>
+</div>
+<!-- Slider Area End -->
+<!--? Our Services Start -->
+<div class="our-services section-padding30">
+    <div class="container">
+        <div class="row justify-content-sm-center">
+            <div class="cl-xl-7 col-lg-8 col-md-10">
+                <!-- Section Tittle -->
+                <div class="section-tittle text-center mb-70">
+                    <span>Our Professional Services</span>
+                    <h2>Best Pet Care Services</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class=" col-lg-4 col-md-6 col-sm-6">
+                <div class="single-services text-center mb-30">
+                    <div class="services-ion">
+                        <span class="flaticon-animal-kingdom"></span>
+                    </div>
+                    <div class="services-cap">
+                        <h5><a href="#">Pet Boarding</a></h5>
+                        <p>consectetur adipiscing elit, serfd dgo eiusmod tempor incididunt ut ore et dolore magna aliqua.</p>
+                    </div>
+                </div>
+            </div>
+            <div class=" col-lg-4 col-md-6 col-sm-6">
+                <div class="single-services text-center mb-30">
+                    <div class="services-ion">
+                        <span class="flaticon-animals"></span>
+                    </div>
+                    <div class="services-cap">
+                        <h5><a href="#">Pet Treatment</a></h5>
+                        <p>consectetur adipiscing elit, serfd dgo eiusmod tempor incididunt ut ore et dolore magna aliqua.</p>
+                    </div>
+                </div>
+            </div>
+            <div class=" col-lg-4 col-md-6 col-sm-6">
+                <div class="single-services text-center mb-30">
+                    <div class="services-ion">
+                        <span class="flaticon-animals-1"></span>
+                    </div>
+                    <div class="services-cap">
+                        <h5><a href="#">Vaccinations</a></h5>
+                        <p>consectetur adipiscing elit, serfd dgo eiusmod tempor incididunt ut ore et dolore magna aliqua.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Our Services End -->
+
+<!--? Gallery Area Start -->
+<div class="gallery-area section-padding30">
+    <div class="container fix">
+        <div class="row justify-content-sm-center">
+            <div class="cl-xl-7 col-lg-8 col-md-10">
+                <!-- Section Tittle -->
+                <div class="section-tittle text-center mb-70">
+                    <span>Our Recent Photos</span>
+                    <h2>Pets Photo Gallery</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="single-gallery mb-30">
+                    <!-- <a href="assets/img/gallery/gallery1.png" class="img-pop-up">View Project</a> -->
+                    <div class="gallery-img size-img" style="background-image: url(assets/img/gallery/gallery1.png);"></div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-6 col-sm-6">
+                <div class="single-gallery mb-30">
+                    <div class="gallery-img size-img" style="background-image: url(assets/img/gallery/gallery2.png);"></div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-6 col-sm-6">
+                <div class="single-gallery mb-30">
+                    <div class="gallery-img size-img" style="background-image: url(assets/img/gallery/gallery3.png);"></div>
+                </div>
+            </div>
+            <div class="col-lg-4  col-md-6 col-sm-6">
+                <div class="single-gallery mb-30">
+                    <div class="gallery-img size-img" style="background-image: url(assets/img/gallery/gallery4.png);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Gallery Area End -->
+<!--? Contact form Start -->
+<div class="contact-form-main pb-top">
+    <div class="container">
+        <div class="row justify-content-md-end">
+            <div class="col-xl-7 col-lg-7">
+                <div class="form-wrapper">
+                    <!--Section Tittle  -->
+                    <div class="form-tittle">
+                        <div class="row ">
+                            <div class="col-xl-12">
+                                <div class="section-tittle section-tittle2 mb-70">
+                                    <h2>World's Leading Law Consultency Agency !</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End Section Tittle  -->
+                    <form id="contact-form" action="#" method="POST">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6">
+                                <div class="form-box user-icon mb-30">
+                                    <input type="text" name="name" placeholder="Name">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="form-box email-icon mb-30">
+                                    <input type="text" name="email" placeholder="Phone">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 mb-30">
+                                <div class="select-itms">
+                                    <select name="select" id="select2">
+                                        <option value="">Health Law</option>
+                                        <option value="">saiful islam</option>
+                                        <option value="">Arafath Miya</option>
+                                        <option value="">Shakil Miya</option>
+                                        <option value="">Tamim Sharker</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="form-box subject-icon mb-30">
+                                    <input type="Email" name="subject" placeholder="Email">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-box message-icon mb-65">
+                                    <textarea name="message" id="message" placeholder="Message"></textarea>
+                                </div>
+                                <div class="submit-info">
+                                    <button class="btn submit-btn2" type="submit">Submit Now</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- shape-dog -->
+                        <div class="shape-dog">
+                            <img src="assets/img/gallery/shape1.png" alt="">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- contact left Img-->
+    <div class="from-left d-none d-lg-block">
+        <img src="assets/img/gallery/contact_form.png" alt="">
+    </div>
+</div>
+<!-- Contact form End -->
+<!--? Team Start -->
+<div class="team-area section-padding30">
+    <div class="container">
+        <div class="row justify-content-sm-center">
+            <div class="cl-xl-7 col-lg-8 col-md-10">
+                <!-- Section Tittle -->
+                <div class="section-tittle text-center mb-70">
+                    <span>Our Professional members </span>
+                    <h2>Our Team Members</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            @if(Model.List.Count == 0)
+            {
+                <div class="section-tittle text-center mb-70">No doctor</div>
+            }
+            @foreach (var item in Model.List)
+            {
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-">
+                    <div class="single-team mb-30">
+                        <div class="team-img">
+                            <img src="assets/img/gallery/team1.png" alt="">
+                        </div>
+                        <div class="team-caption">
+                            <span>@Html.DisplayFor(modelItem => item.FullName)</span>
+                            <h3><a href="#">@Html.DisplayFor(modelItem => item.Role)</a></h3>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @* <div class="col-xl-4 col-lg-4 col-md-6 col-sm-">
+                <div class="single-team mb-30">
+                    <div class="team-img">
+                        <img src="assets/img/gallery/team2.png" alt="">
+                    </div>
+                    <div class="team-caption">
+                        <span>Mike J Smith</span>
+                        <h3><a href="#">Doctor</a></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-">
+                <div class="single-team mb-30">
+                    <div class="team-img">
+                        <img src="assets/img/gallery/team3.png" alt="">
+                    </div>
+                    <div class="team-caption">
+                        <span>Pule W Smith</span>
+                        <h3><a href="#">Doctor</a></h3>
+                    </div>
+                </div>
+            </div> *@
+        </div>
+    </div>
+</div>
+<!-- Team End -->
+<!--? Testimonial Start -->
+<div class="testimonial-area testimonial-padding section-bg" data-background="assets/img/gallery/section_bg03.png">
+    <div class="container">
+        <!-- Testimonial contents -->
+        <div class="row d-flex justify-content-center">
+            <div class="col-xl-8 col-lg-8 col-md-10">
+                <div class="h1-testimonial-active dot-style">
+                    <!-- Single Testimonial -->
+                    <div class="single-testimonial text-center">
+                        <div class="testimonial-caption ">
+                            <!-- founder -->
+                            <div class="testimonial-founder">
+                                <div class="founder-img mb-40">
+                                    <img src="assets/img/gallery/testi-logo.png" alt="">
+                                    <span>Margaret Lawson</span>
+                                    <p>Creative Director</p>
+                                </div>
+                            </div>
+                            <div class="testimonial-top-cap">
+                                <p>“I am at an age where I just want to be fit and healthy our bodies are our responsibility! So start caring for your body and it will care for you. Eat clean it will care for you and workout hard.”</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Single Testimonial -->
+                    <div class="single-testimonial text-center">
+                        <div class="testimonial-caption ">
+                            <!-- founder -->
+                            <div class="testimonial-founder">
+                                <div class="founder-img mb-40">
+                                    <img src="assets/img/gallery/testi-logo.png" alt="">
+                                    <span>Margaret Lawson</span>
+                                    <p>Creative Director</p>
+                                </div>
+                            </div>
+                            <div class="testimonial-top-cap">
+                                <p>“I am at an age where I just want to be fit and healthy our bodies are our responsibility! So start caring for your body and it will care for you. Eat clean it will care for you and workout hard.”</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Single Testimonial -->
+                    <div class="single-testimonial text-center">
+                        <div class="testimonial-caption ">
+                            <!-- founder -->
+                            <div class="testimonial-founder">
+                                <div class="founder-img mb-40">
+                                    <img src="assets/img/gallery/testi-logo.png" alt="">
+                                    <span>Margaret Lawson</span>
+                                    <p>Creative Director</p>
+                                </div>
+                            </div>
+                            <div class="testimonial-top-cap">
+                                <p>“I am at an age where I just want to be fit and healthy our bodies are our responsibility! So start caring for your body and it will care for you. Eat clean it will care for you and workout hard.”</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Testimonial End -->
+
+<!--? contact-animal-owner Start -->
+<div class="contact-animal-owner section-bg" data-background="assets/img/gallery/section_bg04.png">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="contact_text text-center">
+                    <div class="section_title text-center">
+                        <h3>Any time you can call us!</h3>
+                        <p>Because we know that even the best technology is only as good as the people behind it. 24/7 tech support.</p>
+                    </div>
+                    <div class="contact_btn d-flex align-items-center justify-content-center">
+                        <a href="contact.html" class="btn white-btn">Contact Us</a>
+                        <p>Or<a href="#"> +880 4664 216</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- contact-animal-owner End -->
