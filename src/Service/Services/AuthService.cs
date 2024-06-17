@@ -106,13 +106,7 @@ namespace Service.Services
             try
             {
                 var roles = await _userManager.GetRolesAsync(account);
-                var token = await GenerateJwtToken(account, roles, 48);
-                var refreshToken = GenerateRefreshToken(account.Id, 12);
-                await RemoveOldRefreshTokens(account.RefreshTokens);
-                await _refreshTokenRepository.AddAsync(refreshToken);
                 var response = _mapper.UserToLoginResponseDto(account);
-                response.Token = token;
-                response.RefreshToken = refreshToken.Token;
                 response.Role = roles;
                 return response;
             }
