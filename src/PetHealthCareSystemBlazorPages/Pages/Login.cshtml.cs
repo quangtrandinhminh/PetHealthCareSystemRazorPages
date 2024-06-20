@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Http; // Ensure to include this namespace for HttpContext operations
 using Utility.Exceptions;
 using Service.IServices;
 using BusinessObject.DTO.User;
+using System.Threading.Tasks;
 
 namespace PetHealthCareSystemBlazorPages.Pages
 {
@@ -33,12 +35,22 @@ namespace PetHealthCareSystemBlazorPages.Pages
                     return Page();
                 }
 
+                // Store user session information
                 HttpContext.Session.SetString("UserId", response.Id);
                 HttpContext.Session.SetString("Username", response.UserName);
                 HttpContext.Session.SetString("Role", string.Join(",", response.Role));
 
-                return RedirectToPage("./Index");
-
+                // Redirect based on user role
+                // Redirect based on user role
+                if (response.Role.Contains("Admin")) // Check if "admin" role exists in the list
+                {
+                    return RedirectToPage("/Admin/AdminDashboard/Index");
+                }
+                else if (response.Role.Contains("Staff")) // Check if "staff" role exists in the list
+                {
+                    return RedirectToPage("/Staff/StaffDashboard/Index");
+                }
+                return Page();
             }
             catch (AppException ex)
             {
@@ -46,6 +58,22 @@ namespace PetHealthCareSystemBlazorPages.Pages
                 return Page();
             }
         }
-
+        public IActionResult OnGet()
+        {
+            var accountId = HttpContext.Session.GetString("UserId"); // Assuming UserId is stored in Session
+            if (!string.IsNullOrEmpty(accountId))
+            {
+                var accountRole = HttpContext.Session.GetString("Role");
+                if (accountRole != null && accountRole.Split(',').Contains("Admin"))
+                {
+                    return RedirectToPage("/Admin/AdminDashboard/Index");
+                }
+                else if (accountRole != null && accountRole.Split(',').Contains("Staff"))
+                {
+                    return RedirectToPage("/Staff/StaffDashboard/Index");
+                }
+            }
+            return Page();
+        }
     }
 }
