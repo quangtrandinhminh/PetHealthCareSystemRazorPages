@@ -5,5 +5,7 @@ namespace Repository.Interfaces;
 
 public interface ITransactionRepository : IBaseRepository<Transaction>
 {
-    
+    /*Task<Transaction?> GetTransactionWithDetailsAsync(int id);*/
+
+    Task SaveChangesAsync();
 }

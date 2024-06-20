@@ -4,8 +4,7 @@ namespace BusinessObject.DTO.TimeTable;
 
 public class TimeTableResponseDto
 {
-    public DateTimeOffset DateTimeStart { get; set; }
-    public DateTimeOffset DateTimeEnd { get; set; }
-    public IList<DayOfWeek> DayOfWeeks { get; set; }
-    public VetResponseDto Vet { get; set; }
+    public int Id { get; set; }
+    public TimeOnly StartTime { get; set; }
+    public TimeOnly EndTime { get; set; }
 }

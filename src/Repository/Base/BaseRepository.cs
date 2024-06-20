@@ -8,8 +8,15 @@ namespace Repository.Base
     {
         public IQueryable<T?> GetAll() => BaseDao<T>.GetAll();
         public async Task<IList<T>?> GetAllAsync() => await BaseDao<T>.GetAllAsync();
+        public IQueryable<T> GetAllWithCondition(Expression<Func<T, bool>> predicate = null,
+             params Expression<Func<T, object>>[] includeProperties) 
+            => BaseDao<T>.GetAllWithCondition(predicate, includeProperties);
         public T? GetById(int id) => BaseDao<T>.GetById(id);
         public async Task<T?> GetByIdAsync(int id) => await BaseDao<T>.GetByIdAsync(id);
+        public Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate,
+            bool isIncludeDeleted = false, params Expression<Func<T, object>>[] includeProperties)
+        => BaseDao<T>.GetSingleAsync(predicate, isIncludeDeleted, includeProperties);
+
         public void Add(T entity) => BaseDao<T>.Add(entity);
         public async Task<T> AddAsync(T entity) => await BaseDao<T>.AddAsync(entity);
         public void AddRange(IEnumerable<T> entities) => BaseDao<T>.AddRange(entities);

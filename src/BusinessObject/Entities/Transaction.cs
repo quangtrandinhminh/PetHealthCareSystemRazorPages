@@ -29,6 +29,7 @@ public class Transaction : BaseEntity
     public PaymentMethod? PaymentMethod { get; set; }
     public string? PaymentNote { get; set; }
     public string? PaymentId { get; set; }
+    public int? PaymentStaffId { get; set; }
     public string? PaymentStaffName { get; set; }
     public string? Note { get; set; }
     
@@ -36,6 +37,7 @@ public class Transaction : BaseEntity
     [Column(TypeName = "decimal(5, 2)")]
     [Range(0, 1)]
     public  decimal? RefundPercentage { get; set; }
+    public string ? RefundPaymentId { get; set; }
     public string? RefundReason { get; set; }
     public DateTimeOffset? RefundDate { get; set; }
     

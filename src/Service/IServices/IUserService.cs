@@ -11,6 +11,7 @@ public interface IUserService
     Task<IList<UserResponseDto>> GetCustomersAsync();
     Task CreateUserAsync(UserCreateRequestDto dto);
     Task UpdateUserAsync(UserUpdateRequestDto dto);
-    Task <UserResponseDto> GetByIdAsync(int id);
+    Task<UserResponseDto> GetByIdAsync(int id);
     Task DeleteUserAsync(int id);
+    Task<UserResponseDto> GetVetByIdAsync(int id);
 }

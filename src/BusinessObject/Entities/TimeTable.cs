@@ -7,9 +7,8 @@ namespace BusinessObject.Entities;
 [Table("TimeTable")]
 public class TimeTable : BaseEntity
 {
-    public TimeOnly TimeStart { get; set; }
-    public TimeOnly TimeEnd { get; set; }
-    public ICollection<DayOfWeek> DayOfWeeks { get; set; }
+    public TimeOnly StartTime { get; set; }
+    public TimeOnly EndTime { get; set; }
     public string? Note { get; set; }
     public virtual ICollection<Hospitalization>? Hospitalizations { get; set; }
     public virtual ICollection<Appointment>? Appointments { get; set; }

@@ -3,10 +3,12 @@ using System.Globalization;
 using BusinessObject.DTO.Pet;
 using BusinessObject.DTO.Service;
 using BusinessObject.DTO.TimeTable;
+using BusinessObject.DTO.Transaction;
 using BusinessObject.DTO.User;
 using BusinessObject.DTO.Vet;
 using BusinessObject.Entities;
 using BusinessObject.Entities.Identity;
+using Microsoft.EntityFrameworkCore.Query;
 using Riok.Mapperly.Abstractions;
 
 namespace BusinessObject.Mapper;
@@ -20,6 +22,7 @@ public partial class MapperlyMapper
     // public partial void UserToLoginResponseDto(dto request, entity entity); --for update
 
     // user
+    public partial IList<RoleResponseDto> Map(IList<RoleEntity> entity);
     public partial UserEntity Map(RegisterDto request);
     public partial UserEntity Map(VetRequestDto request);
     public partial LoginResponseDto UserToLoginResponseDto(UserEntity entity);
@@ -29,7 +32,6 @@ public partial class MapperlyMapper
 
     // pet 
     public partial Pet Map(PetRequestDto request);
-    // Custom mapping method for Pet to PetResponseDto with date formatting
     public PetResponseDto Map(Pet entity)
     {
         var response = new PetResponseDto
@@ -39,13 +41,18 @@ public partial class MapperlyMapper
             Species = entity.Species,
             Breed = entity.Breed,
             Gender = entity.Gender,
-            DateOfBirth = entity.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+            DateOfBirth = DateOnly.FromDateTime(entity.DateOfBirth.Date),
             IsNeutered = entity.IsNeutered
         };
+
         return response;
     }
     // Custom mapping method for IList<Pet> to IList<PetResponseDto> with date formatting
     public IList<PetResponseDto> Map(IList<Pet> entities)
+    {
+        return entities.Select(Map).ToList();
+    }
+    public List<PetResponseDto?> Map(List<Pet?> entities)
     {
         return entities.Select(Map).ToList();
     }
@@ -57,6 +64,10 @@ public partial class MapperlyMapper
     public partial Service Map(ServiceResponseDto request);
     public partial ServiceResponseDto Map(Service entity);
     public partial IList<ServiceResponseDto> Map(IList<Service> entity);
+    public List<ServiceResponseDto?> Map(ICollection<Service?> entities)
+    {
+        return entities.Select(Map).ToList();
+    }
     public partial void Map(ServiceRequestDto request, Service entity);
 
     // timetable
@@ -69,4 +80,15 @@ public partial class MapperlyMapper
     public partial MedicalResponseDto Map(MedicalItem entity);
     public partial IList<MedicalResponseDto> Map(IList<MedicalItem> entity);
     public partial void Map(ServiceRequestDto request, MedicalItem entity);
+
+    // transaction
+    public partial Transaction Map(TransactionRequestDto request);
+    public partial Transaction Map(TransactionResponseDto request);
+    public partial TransactionResponseDto Map(Transaction entity);
+    public partial TransactionResponseWithDetailsDto TransactionToTransactionResponseWithDetails(Transaction entity);
+    public partial IQueryable<TransactionResponseDto> Map(IQueryable<Transaction> entity);
+    public partial void Map(TransactionRequestDto request, Transaction entity);
+
+    // transaction detail
+    public partial IList<TransactionDetailResponseDto> Map(IList<TransactionDetail> entity);
 }

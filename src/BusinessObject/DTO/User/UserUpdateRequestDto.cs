@@ -5,11 +5,11 @@ namespace BusinessObject.DTO.User;
 
 public class UserUpdateRequestDto
 {
-    [Required(ErrorMessage = ReponseMessageIdentity.USERNAME_REQUIRED)]
+    [Required(ErrorMessage = ResponseMessageIdentity.USERNAME_REQUIRED)]
     [MaxLength(100)]
     public string UserName { get; set; }
 
-    [Required(ErrorMessage = ReponseMessageIdentity.NAME_REQUIRED)]
+    [Required(ErrorMessage = ResponseMessageIdentity.NAME_REQUIRED)]
     [MaxLength(100)]
     [RegularExpression("^[^0-9]+$", ErrorMessage = "Name cannot contain number")]
     public string FullName { get; set; }

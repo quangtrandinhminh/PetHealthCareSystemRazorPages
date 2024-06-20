@@ -42,6 +42,32 @@ public class UserService(IServiceProvider serviceProvider) : IUserService
         return response;
     }
 
+    public async Task<UserResponseDto> GetVetByIdAsync(int id)
+    {
+        var vets = await _userManager.GetUsersInRoleAsync(UserRole.Vet.ToString());
+
+        if (vets == null || vets.Count == 0)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsVet.VET_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
+
+        var response = _mapper.Map(vets);
+
+        foreach (var vet in response)
+        {
+            vet.Role = UserRole.Vet.ToString();
+        }
+
+        var vetResponse = response.Where(e => e.Id == id).FirstOrDefault();
+
+        if (vetResponse == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsVet.VET_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
+
+        return vetResponse;
+    }
+
     public Task<IList<UserResponseDto>> GetStaffAsync()
     {
         throw new NotImplementedException();
@@ -79,29 +105,29 @@ public class UserService(IServiceProvider serviceProvider) : IUserService
         var validateUser = await _userManager.FindByNameAsync(dto.UserName);
         if (validateUser != null)
         {
-            throw new AppException(ResponseCodeConstants.EXISTED, ReponseMessageIdentity.EXISTED_USER, StatusCodes.Status400BadRequest);
+            throw new AppException(ResponseCodeConstants.EXISTED, ResponseMessageIdentity.EXISTED_USER, StatusCodes.Status400BadRequest);
         }
 
         var existingUserWithEmail = await _userManager.FindByEmailAsync(dto.Email);
         if (existingUserWithEmail != null)
         {
-            throw new AppException(ResponseCodeConstants.EXISTED, ReponseMessageIdentity.EXISTED_EMAIL, StatusCodes.Status400BadRequest);
+            throw new AppException(ResponseCodeConstants.EXISTED, ResponseMessageIdentity.EXISTED_EMAIL, StatusCodes.Status400BadRequest);
         }
 
         var existingUserWithPhone = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == dto.PhoneNumber);
         if (existingUserWithPhone != null)
         {
-            throw new AppException(ResponseCodeConstants.EXISTED, ReponseMessageIdentity.EXISTED_PHONE, StatusCodes.Status400BadRequest);
+            throw new AppException(ResponseCodeConstants.EXISTED, ResponseMessageIdentity.EXISTED_PHONE, StatusCodes.Status400BadRequest);
         }
 
         if (!string.IsNullOrEmpty(dto.PhoneNumber) && !Regex.IsMatch(dto.PhoneNumber, @"^\d{10}$"))
         {
-            throw new AppException(ResponseCodeConstants.INVALID_INPUT, ReponseMessageIdentity.PHONENUMBER_INVALID, StatusCodes.Status400BadRequest);
+            throw new AppException(ResponseCodeConstants.INVALID_INPUT, ResponseMessageIdentity.PHONENUMBER_INVALID, StatusCodes.Status400BadRequest);
         }
 
         if (dto.Password != dto.ConfirmPassword)
         {
-            throw new AppException(ResponseCodeConstants.INVALID_INPUT, ReponseMessageIdentity.PASSWORD_NOT_MATCH, StatusCodes.Status400BadRequest);
+            throw new AppException(ResponseCodeConstants.INVALID_INPUT, ResponseMessageIdentity.PASSWORD_NOT_MATCH, StatusCodes.Status400BadRequest);
         }
 
         try

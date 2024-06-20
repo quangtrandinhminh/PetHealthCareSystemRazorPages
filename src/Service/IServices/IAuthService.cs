@@ -11,7 +11,9 @@ namespace Service.IServices
 {
     public interface IAuthService
     {
+        Task<IList<RoleResponseDto>> GetAllRoles();
         Task Register(RegisterDto dto);
+        Task RegisterByAdmin(RegisterDto dto, int role);
         Task<LoginResponseDto> Authenticate(LoginDto dto);
         Task<LoginResponseDto> RefreshToken(string token);
         Task VerifyEmail(VerifyEmailDto dto);

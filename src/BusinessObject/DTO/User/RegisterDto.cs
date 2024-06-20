@@ -9,32 +9,32 @@ namespace BusinessObject.DTO.User
 {
     public class RegisterDto
     {
-        [Required(ErrorMessage = ReponseMessageIdentity.USERNAME_REQUIRED)]
+        [Required(ErrorMessage = ResponseMessageIdentity.USERNAME_REQUIRED)]
         [MaxLength(100)]
         public string UserName { get; set; }
 
-        [Required(ErrorMessage = ReponseMessageIdentity.NAME_REQUIRED)]
+        [Required(ErrorMessage = ResponseMessageIdentity.NAME_REQUIRED)]
         [MaxLength(100)]
         [RegularExpression("^[^0-9]+$", ErrorMessage = "Name cannot contain number")]
         public string FullName { get; set; }
 
-        [Required(ErrorMessage = ReponseMessageIdentity.EMAIL_REQUIRED)]
+        [Required(ErrorMessage = ResponseMessageIdentity.EMAIL_REQUIRED)]
         [EmailAddress(ErrorMessage = "Invalid email format")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = ReponseMessageIdentity.PHONENUMBER_REQUIRED)]
-        [Phone(ErrorMessage = ReponseMessageIdentity.PHONENUMBER_INVALID)]
-        [StringLength(10, MinimumLength = 10, ErrorMessage = ReponseMessageIdentity.PHONENUMBER_LENGTH)]
+        [Required(ErrorMessage = ResponseMessageIdentity.PHONENUMBER_REQUIRED)]
+        [Phone(ErrorMessage = ResponseMessageIdentity.PHONENUMBER_INVALID)]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = ResponseMessageIdentity.PHONENUMBER_LENGTH)]
         public string PhoneNumber { get; set; }
 
-        [Required(ErrorMessage = ReponseMessageIdentity.PASSWORD_REQUIRED)]
+        [Required(ErrorMessage = ResponseMessageIdentity.PASSWORD_REQUIRED)]
         [DataType(DataType.Password)]
-        [MinLength(8, ErrorMessage = ReponseMessageIdentity.PASSSWORD_LENGTH)]
+        [MinLength(5, ErrorMessage = ResponseMessageIdentity.PASSSWORD_LENGTH)]
         [MaxLength(100)]
         public string Password { get; set; }
 
-        [Required(ErrorMessage = ReponseMessageIdentity.CONFIRM_PASSWORD_REQUIRED)]
-        [Compare(nameof(Password), ErrorMessage = ReponseMessageIdentity.PASSWORD_NOT_MATCH)]
+        [Required(ErrorMessage = ResponseMessageIdentity.CONFIRM_PASSWORD_REQUIRED)]
+        [Compare(nameof(Password), ErrorMessage = ResponseMessageIdentity.PASSWORD_NOT_MATCH)]
         [DataType(DataType.Password)]
         [MaxLength(100)]
         public string ConfirmPassword { get; set; }

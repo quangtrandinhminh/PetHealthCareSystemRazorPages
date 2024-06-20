@@ -12,12 +12,6 @@ public class PetRepository : BaseRepository<Pet>, IPetRepository
         return list.Where(e => e.OwnerID == id && e.DeletedBy == null).ToList();
     }
 
-    public async Task<Pet> GetPetByID (int id)
-    {
-        var pet = await GetByIdAsync(id);
-        return pet;
-    }
-
     public async Task UpdatePetAsync(Pet pet)
     {
         await UpdateAsync(pet);
