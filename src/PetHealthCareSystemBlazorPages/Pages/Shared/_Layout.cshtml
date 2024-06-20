@@ -41,23 +41,7 @@
                 <div class="preloader-img pere-text">
                     <img src="assets/img/logo/logo.png" alt="">
                 </div>
-                @if (role is null)
-                {
-                    <button type="button" class="btn btn-primary">
-                        <a class="text-white text-decoration-none" asp-area="" asp-page="/Login">Login</a>
-                    </button>
-                }
-                else
-                {
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark">Welcome, @name</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
-                        </li>
-                    </ul>
-                }
+                
             </div>
         </div>
     </div>
@@ -80,7 +64,7 @@
                                 <div class="main-menu f-right d-none d-lg-block">
                                     <nav>
                                         <ul id="navigation">
-                                            <li><a href="index.html">Home</a></li>
+                                            <li><a href="/">Home</a></li>
                                             <li><a href="about.html">About</a></li>
                                             <li><a href="services.html">Services</a></li>
                                             <li>
@@ -92,12 +76,33 @@
                                                 </ul>
                                             </li>
                                             <li><a href="contact.html">Contact</a></li>
+                                            @if (role is null)
+                                            {
+                                                
+                                                <button type="button" class="btn btn-primary">
+                                                    <a class="text-white text-decoration-none" asp-area="" asp-page="/Login">Login</a>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <li><a href="/PetManagementPage/Index">Pet</a></li>
+                                                <li>
+                                                    <a class="nav-link text-dark">Welcome, @name</a>
+                                                    <ul class="submenu">
+                      
+                                                        <li>
+                                                            <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            }
                                         </ul>
                                     </nav>
+
                                 </div>
-                                <div class="header-right-btn f-right d-none d-lg-block ml-30">
+@*                                 <div class="header-right-btn f-right d-none d-lg-block ml-30">
                                     <a href="#" class="header-btn">01654.066.456</a>
-                                </div>
+                                </div> *@
                             </div>
                         </div>
                         <!-- Mobile Menu -->
