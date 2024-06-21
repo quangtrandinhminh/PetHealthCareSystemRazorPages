@@ -1,0 +1,191 @@
+﻿@page
+@model PetHealthCareSystemRazorPages.Pages.Pet.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+    var today = DateTime.Today;
+    var maxDate = today.ToString("yyyy-MM-dd");
+    var minDate = today.AddYears(-20).ToString("yyyy-MM-dd");
+}
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7;
+        color: #333;
+    }
+
+    .page-container {
+        margin: 50px auto;
+        margin-top: 150px;
+        width: 80%;
+        max-width: 800px;
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-container h1, .page-container h4 {
+        text-align: center;
+        color: #444;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        display: grid;
+        grid-template-columns:3fr 7fr;
+        grid-column-gap: 20px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 1em;
+    }
+
+    .form-check-label {
+        display: block;
+        font-size: 1em;
+        color: #333;
+    }
+
+    .form-check-input {
+        margin-right: 10px;
+    }
+
+    .select-container select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1em;
+    }
+
+    .text-danger {
+        color: #e74c3c;
+        font-size: 0.9em;
+    }
+
+    .create-btn-container {
+        display: flex;
+        justify-content: center;
+        padding-right: 30px;
+        width: fit-content;
+        height: 50px;
+    }
+
+    .button-group{
+        display: flex;
+        justify-content: flex-end;
+        width:max-content;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 1.2em;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        background-color: #007bff;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .create-btn-container a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+        margin-top: 20px;
+        display: block;
+        text-align: center;
+    }
+
+    .create-btn-container a:hover {
+        text-decoration: underline;
+    }
+
+    .nice-select{
+        margin-bottom: 15px;
+    }
+
+    .page-container{
+
+    }
+
+</style>
+
+<div class="page-container">
+    <h1>Create</h1>
+    <h4>Pet</h4>
+    <hr />
+        <div class="create-form">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Pet.Name" class="control-label">Name</label>
+                    <input asp-for="Pet.Name" class="form-control" />
+                    <span asp-validation-for="Pet.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Pet.Species" class="control-label">Species</label>
+                    <div class="select-container">
+                    <select asp-for="Pet.Species" class="select-control">
+                            <option value="Dog">Dog</option>
+                            <option value="Cat">Cat</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="Pet.Species" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Pet.Breed" class="control-label">Breed</label>
+                    <input asp-for="Pet.Breed" class="form-control" />
+                    <span asp-validation-for="Pet.Breed" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Pet.DateOfBirth" class="control-label">Date of Birth</label>
+                    <input asp-for="Pet.DateOfBirth" class="form-control" type="date" min="@minDate" max="@maxDate" />
+                    <span asp-validation-for="Pet.DateOfBirth" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Pet.IsNeutered" /> Neutered
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Pet.Gender" class="control-label">Gender</label>
+                    <div class="select-container">
+                        <select asp-for="Pet.Gender" class="select-control">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="Pet.Gender" class="text-danger"></span>
+                </div>
+                <div class="button-group">
+                <div class="create-btn-container">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+                </div>
+            </form>
+        </div>
+
+    <div class="create-btn-container">
+        <a asp-page="Index">Back to List</a>
+    </div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</div>

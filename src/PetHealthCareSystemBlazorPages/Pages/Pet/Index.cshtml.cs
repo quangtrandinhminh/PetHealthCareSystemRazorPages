@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using BusinessObject.DTO.Pet;
 
-namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
+namespace PetHealthCareSystemRazorPages.Pages.Pet
 {
     public class IndexModel : PageModel
     {
@@ -23,12 +23,12 @@ namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
             _petService = petService;
         }
 
-        public IList<PetResponseDto> Pet { get;set; }
+        public IList<PetResponseDto> Pet { get; set; }
 
         public async Task OnGetAsync()
         {
             Pet = await _petService.GetAllPetsForCustomerAsync(2002);
-            
+
         }
     }
 }

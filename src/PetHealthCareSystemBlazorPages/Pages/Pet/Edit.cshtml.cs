@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using BusinessObject.Entities;
+using DataAccessLayer;
 using BusinessObject.DTO.Pet;
 using Service.IServices;
 
-namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
+namespace PetHealthCareSystemRazorPages.Pages.Pet
 {
     public class EditModel : PageModel
     {
