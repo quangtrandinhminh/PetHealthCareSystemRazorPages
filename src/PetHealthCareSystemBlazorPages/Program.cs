@@ -11,12 +11,20 @@ using Repository.Repositories;
 using Serilog;
 using Service.IServices;
 using Service.Services;
+using Utility.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSerilog(config => { config.ReadFrom.Configuration(builder.Configuration); });
 builder.Services.AddDbContext<AppDbContext>();
+// Add system setting from appsettings.json
+var systemSettingModel = new SystemSettingModel();
+builder.Configuration.GetSection("SystemSetting").Bind(systemSettingModel);
+SystemSettingModel.Instance = systemSettingModel;
 
+var vnPaySetting = new VnPaySetting();
+builder.Configuration.GetSection("VnPaySetting").Bind(vnPaySetting);
+VnPaySetting.Instance = vnPaySetting;
 // Add services to the container.
 
 // config root directory for razor pages
