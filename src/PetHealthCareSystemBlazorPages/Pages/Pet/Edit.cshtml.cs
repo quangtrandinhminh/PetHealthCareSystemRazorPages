@@ -33,7 +33,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
             }
 
             // Load Pet details using PetService
-            var petResponse = await _petService.GetPetByID(id.Value);
+            /*var petResponse = await _petService.GetPetByID(id.Value);
             if (petResponse == null)
             {
                 return NotFound();
@@ -50,7 +50,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
                 IsNeutered = petResponse.IsNeutered,
                 Gender = petResponse.Gender
                 // Add other properties as needed
-            };
+            };*/
 
             return Page();
         }

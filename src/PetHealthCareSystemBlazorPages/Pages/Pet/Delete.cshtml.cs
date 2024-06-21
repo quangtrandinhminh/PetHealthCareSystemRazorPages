@@ -31,7 +31,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
                 return NotFound();
             }
 
-            Pet = await _petService.GetPetByID(id.Value);
+            //Pet = await _petService.GetPetByID(id.Value);
 
             if (Pet == null)
             {
@@ -48,11 +48,11 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
                 return NotFound();
             }
 
-            var pet = await _petService.GetPetByID(id.Value);
-            if (pet != null)
+            //var pet = await _petService.GetPetByID(id.Value);
+            /*if (pet != null)
             {
                 await _petService.DeletePetAsync(pet.Id, 2002);
-            }
+            }*/
 
             return RedirectToPage("./Index");
         }
