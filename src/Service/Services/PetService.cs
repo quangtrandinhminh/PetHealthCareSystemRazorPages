@@ -66,6 +66,29 @@ public class PetService(IServiceProvider serviceProvider) : IPetService
         }
     }
 
+    public async Task<PetResponseDto> GetPetByIdAsync(int id)
+    {
+        try
+        {
+            _logger.Information("Get pet by id");
+
+            var pet = await _petRepo.GetSingleAsync(p => p.Id == id);
+            if (pet == null)
+            {
+                throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.PET_NOT_FOUND,
+                    StatusCodes.Status400BadRequest);
+            }
+
+            return _mapper.Map(pet);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex.Message);
+            throw new AppException(ResponseCodeConstants.INTERNAL_SERVER_ERROR,
+                               ResponseMessageConstantsCommon.SERVER_ERROR);
+        }
+    }
+
     public async Task CreatePetAsync(PetRequestDto pet, int ownerId)
     {
         try

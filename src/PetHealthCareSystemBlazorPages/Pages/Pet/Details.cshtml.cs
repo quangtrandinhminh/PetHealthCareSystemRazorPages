@@ -30,9 +30,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
                 return NotFound();
             }
 
-            
-
-            //Pet = await _petService.GetPetByID(id.Value);
+            Pet = await _petService.GetPetByIdAsync(id.Value);
             if (Pet == null)
             {
                 return NotFound();
