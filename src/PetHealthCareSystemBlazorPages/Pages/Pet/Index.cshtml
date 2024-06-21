@@ -1,0 +1,151 @@
+﻿@page
+@model PetHealthCareSystemRazorPages.Pages.Pet.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7;
+        color: #333;
+    }
+
+    .page-title {
+        margin-top: 150px;
+        text-align: center;
+        font-size: 3em;
+        color: #444;
+        font-weight: bold;
+    }
+
+    .create-btn-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .create-btn {
+        border-radius: 5px;
+        color: white;
+        background-color: #28a745;
+        padding: 10px 20px;
+        text-decoration: none;
+        font-size: 1.2em;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .create-btn:hover {
+        background-color: #218838;
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .table {
+        width: 80%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: white;
+    }
+
+    .table th, .table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+    }
+
+    .table th {
+        background-color: #4CAF50;
+        color: white;
+        font-size: 1.1em;
+    }
+
+    .table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .table td a {
+        margin: 0 5px;
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+
+    .table td a:hover {
+        text-decoration: underline;
+        color: #0056b3;
+    }
+
+</style>
+
+<h1 class="page-title">Your Pets</h1>
+
+<div class="create-btn-container">
+    <a asp-page="Create" class="create-btn">
+        Create
+    </a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].Species)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].Breed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].DateOfBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].IsNeutered)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pet[0].Gender)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Pet)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Species)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Breed)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfBirth)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsNeutered)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

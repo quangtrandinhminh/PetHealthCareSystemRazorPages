@@ -1,5 +1,5 @@
 ﻿@page
-@model PetHealthCareSystemRazorPages.Pages.PetManagementPage.EditModel
+@model PetHealthCareSystemRazorPages.Pages.Pet.EditModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -13,40 +13,34 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="hidden-attribute" >
-                <label asp-for="Pet.Id" class="control-label"></label>
-                <input readonly asp-for="Pet.Id" class="form-control" value="@Model.Pet.Id" />
-                <span asp-validation-for="Pet.Name" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="Pet.Name" class="control-label"></label>
-                <input asp-for="Pet.Name" class="form-control" value="@Model.Pet.Name" />
+                <input asp-for="Pet.Name" class="form-control" />
                 <span asp-validation-for="Pet.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Pet.Species" class="control-label"></label>
-                <input asp-for="Pet.Species" class="form-control" value="@Model.Pet.Species" />
+                <input asp-for="Pet.Species" class="form-control" />
                 <span asp-validation-for="Pet.Species" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Pet.Breed" class="control-label"></label>
-                <input asp-for="Pet.Breed" class="form-control" value="@Model.Pet.Breed" />
+                <input asp-for="Pet.Breed" class="form-control" />
                 <span asp-validation-for="Pet.Breed" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Pet.DateOfBirth" class="control-label"></label>
-                <input asp-for="Pet.DateOfBirth" class="form-control" value="@Model.Pet.DateOfBirth" />
+                <input asp-for="Pet.DateOfBirth" class="form-control" />
                 <span asp-validation-for="Pet.DateOfBirth" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
-                <input class="form-check-input" asp-for="Pet.IsNeutered" checked="@Model.Pet.IsNeutered" />
-                <label class="form-check-label" for="Pet_IsNeutered">
-                    @Html.DisplayNameFor(model => model.Pet.IsNeutered)
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Pet.IsNeutered" /> @Html.DisplayNameFor(model => model.Pet.IsNeutered)
                 </label>
             </div>
             <div class="form-group">
                 <label asp-for="Pet.Gender" class="control-label"></label>
-                <input asp-for="Pet.Gender" class="form-control" value="@Model.Pet.Gender" />
+                <input asp-for="Pet.Gender" class="form-control" />
                 <span asp-validation-for="Pet.Gender" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -61,7 +55,5 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

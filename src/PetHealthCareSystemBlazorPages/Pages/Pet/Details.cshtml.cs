@@ -7,19 +7,21 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObject.Entities;
 using DataAccessLayer;
+using BusinessObject.DTO.Pet;
+using Service.IServices;
 
-namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
+namespace PetHealthCareSystemRazorPages.Pages.Pet
 {
     public class DetailsModel : PageModel
     {
-        private readonly DataAccessLayer.AppDbContext _context;
+        private readonly IPetService _petService;
 
-        public DetailsModel(DataAccessLayer.AppDbContext context)
+        public DetailsModel(IPetService petService)
         {
-            _context = context;
+            _petService = petService;
         }
 
-        public Pet Pet { get; set; } = default!;
+        public PetResponseDto Pet { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,15 +30,14 @@ namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
                 return NotFound();
             }
 
-            var pet = await _context.Pets.FirstOrDefaultAsync(m => m.Id == id);
-            if (pet == null)
+            
+
+            Pet = await _petService.GetPetByID(id.Value);
+            if (Pet == null)
             {
                 return NotFound();
             }
-            else
-            {
-                Pet = pet;
-            }
+            
             return Page();
         }
     }
