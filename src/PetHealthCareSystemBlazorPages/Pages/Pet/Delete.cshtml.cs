@@ -48,10 +48,11 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
                 return NotFound();
             }
 
+            var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
             var pet = await _petService.GetPetByIdAsync(id.Value);
             if (pet != null)
             {
-                await _petService.DeletePetAsync(pet.Id, 2002);
+                await _petService.DeletePetAsync(pet.Id, userId);
             }
 
             return RedirectToPage("./Index");

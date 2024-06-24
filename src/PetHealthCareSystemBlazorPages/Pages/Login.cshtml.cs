@@ -50,6 +50,14 @@ namespace PetHealthCareSystemBlazorPages.Pages
                 {
                     return RedirectToPage("/Staff/StaffDashboard/Index");
                 }
+                /*else if (response.Role.Contains("Vet")) // Check if "customer" role exists in the list
+                {
+                    return RedirectToPage("/");
+                }*/
+                else
+                {
+                    return RedirectToPage("/HomePage");
+                }
                 return Page();
             }
             catch (AppException ex)

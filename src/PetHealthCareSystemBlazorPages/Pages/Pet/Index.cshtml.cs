@@ -27,8 +27,8 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
 
         public async Task OnGetAsync()
         {
-            Pet = await _petService.GetAllPetsForCustomerAsync(2002);
-
+            var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
+            Pet = await _petService.GetAllPetsForCustomerAsync(userId);
         }
     }
 }
