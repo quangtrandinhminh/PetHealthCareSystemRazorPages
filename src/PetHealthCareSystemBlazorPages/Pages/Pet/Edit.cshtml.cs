@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using BusinessObject.Entities;
+using DataAccessLayer;
 using BusinessObject.DTO.Pet;
 using Service.IServices;
 
-namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
+namespace PetHealthCareSystemRazorPages.Pages.Pet
 {
     public class EditModel : PageModel
     {
@@ -27,7 +33,7 @@ namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
             }
 
             // Load Pet details using PetService
-            var petResponse = await _petService.GetPetByID(id.Value);
+            /*var petResponse = await _petService.GetPetByID(id.Value);
             if (petResponse == null)
             {
                 return NotFound();
@@ -44,7 +50,7 @@ namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
                 IsNeutered = petResponse.IsNeutered,
                 Gender = petResponse.Gender
                 // Add other properties as needed
-            };
+            };*/
 
             return Page();
         }

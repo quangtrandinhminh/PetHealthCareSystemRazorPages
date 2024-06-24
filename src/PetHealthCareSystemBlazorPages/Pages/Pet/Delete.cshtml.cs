@@ -7,20 +7,22 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObject.Entities;
 using DataAccessLayer;
+using BusinessObject.DTO.Pet;
+using Service.IServices;
 
-namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
+namespace PetHealthCareSystemRazorPages.Pages.Pet
 {
     public class DeleteModel : PageModel
     {
-        private readonly DataAccessLayer.AppDbContext _context;
+        private readonly IPetService _petService;
 
-        public DeleteModel(DataAccessLayer.AppDbContext context)
+        public DeleteModel(IPetService petService)
         {
-            _context = context;
+            _petService = petService;
         }
 
         [BindProperty]
-        public Pet Pet { get; set; } = default!;
+        public PetResponseDto Pet { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -29,16 +31,13 @@ namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
                 return NotFound();
             }
 
-            var pet = await _context.Pets.FirstOrDefaultAsync(m => m.Id == id);
+            //Pet = await _petService.GetPetByID(id.Value);
 
-            if (pet == null)
+            if (Pet == null)
             {
                 return NotFound();
             }
-            else
-            {
-                Pet = pet;
-            }
+            
             return Page();
         }
 
@@ -49,12 +48,10 @@ namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
                 return NotFound();
             }
 
-            var pet = await _context.Pets.FindAsync(id);
+            var pet = await _petService.GetPetByIdAsync(id.Value);
             if (pet != null)
             {
-                Pet = pet;
-                _context.Pets.Remove(Pet);
-                await _context.SaveChangesAsync();
+                await _petService.DeletePetAsync(pet.Id, 2002);
             }
 
             return RedirectToPage("./Index");

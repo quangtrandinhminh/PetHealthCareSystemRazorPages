@@ -23,8 +23,9 @@ namespace DataAccessLayer.DAO
 
         public static async Task<IdentityResult> CreateAsync(UserEntity user)
         {
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+            await using var context = new AppDbContext();
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
             return IdentityResult.Success;
         }
 

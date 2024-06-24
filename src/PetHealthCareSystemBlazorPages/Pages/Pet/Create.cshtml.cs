@@ -7,17 +7,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BusinessObject.Entities;
 using DataAccessLayer;
-using Service.IServices;
 using BusinessObject.DTO.Pet;
+using Service.IServices;
 
-namespace PetHealthCareSystemRazorPages.Pages.PetManagementPage
+namespace PetHealthCareSystemRazorPages.Pages.Pet
 {
     public class CreateModel : PageModel
     {
         private readonly IPetService _petService;
         //private readonly IUserService _userService;
 
-        public CreateModel( IPetService petService/*, IUserService userService*/)
+        public CreateModel(IPetService petService/*, IUserService userService*/)
         {
             _petService = petService;
             //_userService = userService;

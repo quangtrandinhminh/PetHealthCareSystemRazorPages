@@ -22,7 +22,7 @@ namespace Service.Utils
             };
         }
 
-        public static string GenerateToken(IEnumerable<Claim> claims, int day)
+        public static string GenerateToken(IEnumerable<Claim> claims, int hour)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(SystemSettingModel.Instance.SecretKey);
@@ -31,7 +31,7 @@ namespace Service.Utils
             {
                 Subject = new ClaimsIdentity(claims),
                 IssuedAt = DateTime.Now,
-                Expires = DateTime.Now.AddDays(day),
+                Expires = DateTime.Now.AddHours(hour),
                 SigningCredentials = credential
             };
 

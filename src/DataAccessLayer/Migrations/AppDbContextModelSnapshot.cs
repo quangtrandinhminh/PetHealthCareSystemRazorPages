@@ -60,8 +60,8 @@ namespace DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset>("AppointmentDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateOnly>("AppointmentDate")
+                        .HasColumnType("date");
 
                     b.Property<int>("BookingType")
                         .HasColumnType("int");
@@ -226,8 +226,8 @@ namespace DataAccessLayer.Migrations
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTimeOffset>("Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
 
                     b.Property<int?>("DeletedBy")
                         .HasColumnType("int");
@@ -483,6 +483,24 @@ namespace DataAccessLayer.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("Users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "56fcf32f-0819-4f8a-bc8f-8fe2c397999c",
+                            CreatedTime = new DateTimeOffset(new DateTime(2024, 6, 20, 13, 41, 51, 87, DateTimeKind.Unspecified).AddTicks(8259), new TimeSpan(0, 7, 0, 0, 0)),
+                            Email = "admin@email.com",
+                            EmailConfirmed = false,
+                            LastUpdatedTime = new DateTimeOffset(new DateTime(2024, 6, 20, 13, 41, 51, 87, DateTimeKind.Unspecified).AddTicks(8259), new TimeSpan(0, 7, 0, 0, 0)),
+                            LockoutEnabled = false,
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "$2a$11$JbJuByAkufJMx2AbDrdAmuJZy7icySnElKS7mJY0CpqvzNSPTJnNS",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.Entities.MedicalItem", b =>
@@ -732,15 +750,14 @@ namespace DataAccessLayer.Migrations
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("DayOfWeeks")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("DeletedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTimeOffset?>("DeletedTime")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time");
 
                     b.Property<int?>("LastUpdatedBy")
                         .HasColumnType("int");
@@ -751,10 +768,7 @@ namespace DataAccessLayer.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeOnly>("TimeEnd")
-                        .HasColumnType("time");
-
-                    b.Property<TimeOnly>("TimeStart")
+                    b.Property<TimeOnly>("StartTime")
                         .HasColumnType("time");
 
                     b.HasKey("Id");
@@ -818,11 +832,17 @@ namespace DataAccessLayer.Migrations
                     b.Property<string>("PaymentNote")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PaymentStaffId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PaymentStaffName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset?>("RefundDate")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("RefundPaymentId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("RefundPercentage")
                         .HasColumnType("decimal(5, 2)");
@@ -858,26 +878,14 @@ namespace DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("CreatedTime")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int?>("DeletedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset?>("DeletedTime")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int?>("LastUpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("LastUpdatedTime")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<int?>("MedicalItemId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18, 0)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -898,9 +906,6 @@ namespace DataAccessLayer.Migrations
                     b.HasIndex("ServiceId");
 
                     b.HasIndex("TransactionId");
-
-                    b.HasIndex(new[] { "Id" }, "Index_Id")
-                        .IsUnique();
 
                     b.ToTable("TransactionDetails");
                 });
@@ -1039,6 +1044,13 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("UserRoles");
 
                     b.HasDiscriminator().HasValue("UserRoleEntity");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            RoleId = 1
+                        });
                 });
 
             modelBuilder.Entity("AppointmentService", b =>
@@ -1131,7 +1143,7 @@ namespace DataAccessLayer.Migrations
                         .IsRequired();
 
                     b.HasOne("BusinessObject.Entities.Service", null)
-                        .WithMany("MedicalRecords")
+                        .WithMany("AppointmentServices")
                         .HasForeignKey("ServiceId");
 
                     b.HasOne("BusinessObject.Entities.Identity.UserEntity", null)
@@ -1308,7 +1320,7 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("BusinessObject.Entities.Service", b =>
                 {
-                    b.Navigation("MedicalRecords");
+                    b.Navigation("AppointmentServices");
                 });
 
             modelBuilder.Entity("BusinessObject.Entities.TimeTable", b =>

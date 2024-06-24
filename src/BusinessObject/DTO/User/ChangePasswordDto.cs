@@ -13,7 +13,7 @@ public class ChangePasswordDto
     public string Password { get; set; }
 
     [Required]
-    [Compare(nameof(Password), ErrorMessage = ReponseMessageIdentity.PASSWORD_NOT_MATCH)]
+    [Compare(nameof(Password), ErrorMessage = ResponseMessageIdentity.PASSWORD_NOT_MATCH)]
     public string ConfirmPassword { get; set; }
 
     [Required]

@@ -11,12 +11,20 @@ using Repository.Repositories;
 using Serilog;
 using Service.IServices;
 using Service.Services;
+using Utility.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSerilog(config => { config.ReadFrom.Configuration(builder.Configuration); });
 builder.Services.AddDbContext<AppDbContext>();
+// Add system setting from appsettings.json
+var systemSettingModel = new SystemSettingModel();
+builder.Configuration.GetSection("SystemSetting").Bind(systemSettingModel);
+SystemSettingModel.Instance = systemSettingModel;
 
+var vnPaySetting = new VnPaySetting();
+builder.Configuration.GetSection("VnPaySetting").Bind(vnPaySetting);
+VnPaySetting.Instance = vnPaySetting;
 // Add services to the container.
 
 // config root directory for razor pages
@@ -24,16 +32,29 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<MapperlyMapper>();
 // Repository
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<ICageRepository, CageRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IMedicalItemRepository, MedicalItemRepository>();
+builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
 builder.Services.AddScoped<IPetRepository, PetRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
-builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IHospitalizationRepository, HospitalizationRepository>();
+builder.Services.AddScoped<ITimeTableRepository, TimeTableRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAppointmentPetRepository, AppointmentPetRepository>();
 // Service
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IService, ServiceService>();
+builder.Services.AddScoped<IHospitalizationService, HospitalizationService>();
+builder.Services.AddScoped<IMedicalItemService, MedicalItemService>();
+builder.Services.AddScoped<IMedicalService, MedicalService>();
 builder.Services.AddScoped<IPetService, PetService>();
+builder.Services.AddScoped<IService, ServiceService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddIdentity<UserEntity, RoleEntity>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
