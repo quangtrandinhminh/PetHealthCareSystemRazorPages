@@ -3,11 +3,15 @@
 @{
     ViewData["Title"] = "Register";
 }
+<div class="container">
+    <main role="main" class="pb-3">
 
-<h2>Register</h2>
+   
+
+<h2 style="margin-top: 150px">Register</h2>
 
 <form method="post">
-    <div asp-validation-summary="All" class="text-danger" style="text-decoration:none; color:black; font-display:inherit; font-size:large"></div> 
+   @*  <div asp-validation-summary="All" class="text-danger" style="text-decoration:none; color:black; font-display:inherit; font-size:large"></div>  *@
 
     <div class="form-group">
         <label asp-for="RegisterDto.UserName" class="control-label"></label>
@@ -40,10 +44,12 @@
         <span asp-validation-for="RegisterDto.ConfirmPassword" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <input type="submit" value="Register" class="btn btn-primary" />
+        <button type="submit" value="Register" class="btn btn-primary">Register</button>
     </div>
 </form>
-
+        <a asp-page="/Login" style="color: orange">Back to Login</a>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+    </main>
+</div>

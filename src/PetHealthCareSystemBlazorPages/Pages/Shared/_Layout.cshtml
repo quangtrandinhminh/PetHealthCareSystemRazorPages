@@ -41,23 +41,7 @@
                 <div class="preloader-img pere-text">
                     <img src="assets/img/logo/logo.png" alt="">
                 </div>
-                @if (role is null)
-                {
-                    <button type="button" class="btn btn-primary">
-                        <a class="text-white text-decoration-none" asp-area="" asp-page="/Login">Login</a>
-                    </button>
-                }
-                else
-                {
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark">Welcome, @name</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
-                        </li>
-                    </ul>
-                }
+                
             </div>
         </div>
     </div>
@@ -71,7 +55,7 @@
                         <!-- Logo -->
                         <div class="col-xl-2 col-lg-2 col-md-1">
                             <div class="logo">
-                                <a href="index.html"><img src="assets/img/logo/logo.png" alt=""></a>
+                                <a asp-page="HomePage"><img src="assets/img/logo/logo.png" alt=""></a>
                             </div>
                         </div>
                         <div class="col-xl-10 col-lg-10 col-md-10">
@@ -81,21 +65,33 @@
                                     <nav>
                                         <ul id="navigation">
                                             <li><a href="/">Home</a></li>
-                                            <li><a href="Privacy">About</a></li>
-                                            <li><a href="/">Services</a></li>
-                                            <li>
-                                                <a href="/HomePage">account name</a>
-                                                <ul class="submenu">
-                                                    <li><a href="/HomePage">Manage Pet</a></li>
-                                                    <li><a href="/HomePage">Logout</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="/HomePage"></a></li>
+
+                                            <li><a href="about.html">About</a></li>
+                                            <li><a href="services.html">Services</a></li>
+
+                                            @if (role is null)
+                                            {
+                                                <button type="button" class="btn btn-primary">
+                                                    <a class="text-white text-decoration-none" asp-area="" asp-page="Login">Login</a>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <li><a asp-page="/Pet/Index">Pet</a></li>
+                                                <li>
+                                                    <a class="nav-link text-dark">Welcome, @name</a>
+                                                    <ul class="submenu">
+                      
+                                                        <li>
+                                                            <a class="nav-link text-dark" asp-area="" asp-page="Logout">Logout</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            }
+
                                         </ul>
                                     </nav>
-                                </div>
-                                <div class="header-right-btn f-right d-none d-lg-block ml-30">
-                                    <a href="/Login" class="header-btn">Login</a>
+
                                 </div>
                             </div>
                         </div>

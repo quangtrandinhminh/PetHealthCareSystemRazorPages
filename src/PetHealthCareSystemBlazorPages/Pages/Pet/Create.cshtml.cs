@@ -40,7 +40,8 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
                 return Page();
             }
 
-            await _petService.CreatePetAsync(Pet, 2002);
+            var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
+            await _petService.CreatePetAsync(Pet, userId);
 
             return RedirectToPage("./Index");
         }
