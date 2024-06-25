@@ -1,0 +1,88 @@
+﻿@page
+@model PetHealthCareSystemRazorPages.Pages.BookAppointment.BookingFormModel
+@{
+    ViewData["Title"] = "Book an Appointment";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Book an Appointment</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="form-group">
+                            <label asp-for="AppointmentBookRequest.PetIdList">Select Pet</label>
+                            <select class="form-control" asp-for="AppointmentBookRequest.PetIdList" required multiple>
+                                <option value="">-- Select Pet --</option>
+                                @foreach (var pet in Model.DisplayedPetList)
+                                {
+                                    <option value="@pet.Id">@pet.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="AppointmentBookRequest.ServiceIdList">Select Service</label>
+                            <select class="form-control" asp-for="AppointmentBookRequest.ServiceIdList" required multiple>
+                                <option value="">-- Select Service --</option>
+                                @foreach (var service in Model.DisplayedServiceList)
+                                {
+                                    <option value="@service.Id">@service.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="AppointmentBookRequest.AppointmentDate">Select Date</label>
+                            <input class="form-control" asp-for="AppointmentBookRequest.AppointmentDate" type="date" onchange="LoadVets()" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="AppointmentBookRequest.TimetableId">Select Timeslot</label>
+                            <select class="form-control" asp-for="AppointmentBookRequest.TimetableId" onchange="LoadVets()" required>
+                                <option value="">-- Select Timeslot --</option>
+                                @foreach (var timeSlot in Model.DisplayedTimeTableList)
+                                {
+                                    <option value="@timeSlot.Id">@($"{timeSlot.StartTime:hh\\:mm} - {timeSlot.EndTime:hh\\:mm}")</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Placeholder for _VetOptionsPartial -->
+                        <div id="vetOptionsPartialContainer">
+                            @await Html.PartialAsync("_VetOptionsPartial", Model)
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Book Appointment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function LoadVets() {
+            var formData = {
+                'AppointmentBookRequest.AppointmentDate': document.getElementById('AppointmentBookRequest_AppointmentDate').value,
+                'AppointmentBookRequest.TimetableId': document.getElementById('AppointmentBookRequest_TimetableId').value
+            };
+
+            $.ajax({
+                url: '/BookAppointment/BookingForm?handler=Vets',
+                type: 'GET',
+                data: formData,
+                success: function (result) {
+                    $('#vetOptionsPartialContainer').html(result); // Replace partial view content
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading vets:', error);
+                }
+            });
+        }
+    </script>
+}
