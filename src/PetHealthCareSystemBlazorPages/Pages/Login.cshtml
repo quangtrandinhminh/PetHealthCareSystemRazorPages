@@ -4,9 +4,10 @@
 @{
     ViewData["Title"] = "Login";
 }
-
+<div class="container">
+    <main role="main" class="pb-3">
     <div class="d-flex align-items-center justify-content-center vh-100">
-        <div class="col-md-4" style="border: 1px solid black; border-radius: 10px; padding: 20px;">
+        <div class="col-md-4" style="border: 1px, solid black; border-radius: 10px; padding: 20px;">
             <div>
                 <h1 class="text-center">Login</h1>
             </div>
@@ -23,7 +24,7 @@
                     <span asp-validation-for="LoginUser.Password" class="text-danger"></span>
                 </div>
                 <div class="d-grid gap-2 mb-3">
-                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="submit" class="btn btn-primary" style="background-color:#0069d9">Login</button>
                 </div>
             </form>
             <div style="text-align: center;">
@@ -33,6 +34,8 @@
                 <a asp-page="/Register" style="color: orange">Register</a>
             </div>
         </div>
+    </div>
+    </main>
     </div>
 
     @section Scripts {

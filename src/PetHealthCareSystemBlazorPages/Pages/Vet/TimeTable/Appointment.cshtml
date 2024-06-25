@@ -1,0 +1,58 @@
+﻿@page
+@model PetHealthCareSystemRazorPages.Pages.Vet.TimeTable.AppointmentModel
+
+@{
+    ViewData["Title"] = "Appointments";
+}
+
+<div class="container" style="margin-top: 150px">
+    <main role="main" class="pb-3">
+        <h1>Appointments</h1>
+
+        <p>
+            <a asp-page="Create">Create New</a>
+        </p>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Appointment.HasNextPage)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Appointment[0].Note)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Appointment[0].Status)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Appointment != null && Model.Appointment.Any())
+                {
+                    foreach (var item in Model.Appointment)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Note)
+                            </td>
+                            <td>
+                                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="" class="text-center">No Appointments Found</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </main>
+</div>
