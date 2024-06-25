@@ -1,0 +1,29 @@
+﻿@model PetHealthCareSystemRazorPages.Pages.BookAppointment.BookingFormModel
+@using BusinessObject.DTO.User
+
+@* Temporarily use static data for debugging *@
+@{
+    var staticVetList = new List<UserResponseDto>
+    {
+        new UserResponseDto { Id = 1, FullName = "Dr. John Doe" },
+        new UserResponseDto { Id = 2, FullName = "Dr. Jane Smith" }
+    };
+}
+
+@if (staticVetList != null && staticVetList.Any())
+{
+    <label asp-for="AppointmentBookRequest.VetId">Select Vet</label>
+    <select id="AppointmentBookRequest_VetId" class="form-control" asp-for="AppointmentBookRequest.VetId" required>
+        <option value="">-- Select Vet --</option>
+        @foreach (var vet in staticVetList)
+        {
+            <option value="@vet.Id">@vet.FullName</option>
+        }
+    </select>
+}
+else
+{
+    <div class="alert alert-warning" role="alert">
+        No veterinarians available for the selected date and timeslot.
+    </div>
+}
