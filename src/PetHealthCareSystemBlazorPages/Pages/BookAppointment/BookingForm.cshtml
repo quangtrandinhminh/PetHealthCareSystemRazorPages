@@ -1,4 +1,5 @@
 ﻿@page
+@using Utility.Enum
 @model PetHealthCareSystemRazorPages.Pages.BookAppointment.BookingFormModel
 @{
     ViewData["Title"] = "Book an Appointment";
@@ -141,8 +142,10 @@ else
     <p>Model is null.</p>
 }
 
-
 @section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
         document.addEventListener("DOMContentLoaded", function () {
     const selectedDate = document.getElementById("appointment-date");

@@ -88,11 +88,16 @@ namespace Utility.Constants
 
     public class ResponseMessageConstantsVet
     {
-        public const string VET_NOT_FOUND = "Khong tim thay bac si";
-        public const string VET_EXISTED = "Bac si da ton tai";
-        public const string ADD_VET_SUCCESS = "Them bac si thanh cong";
-        public const string UPDATE_VET_SUCCESS = "Cap nhat bac si thanh cong";
-        public const string DELETE_VET_SUCCESS = "Xoa bac si thanh cong";
+        public const string VET_NOT_FOUND = "Không tìm thấy bác sĩ";
+        public const string VET_EXISTED = "Bác sĩ đã tồn tại";
+        public const string ADD_VET_SUCCESS = "Thêm bác sĩ thành công";
+        public const string UPDATE_VET_SUCCESS = "Cập nhật bác sĩ thành công";
+        public const string DELETE_VET_SUCCESS = "Xóa bác sĩ thành công";
+    }
+
+    public class ResponseMessageConstantsTimetable
+    {
+        public const string NOT_FOUND = "Không tìm thấy khung giờ";
     }
 
     public class ResponseMessageConstantsPet

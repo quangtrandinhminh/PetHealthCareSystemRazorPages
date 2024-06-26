@@ -40,7 +40,8 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
                 int pagenumber = 1;
                 int pagesize = 5;
                 int id = int.Parse(accountId);
-                Appointment = await _appointmentService.GetVetAppointmentsAsync(pagenumber, pagesize, id);
+                var date = DateTime.Now.ToString("yyyy-MM-dd");
+                Appointment = await _appointmentService.GetVetAppointmentsAsync(id, date, pagenumber, pagesize);
             }
             catch (Exception ex)
             {

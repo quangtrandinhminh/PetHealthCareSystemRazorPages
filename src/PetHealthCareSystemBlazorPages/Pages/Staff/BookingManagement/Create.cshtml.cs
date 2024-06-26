@@ -36,7 +36,8 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement
             try
             {
                 ViewData["TimetableId"] = new SelectList(await _appointmentService.GetAllTimeFramesForBookingAsync(), "Id", "Id");
-                ViewData["VetId"] = new SelectList(await _appointmentService.GetFreeWithTimeFrameAndDateAsync(DateOnly.FromDateTime(DateTime.Now), 0), "Id", "FullName");
+                var datetime = new AppointmentDateTimeQueryDto { Date = DateOnly.FromDateTime(DateTime.Now).ToString(), TimetableId = AppointmentBookRequestDto.TimetableId};
+                ViewData["VetId"] = new SelectList(await _appointmentService.GetFreeWithTimeFrameAndDateAsync(datetime));
 
                 var services = await _serviceService.GetAllServiceAsync();
                 ViewData["Services"] = new SelectList(services, "Id", "Name");
@@ -61,7 +62,9 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement
                 try
                 {
                     ViewData["TimetableId"] = new SelectList(await _appointmentService.GetAllTimeFramesForBookingAsync(), "Id", "Id", AppointmentBookRequestDto.TimetableId);
-                    ViewData["VetId"] = new SelectList(await _appointmentService.GetFreeWithTimeFrameAndDateAsync(DateOnly.FromDateTime(DateTime.Now), AppointmentBookRequestDto.TimetableId), "Id", "FullName", AppointmentBookRequestDto.VetId);
+                    var datetime = new AppointmentDateTimeQueryDto { Date = DateOnly.FromDateTime(DateTime.Now).ToString(), TimetableId = AppointmentBookRequestDto.TimetableId };
+
+                    ViewData["VetId"] = new SelectList(await _appointmentService.GetFreeWithTimeFrameAndDateAsync(datetime));
 
                     var services = await _serviceService.GetAllServiceAsync();
                     ViewData["Services"] = new SelectList(services, "Id", "Name", AppointmentBookRequestDto.ServiceIdList);
@@ -81,7 +84,8 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement
 
             try
             {
-                await _appointmentService.BookOnlineAppointmentAsync(AppointmentBookRequestDto);
+                var userId = int.Parse(HttpContext.Session.GetString("UserId"));
+                await _appointmentService.BookOnlineAppointmentAsync(AppointmentBookRequestDto, userId);
                 return RedirectToPage("./Index");
             }
             catch (AppException ex)

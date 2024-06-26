@@ -85,7 +85,7 @@ public class PetService(IServiceProvider serviceProvider) : IPetService
         {
             _logger.Error(ex.Message);
             throw new AppException(ResponseCodeConstants.INTERNAL_SERVER_ERROR,
-                               ResponseMessageConstantsCommon.SERVER_ERROR);
+                ResponseMessageConstantsCommon.SERVER_ERROR);
         }
     }
 

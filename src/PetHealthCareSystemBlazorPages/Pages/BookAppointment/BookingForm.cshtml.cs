@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Utility.Enum;
 
 namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
 {
@@ -41,6 +42,13 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
 
         public async Task OnGetAsync()
         {
+            var role = HttpContext.Session.GetString("Role");
+            if (role == null || !role.Contains(UserRole.Customer.ToString()))
+            {
+                Response.Redirect("/Login");
+                return;
+            }
+
             AppointmentBookRequest = new AppointmentBookRequestDto();
             await InitializeData();
         }
@@ -49,7 +57,8 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
         {
             try
             {
-                DisplayedPetList = await _petService.GetAllPetsForCustomerAsync(2002);
+                var userId = int.Parse(HttpContext.Session.GetString("UserId"));
+                DisplayedPetList = await _petService.GetAllPetsForCustomerAsync(userId);
                 DisplayedServiceList = await _service.GetAllServiceAsync();
                 DisplayedTimeTableList = await _appointmentService.GetAllTimeFramesForBookingAsync();
             }
@@ -61,25 +70,27 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
 
         public async Task<IActionResult> OnPost()
         {
-            if (!ModelState.IsValid)
+            /*if (!ModelState.IsValid)
             {
                 await OnGetAsync();
                 return Page();
-            }
+            }*/
 
             // Process form submission (e.g., save data)
-            var bookingAppointmentRequest = new AppointmentBookRequestDto
-            {
-                ServiceIdList = AppointmentBookRequest.ServiceIdList.ToList(),
-                PetIdList = AppointmentBookRequest.PetIdList.ToList(),
-                AppointmentDate = AppointmentBookRequest.AppointmentDate,
-                TimetableId = AppointmentBookRequest.TimetableId,
-                VetId = AppointmentBookRequest.VetId
-            };
 
-            await _appointmentService.BookOnlineAppointmentAsync(bookingAppointmentRequest);
+                var bookingAppointmentRequest = new AppointmentBookRequestDto
+                {
+                    ServiceIdList = AppointmentBookRequest.ServiceIdList.ToList(),
+                    PetIdList = AppointmentBookRequest.PetIdList.ToList(),
+                    AppointmentDate = AppointmentBookRequest.AppointmentDate,
+                    TimetableId = AppointmentBookRequest.TimetableId,
+                    VetId = AppointmentBookRequest.VetId
+                };
 
-            return RedirectToPage("TransactionPage");
+                var userId = int.Parse(HttpContext.Session.GetString("UserId"));
+                await _appointmentService.BookOnlineAppointmentAsync(bookingAppointmentRequest, userId);
+                return RedirectToPage("TransactionPage");
+
         }
 
         public void SaveObjectToSession()
@@ -91,8 +102,9 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
         {
             try
             {
-                var appointmentDate = DateOnly.Parse(date);
-                var vetList = await _appointmentService.GetFreeWithTimeFrameAndDateAsync(appointmentDate, timeTableId);
+                var appointmentDate = DateOnly.Parse(date).ToString();
+                var datetime = new AppointmentDateTimeQueryDto { Date = appointmentDate, TimetableId = timeTableId };
+                var vetList = await _appointmentService.GetFreeWithTimeFrameAndDateAsync(datetime);
                 return new JsonResult(vetList);
             }
             catch (Exception ex)

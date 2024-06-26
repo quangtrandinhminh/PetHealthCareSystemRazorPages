@@ -14,9 +14,9 @@ public interface IAppointmentService
     Task UpdateAppointmentAsync(AppointmentUpdateRequestDto appointment);
     Task DeleteAppointmentAsync(int id);*/
     Task<List<TimeTableResponseDto>> GetAllTimeFramesForBookingAsync();
-    Task<List<UserResponseDto>> GetFreeWithTimeFrameAndDateAsync(DateOnly date, int timetableId);
-    Task BookOnlineAppointmentAsync(AppointmentBookRequestDto appointmentBookRequestDto);
+    Task<List<UserResponseDto>> GetFreeWithTimeFrameAndDateAsync(AppointmentDateTimeQueryDto qo);
+    Task<AppointmentResponseDto> BookOnlineAppointmentAsync(AppointmentBookRequestDto appointmentBookRequestDto, int ownerId);
     Task<PaginatedList<AppointmentResponseDto>> GetAllAppointmentsAsync(int pageNumber, int pageSize);
-    Task<PaginatedList<AppointmentResponseDto>> GetVetAppointmentsAsync(int pageNumber, int pageSize, int id);
-    Task<PaginatedList<AppointmentResponseDto>> GetUserAppointmentsAsync(int pageNumber, int pageSize, int id);
+    Task<PaginatedList<AppointmentResponseDto>> GetVetAppointmentsAsync(int vetId, string date, int pageNumber, int pageSize);
+    Task<PaginatedList<AppointmentResponseDto>> GetUserAppointmentsAsync(int pageNumber, int pageSize, int id, string date);
 }

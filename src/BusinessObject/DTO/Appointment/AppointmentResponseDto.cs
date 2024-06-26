@@ -10,13 +10,15 @@ namespace BusinessObject.DTO.Appointment;
 
 public class AppointmentResponseDto
 {
+    public int Id { get; set; }
     public TimeTableResponseDto TimeTable { get; set; }
     public DateOnly AppointmentDate { get; set; }
     public string? Note { get; set; }
-    public AppointmentBookingType BookingType { get; set; }
+    public string BookingType { get; set; }
     public short? Rating { get; set; }
     public string? Feedback { get; set; }
     public UserResponseDto Vet { get; set; }
     public List<PetResponseDto?> Pets { get; set; }
     public List<ServiceResponseDto?> Services { get; set; }
+    public string Status { get; set; }
 }

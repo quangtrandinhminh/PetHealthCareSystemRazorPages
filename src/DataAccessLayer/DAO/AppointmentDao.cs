@@ -26,7 +26,7 @@ public class AppointmentDao : BaseDao<Appointment>
     {
         using var context = new AppDbContext();
         var dbSet = context.Set<Appointment>();
-        return await dbSet.AsQueryable().AsNoTracking().Include(e => e.AppointmentPets).Include(e => e.Services).ToListAsync();
+        return await dbSet.AsQueryable().AsNoTracking().Include(e => e.Services).Include(e => e.AppointmentPets).ThenInclude(e => e.Pet).ToListAsync();
     }
 
     public static async Task AddAppointmentAsync(Appointment appointment)
