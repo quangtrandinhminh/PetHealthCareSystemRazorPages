@@ -8,46 +8,55 @@
 
    
 
-<h2 style="margin-top: 150px">Register</h2>
 
-<form method="post">
-   @*  <div asp-validation-summary="All" class="text-danger" style="text-decoration:none; color:black; font-display:inherit; font-size:large"></div>  *@
+<div class="d-flex align-items-center justify-content-center vh-100" style="margin-top: 150px">
+    <div class="col-md-4" >
+    <h2>Register</h2>
+        <form method="post">
+           @*  <div asp-validation-summary="All" class="text-danger" style="text-decoration:none; color:black; font-display:inherit; font-size:large"></div>  *@
 
-    <div class="form-group">
-        <label asp-for="RegisterDto.UserName" class="control-label"></label>
-        <input asp-for="RegisterDto.UserName" class="form-control" />
-        <span asp-validation-for="RegisterDto.UserName" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="RegisterDto.UserName" class="control-label"></label>
+                <input asp-for="RegisterDto.UserName" class="form-control" />
+                <span asp-validation-for="RegisterDto.UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RegisterDto.FullName" class="control-label"></label>
+                <input asp-for="RegisterDto.FullName" class="form-control" />
+                <span asp-validation-for="RegisterDto.FullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RegisterDto.Email" class="control-label"></label>
+                <input asp-for="RegisterDto.Email" class="form-control" />
+                <span asp-validation-for="RegisterDto.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RegisterDto.PhoneNumber" class="control-label"></label>
+                <input asp-for="RegisterDto.PhoneNumber" class="form-control" />
+                <span asp-validation-for="RegisterDto.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RegisterDto.Password" class="control-label"></label>
+                <input asp-for="RegisterDto.Password" type="password" class="form-control" />
+                <span asp-validation-for="RegisterDto.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RegisterDto.ConfirmPassword" class="control-label"></label>
+                <input asp-for="RegisterDto.ConfirmPassword" type="password" class="form-control" />
+                <span asp-validation-for="RegisterDto.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group d-grid gap-2 mb-3">
+                <button type="submit" value="Register" class="btn btn-primary" style="background-color: #0069d9">Register</button>
+            </div>
+        </form>
+                
+                <div style="text-align: center;">
+
+                    <a asp-page="/Login" style="color: orange">Back to Login</a>
+                </div>
     </div>
-    <div class="form-group">
-        <label asp-for="RegisterDto.FullName" class="control-label"></label>
-        <input asp-for="RegisterDto.FullName" class="form-control" />
-        <span asp-validation-for="RegisterDto.FullName" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="RegisterDto.Email" class="control-label"></label>
-        <input asp-for="RegisterDto.Email" class="form-control" />
-        <span asp-validation-for="RegisterDto.Email" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="RegisterDto.PhoneNumber" class="control-label"></label>
-        <input asp-for="RegisterDto.PhoneNumber" class="form-control" />
-        <span asp-validation-for="RegisterDto.PhoneNumber" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="RegisterDto.Password" class="control-label"></label>
-        <input asp-for="RegisterDto.Password" type="password" class="form-control" />
-        <span asp-validation-for="RegisterDto.Password" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="RegisterDto.ConfirmPassword" class="control-label"></label>
-        <input asp-for="RegisterDto.ConfirmPassword" type="password" class="form-control" />
-        <span asp-validation-for="RegisterDto.ConfirmPassword" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <button type="submit" value="Register" class="btn btn-primary">Register</button>
-    </div>
-</form>
-        <a asp-page="/Login" style="color: orange">Back to Login</a>
+</div>
+        
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

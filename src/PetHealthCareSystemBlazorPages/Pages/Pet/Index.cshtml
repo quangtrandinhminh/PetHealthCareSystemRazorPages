@@ -3,7 +3,7 @@
 
 @{
     ViewData["Title"] = "Index";
-    Layout = "_Layout";
+    
 }
 
 <style>
@@ -30,7 +30,7 @@
     .create-btn {
         border-radius: 5px;
         color: white;
-        background-color: #28a745;
+        background-color: #0069d9;
         padding: 10px 20px;
         text-decoration: none;
         font-size: 1.2em;
@@ -40,7 +40,7 @@
     }
 
     .create-btn:hover {
-        background-color: #218838;
+            background-color: red;
         box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
     }
 
@@ -59,7 +59,7 @@
     }
 
     .table th {
-        background-color: #4CAF50;
+        background-color: #0069d9;
         color: white;
         font-size: 1.1em;
     }
@@ -87,6 +87,7 @@
 
 </style>
 
+<div class="page-container">
 <h1 class="page-title">Your Pets</h1>
 
 <div class="create-btn-container">
@@ -150,3 +151,9 @@
         }
     </tbody>
 </table>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</div>
