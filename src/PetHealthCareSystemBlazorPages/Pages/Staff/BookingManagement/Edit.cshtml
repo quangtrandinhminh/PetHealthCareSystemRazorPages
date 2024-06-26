@@ -7,133 +7,82 @@
 
 <h1>Edit</h1>
 
-<h4>Transaction</h4>
+<h4>Appointment</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
             <div class="form-group">
-                <label asp-for="Transaction.CustomerId" class="control-label"></label>
-                <select asp-for="Transaction.CustomerId" class="form-control" asp-items="ViewBag.CustomerId"></select>
-                <span asp-validation-for="Transaction.CustomerId" class="text-danger"></span>
+                <label asp-for="Appointment.TimeTableId" class="control-label"></label>
+                <select asp-for="Appointment.TimeTableId" class="form-control" asp-items="ViewBag.TimeTableId"></select>
+                <span asp-validation-for="Appointment.TimeTableId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.AppointmentId" class="control-label"></label>
-                <select asp-for="Transaction.AppointmentId" class="form-control" asp-items="ViewBag.AppointmentId"></select>
-                <span asp-validation-for="Transaction.AppointmentId" class="text-danger"></span>
+                <label asp-for="Appointment.AppointmentDate" class="control-label"></label>
+                <input asp-for="Appointment.AppointmentDate" class="form-control" />
+                <span asp-validation-for="Appointment.AppointmentDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.MedicalRecordId" class="control-label"></label>
-                <select asp-for="Transaction.MedicalRecordId" class="form-control" asp-items="ViewBag.MedicalRecordId"></select>
-                <span asp-validation-for="Transaction.MedicalRecordId" class="text-danger"></span>
+                <label asp-for="Appointment.Note" class="control-label"></label>
+                <input asp-for="Appointment.Note" class="form-control" />
+                <span asp-validation-for="Appointment.Note" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.HospitalizationId" class="control-label"></label>
-                <input asp-for="Transaction.HospitalizationId" class="form-control" />
-                <span asp-validation-for="Transaction.HospitalizationId" class="text-danger"></span>
+                <label asp-for="Appointment.Status" class="control-label"></label>
+                <select asp-for="Appointment.Status" class="form-control"></select>
+                <span asp-validation-for="Appointment.Status" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.Total" class="control-label"></label>
-                <input asp-for="Transaction.Total" class="form-control" />
-                <span asp-validation-for="Transaction.Total" class="text-danger"></span>
+                <label asp-for="Appointment.BookingType" class="control-label"></label>
+                <select asp-for="Appointment.BookingType" class="form-control"></select>
+                <span asp-validation-for="Appointment.BookingType" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.PaymentDate" class="control-label"></label>
-                <input asp-for="Transaction.PaymentDate" class="form-control" />
-                <span asp-validation-for="Transaction.PaymentDate" class="text-danger"></span>
+                <label asp-for="Appointment.Rating" class="control-label"></label>
+                <input asp-for="Appointment.Rating" class="form-control" />
+                <span asp-validation-for="Appointment.Rating" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.Status" class="control-label"></label>
-                <select asp-for="Transaction.Status" class="form-control">
-                    <option value="Pending">Pending</option>
-                    <option value="Paid">Paid</option>
-                    <option value="Cancelled">Cancelled</option>
-                    <option value="Refund">Refund</option>
-                </select>
-                <span asp-validation-for="Transaction.Status" class="text-danger"></span>
+                <label asp-for="Appointment.Feedback" class="control-label"></label>
+                <input asp-for="Appointment.Feedback" class="form-control" />
+                <span asp-validation-for="Appointment.Feedback" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.PaymentMethod" class="control-label"></label>
-                <input asp-for="Transaction.PaymentMethod" class="form-control" />
-                <span asp-validation-for="Transaction.PaymentMethod" class="text-danger"></span>
+                <label asp-for="Appointment.VetId" class="control-label"></label>
+                <input asp-for="Appointment.VetId" class="form-control" />
+                <span asp-validation-for="Appointment.VetId" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Appointment.Id" />
+            <div class="form-group">
+                <label asp-for="Appointment.CreatedBy" class="control-label"></label>
+                <input asp-for="Appointment.CreatedBy" class="form-control" />
+                <span asp-validation-for="Appointment.CreatedBy" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.PaymentNote" class="control-label"></label>
-                <input asp-for="Transaction.PaymentNote" class="form-control" />
-                <span asp-validation-for="Transaction.PaymentNote" class="text-danger"></span>
+                <label asp-for="Appointment.LastUpdatedBy" class="control-label"></label>
+                <input asp-for="Appointment.LastUpdatedBy" class="form-control" />
+                <span asp-validation-for="Appointment.LastUpdatedBy" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.PaymentId" class="control-label"></label>
-                <input asp-for="Transaction.PaymentId" class="form-control" />
-                <span asp-validation-for="Transaction.PaymentId" class="text-danger"></span>
+                <label asp-for="Appointment.DeletedBy" class="control-label"></label>
+                <input asp-for="Appointment.DeletedBy" class="form-control" />
+                <span asp-validation-for="Appointment.DeletedBy" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.PaymentStaffId" class="control-label"></label>
-                <input asp-for="Transaction.PaymentStaffId" class="form-control" />
-                <span asp-validation-for="Transaction.PaymentStaffId" class="text-danger"></span>
+                <label asp-for="Appointment.CreatedTime" class="control-label"></label>
+                <input asp-for="Appointment.CreatedTime" class="form-control" />
+                <span asp-validation-for="Appointment.CreatedTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.PaymentStaffName" class="control-label"></label>
-                <input asp-for="Transaction.PaymentStaffName" class="form-control" />
-                <span asp-validation-for="Transaction.PaymentStaffName" class="text-danger"></span>
+                <label asp-for="Appointment.LastUpdatedTime" class="control-label"></label>
+                <input asp-for="Appointment.LastUpdatedTime" class="form-control" />
+                <span asp-validation-for="Appointment.LastUpdatedTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Transaction.Note" class="control-label"></label>
-                <input asp-for="Transaction.Note" class="form-control" />
-                <span asp-validation-for="Transaction.Note" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Transaction.RefundPercentage" class="control-label"></label>
-                <input asp-for="Transaction.RefundPercentage" class="form-control" />
-                <span asp-validation-for="Transaction.RefundPercentage" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Transaction.RefundPaymentId" class="control-label"></label>
-                <input asp-for="Transaction.RefundPaymentId" class="form-control" />
-                <span asp-validation-for="Transaction.RefundPaymentId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Transaction.RefundReason" class="control-label"></label>
-                <input asp-for="Transaction.RefundReason" class="form-control" />
-                <span asp-validation-for="Transaction.RefundReason" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Transaction.RefundDate" class="control-label"></label>
-                <input asp-for="Transaction.RefundDate" class="form-control" />
-                <span asp-validation-for="Transaction.RefundDate" class="text-danger"></span>
-            </div>
-            <input type="hidden" asp-for="Transaction.Id" />
-            <div class="form-group">
-                <label asp-for="Transaction.CreatedBy" class="control-label"></label>
-                <input asp-for="Transaction.CreatedBy" class="form-control" />
-                <span asp-validation-for="Transaction.CreatedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Transaction.LastUpdatedBy" class="control-label"></label>
-                <input asp-for="Transaction.LastUpdatedBy" class="form-control" />
-                <span asp-validation-for="Transaction.LastUpdatedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Transaction.DeletedBy" class="control-label"></label>
-                <input asp-for="Transaction.DeletedBy" class="form-control" />
-                <span asp-validation-for="Transaction.DeletedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Transaction.CreatedTime" class="control-label"></label>
-                <input asp-for="Transaction.CreatedTime" class="form-control" />
-                <span asp-validation-for="Transaction.CreatedTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Transaction.LastUpdatedTime" class="control-label"></label>
-                <input asp-for="Transaction.LastUpdatedTime" class="form-control" />
-                <span asp-validation-for="Transaction.LastUpdatedTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Transaction.DeletedTime" class="control-label"></label>
-                <input asp-for="Transaction.DeletedTime" class="form-control" />
-                <span asp-validation-for="Transaction.DeletedTime" class="text-danger"></span>
+                <label asp-for="Appointment.DeletedTime" class="control-label"></label>
+                <input asp-for="Appointment.DeletedTime" class="form-control" />
+                <span asp-validation-for="Appointment.DeletedTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -147,7 +96,5 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

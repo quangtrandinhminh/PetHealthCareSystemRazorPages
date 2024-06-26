@@ -1,67 +1,95 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using BusinessObject.DTO.Appointment;
 using Service.IServices;
-using System.ComponentModel.DataAnnotations;
-using BusinessObject.DTO.Transaction;
-using Utility.Constants;
-using Microsoft.AspNetCore.Http;
+using BusinessObject.DTO.Pet;
+using BusinessObject.DTO.Service;
+using BusinessObject.DTO.TimeTable;
+using BusinessObject.DTO.User;
 using Utility.Exceptions;
 
 namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement
 {
     public class CreateModel : PageModel
     {
-        private readonly ITransactionService _transactionService;
+        private readonly IAppointmentService _appointmentService;
+        private readonly IService _serviceService;
+        private readonly IPetService _petService;
 
-        public CreateModel(ITransactionService transactionService)
+        public CreateModel(IAppointmentService appointmentService, IService serviceService, IPetService petService)
         {
-            _transactionService = transactionService;
+            _appointmentService = appointmentService;
+            _serviceService = serviceService;
+            _petService = petService;
         }
 
         [BindProperty]
-        public TransactionRequestDto TransactionDto { get; set; }
+        public AppointmentBookRequestDto AppointmentBookRequestDto { get; set; }
+        public List<PetResponseDto> DisplayedPetList { get; set; } = new List<PetResponseDto>();
+        public List<ServiceResponseDto> DisplayedServiceList { get; set; } = new List<ServiceResponseDto>();
+        public List<TimeTableResponseDto> DisplayedTimeTableList { get; set; } = new List<TimeTableResponseDto>();
+        public List<UserResponseDto> DisplayedVetList { get; set; } = new List<UserResponseDto>();
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-            // Initialize your TransactionDto or perform any necessary setup
-            TransactionDto = new TransactionRequestDto
+            try
             {
-                MedicalItems = new List<TransactionMedicalItemsDto>(),
-                Services = new List<TransactionServicesDto>()
-            };
+                ViewData["TimetableId"] = new SelectList(await _appointmentService.GetAllTimeFramesForBookingAsync(), "Id", "Id");
+                ViewData["VetId"] = new SelectList(await _appointmentService.GetFreeWithTimeFrameAndDateAsync(DateOnly.FromDateTime(DateTime.Now), 0), "Id", "FullName");
 
-            return Page();
+                var services = await _serviceService.GetAllServiceAsync();
+                ViewData["Services"] = new SelectList(services, "Id", "Name");
+
+                var pets = await _petService.GetAllPetsForCustomerAsync(0); // Adjust the customer ID accordingly
+                ViewData["Pets"] = new SelectList(pets, "Id", "Name");
+
+                return Page();
+            }
+            catch (AppException ex)
+            {
+                // Log the exception if needed
+                ViewData["ErrorMessage"] = $"An error occurred: {ex.Message}";
+                return Page();
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
-                return Page();
+                try
+                {
+                    ViewData["TimetableId"] = new SelectList(await _appointmentService.GetAllTimeFramesForBookingAsync(), "Id", "Id", AppointmentBookRequestDto.TimetableId);
+                    ViewData["VetId"] = new SelectList(await _appointmentService.GetFreeWithTimeFrameAndDateAsync(DateOnly.FromDateTime(DateTime.Now), AppointmentBookRequestDto.TimetableId), "Id", "FullName", AppointmentBookRequestDto.VetId);
+
+                    var services = await _serviceService.GetAllServiceAsync();
+                    ViewData["Services"] = new SelectList(services, "Id", "Name", AppointmentBookRequestDto.ServiceIdList);
+
+                    var pets = await _petService.GetAllPetsForCustomerAsync(0); // Adjust the customer ID accordingly
+                    ViewData["Pets"] = new SelectList(pets, "Id", "Name", AppointmentBookRequestDto.PetIdList);
+
+                    return Page();
+                }
+                catch (AppException ex)
+                {
+                    // Log the exception if needed
+                    ViewData["ErrorMessage"] = $"An error occurred: {ex.Message}";
+                    return Page();
+                }
             }
 
             try
             {
-                // Replace with your actual user ID retrieval logic
-                var accountId = HttpContext.Session.GetString("UserId");
-                var accountRole = HttpContext.Session.GetString("Role");
-                int userId = int.Parse(accountId);
-
-                await _transactionService.CreateTransactionAsync(TransactionDto, userId);
-
-                // Redirect to a success page or another appropriate action
-                return RedirectToPage("/Index");
+                await _appointmentService.BookOnlineAppointmentAsync(AppointmentBookRequestDto);
+                return RedirectToPage("./Index");
             }
             catch (AppException ex)
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
+                // Log the exception if needed
+                ViewData["ErrorMessage"] = $"An error occurred while creating the appointment: {ex.Message}";
                 return Page();
             }
-        }
-
-        private bool IsStaffRole(string accountRole)
-        {
-            return !string.IsNullOrEmpty(accountRole) && accountRole.Split(',').Contains("Staff");
         }
     }
 }

@@ -1,31 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using BusinessObject.DTO.Transaction;
-using Service.IServices;
+using Microsoft.EntityFrameworkCore;
+using BusinessObject.Entities;
 
 namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement
 {
     public class IndexModel : PageModel
     {
-        private readonly ITransactionService _transactionService;
+        private readonly DataAccessLayer.AppDbContext _context;
 
-        public IndexModel(ITransactionService transactionService)
+        public IndexModel(DataAccessLayer.AppDbContext context)
         {
-            _transactionService = transactionService;
+            _context = context;
         }
 
-        public IList<TransactionResponseDto> Transactions { get; set; }
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
-        public int TotalPages { get; set; }
+        public IList<Appointment> Appointment { get;set; } = default!;
 
-        public async Task OnGetAsync(int? pageNumber)
+        public async Task OnGetAsync()
         {
-            PageNumber = pageNumber ?? 1;
-
-            var paginatedList = await _transactionService.GetAllTransactionsAsync(PageNumber, PageSize);
-
-            Transactions = paginatedList.Items.ToList();
-            TotalPages = paginatedList.TotalPages;
+            Appointment = await _context.Appointments
+                .Include(a => a.TimeTable).ToListAsync();
         }
     }
 }

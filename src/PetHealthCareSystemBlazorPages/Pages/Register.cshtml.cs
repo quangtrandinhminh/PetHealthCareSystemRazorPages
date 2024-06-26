@@ -23,14 +23,12 @@ namespace PetHealthCareSystemRazorPages.Pages
             return Page();
         }
 
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-
             try
             {
                 await _authService.Register(RegisterDto);

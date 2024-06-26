@@ -1,12 +1,13 @@
 ﻿@page
-@model PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement.DetailsModel
+@model PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement.DeleteModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Delete";
 }
 
-<h1>Details</h1>
+<h1>Delete</h1>
 
+<h3>Are you sure you want to delete this?</h3>
 <div>
     <h4>Appointment</h4>
     <hr />
@@ -96,8 +97,10 @@
             @Html.DisplayFor(model => model.Appointment.DeletedTime)
         </dd>
     </dl>
-</div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.Appointment.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+    
+    <form method="post">
+        <input type="hidden" asp-for="Appointment.Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
 </div>
