@@ -1,16 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Http; // Ensure to include this namespace for HttpContext operations
+using Microsoft.AspNetCore.Http;
 using Utility.Exceptions;
 using Service.IServices;
 using BusinessObject.DTO.User;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace PetHealthCareSystemBlazorPages.Pages
 {
     public class LoginModel : PageModel
     {
         private readonly IAuthService _authService;
+
         public LoginModel(IAuthService authService)
         {
             _authService = authService;
@@ -41,12 +43,11 @@ namespace PetHealthCareSystemBlazorPages.Pages
                 HttpContext.Session.SetString("Role", string.Join(",", response.Role));
 
                 // Redirect based on user role
-                // Redirect based on user role
-                if (response.Role.Contains("Admin")) // Check if "admin" role exists in the list
+                if (response.Role.Contains("Admin"))
                 {
                     return RedirectToPage("/Admin/AdminDashboard/Index");
                 }
-                else if (response.Role.Contains("Staff")) // Check if "staff" role exists in the list
+                else if (response.Role.Contains("Staff"))
                 {
                     return RedirectToPage("/Staff/StaffDashboard/Index");
                 }
@@ -65,10 +66,17 @@ namespace PetHealthCareSystemBlazorPages.Pages
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return Page();
             }
+            catch (Exception ex)
+            {
+                // Log the exception (e.g., using a logging framework)
+                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
+                return Page();
+            }
         }
+
         public IActionResult OnGet()
         {
-            var accountId = HttpContext.Session.GetString("UserId"); // Assuming UserId is stored in Session
+            var accountId = HttpContext.Session.GetString("UserId");
             if (!string.IsNullOrEmpty(accountId))
             {
                 var accountRole = HttpContext.Session.GetString("Role");

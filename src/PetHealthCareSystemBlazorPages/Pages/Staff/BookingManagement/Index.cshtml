@@ -1,0 +1,70 @@
+﻿@page
+@model PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Appointment ID</th>
+            <th>Medical Record ID</th>
+            <th>Total</th>
+            <th>Payment Date</th>
+            <th>Status</th>
+            <th>Payment Method</th>
+            <th>Payment Staff Name</th>
+            <th>Refund Percentage</th>
+            <th>Refund Date</th>
+            <th>Customer Name</th>
+            <th>Created By Name</th>
+            <th>Last Updated By Name</th>
+            <th>Created Time</th>
+            <th>Last Updated Time</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var transaction in Model.Transactions)
+        {
+            <tr>
+                <td>@transaction.AppointmentId</td>
+                <td>@transaction.MedicalRecordId</td>
+                <td>@transaction.Total</td>
+                <td>@transaction.PaymentDate</td>
+                <td>@transaction.Status</td>
+                <td>@transaction.PaymentMethod</td>
+                <td>@transaction.PaymentStaffName</td>
+                <td>@transaction.RefundPercentage</td>
+                <td>@transaction.RefundDate</td>
+                <td>@transaction.CustomerName</td>
+                <td>@transaction.CreatedByName</td>
+                <td>@transaction.LastUpdatedByName</td>
+                <td>@transaction.CreatedTime</td>
+                <td>@transaction.LastUpdatedTime</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@transaction.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@transaction.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@transaction.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="pagination">
+    @if (Model.PageNumber > 1)
+    {
+        <a asp-page="./Index" asp-route-pageNumber="@(Model.PageNumber - 1)">Previous</a>
+    }
+    @if (Model.PageNumber < Model.TotalPages)
+    {
+        <a asp-page="./Index" asp-route-pageNumber="@(Model.PageNumber + 1)">Next</a>
+    }
+</div>

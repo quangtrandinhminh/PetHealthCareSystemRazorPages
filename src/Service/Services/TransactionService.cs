@@ -302,5 +302,6 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
         transaction.Status = TransactionStatus.Paid;
 
         await _transactionRepository.UpdateAsync(transaction);
+
     }
 }
