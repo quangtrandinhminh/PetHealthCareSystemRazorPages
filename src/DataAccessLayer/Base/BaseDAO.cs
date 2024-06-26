@@ -85,7 +85,7 @@ namespace DataAccessLayer.Base
             return await Get(predicate, isIncludeDeleted, includeProperties)
                 .OrderByDescending(p => p.CreatedTime).FirstOrDefaultAsync();
         }*/
-        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate,
+        public static async Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate,
             bool isIncludeDeleted = false, params Expression<Func<T, object>>[] includeProperties)
         {
             using var context = new AppDbContext();
