@@ -4,67 +4,112 @@
 @{
     ViewData["Title"] = "Index";
 }
-
+<div style="width:100%; height:100vh; display:flex; justify-content:center; align-items:center; flex-direction:column ">
 <h1>Index</h1>
 
-<p>
-    <a asp-page="Create">Create New</a>
+<p style="width:140px;border-radius:20px;border:1px solid black;text-align:center">
+        <a style="color: black" asp-page="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th>Appointment ID</th>
-            <th>Medical Record ID</th>
-            <th>Total</th>
-            <th>Payment Date</th>
-            <th>Status</th>
-            <th>Payment Method</th>
-            <th>Payment Staff Name</th>
-            <th>Refund Percentage</th>
-            <th>Refund Date</th>
-            <th>Customer Name</th>
-            <th>Created By Name</th>
-            <th>Last Updated By Name</th>
-            <th>Created Time</th>
-            <th>Last Updated Time</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].AppointmentDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].Note)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].BookingType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].Rating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].Feedback)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].VetId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].TimeTable)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].CreatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].LastUpdatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].DeletedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].CreatedTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].LastUpdatedTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].DeletedTime)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var transaction in Model.Transactions)
-        {
-            <tr>
-                <td>@transaction.AppointmentId</td>
-                <td>@transaction.MedicalRecordId</td>
-                <td>@transaction.Total</td>
-                <td>@transaction.PaymentDate</td>
-                <td>@transaction.Status</td>
-                <td>@transaction.PaymentMethod</td>
-                <td>@transaction.PaymentStaffName</td>
-                <td>@transaction.RefundPercentage</td>
-                <td>@transaction.RefundDate</td>
-                <td>@transaction.CustomerName</td>
-                <td>@transaction.CreatedByName</td>
-                <td>@transaction.LastUpdatedByName</td>
-                <td>@transaction.CreatedTime</td>
-                <td>@transaction.LastUpdatedTime</td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@transaction.Id">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@transaction.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@transaction.Id">Delete</a>
-                </td>
-            </tr>
-        }
+@foreach (var item in Model.Appointment) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppointmentDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BookingType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Feedback)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VetId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimeTable.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeletedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdatedTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeletedTime)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
     </tbody>
 </table>
-
-<div class="pagination">
-    @if (Model.PageNumber > 1)
-    {
-        <a asp-page="./Index" asp-route-pageNumber="@(Model.PageNumber - 1)">Previous</a>
-    }
-    @if (Model.PageNumber < Model.TotalPages)
-    {
-        <a asp-page="./Index" asp-route-pageNumber="@(Model.PageNumber + 1)">Next</a>
-    }
 </div>

@@ -1,104 +1,67 @@
 ﻿@page
 @model PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement.CreateModel
+
 @{
-    ViewData["Title"] = "Create Transaction";
+    ViewData["Title"] = "Create";
 }
 
-<h1>Create Transaction</h1>
+<h1>Create Appointment</h1>
 
-<form method="post" style="width:100%; height:100vh; display: flex; justify-content:center; align-items:center; flex-direction:column">
-    <!-- Status Field -->
-    <div class="form-group">
-        <label asp-for="TransactionDto.Status" class="control-label"></label>
-        <select asp-for="TransactionDto.Status" class="form-control">
-            <option value="1">Pending</option>
-            <option value="2">Paid</option>
-            <option value="3">Cancelled</option>
-            <option value="4">Refund</option>
-        </select>
-        <span asp-validation-for="TransactionDto.Status" class="text-danger"></span>
+<hr />
+<div class="row" style="margin-left:30px">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="AppointmentBookRequestDto.TimetableId" class="control-label"></label>
+                <select asp-for="AppointmentBookRequestDto.TimetableId" class="form-control" asp-items="ViewBag.TimetableId"></select>
+                <span asp-validation-for="AppointmentBookRequestDto.TimetableId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="AppointmentBookRequestDto.AppointmentDate" class="control-label"></label>
+                <input asp-for="AppointmentBookRequestDto.AppointmentDate" class="form-control" type="date" />
+                <span asp-validation-for="AppointmentBookRequestDto.AppointmentDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="AppointmentBookRequestDto.Note" class="control-label"></label>
+                <textarea asp-for="AppointmentBookRequestDto.Note" class="form-control"></textarea>
+                <span asp-validation-for="AppointmentBookRequestDto.Note" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="AppointmentBookRequestDto.VetId" class="control-label"></label>
+                <select asp-for="AppointmentBookRequestDto.VetId" class="form-control" asp-items="ViewBag.VetId"></select>
+                <span asp-validation-for="AppointmentBookRequestDto.VetId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="AppointmentBookRequestDto.ServiceIdList" class="control-label"></label>
+                <select asp-for="AppointmentBookRequestDto.ServiceIdList" class="form-control" asp-items="ViewBag.Services" multiple></select>
+                <span asp-validation-for="AppointmentBookRequestDto.ServiceIdList" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="AppointmentBookRequestDto.PetIdList" class="control-label"></label>
+                <select asp-for="AppointmentBookRequestDto.PetIdList" class="form-control" asp-items="ViewBag.Pets" multiple></select>
+                <span asp-validation-for="AppointmentBookRequestDto.PetIdList" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
     </div>
+</div>
 
-    <!-- Payment Method Field -->
-    <div class="form-group">
-        <label asp-for="TransactionDto.PaymentMethod" class="control-label"></label>
-        <select asp-for="TransactionDto.PaymentMethod" class="form-control">
-            <option value="1">Cash</option>
-            <option value="2">Credit Card</option>
-            <option value="3">Bank Transfer</option>
-        </select>
-        <span asp-validation-for="TransactionDto.PaymentMethod" class="text-danger"></span>
-    </div>
-
-    <!-- Payment Id Field -->
-    <div class="form-group">
-        <label>Payment Id</label>
-        <div>@Model.TransactionDto.PaymentId</div>
-        <input type="hidden" asp-for="TransactionDto.PaymentId" />
-    </div>
-
-    <!-- Payment Date Field -->
-    <div class="form-group">
-        <label>Payment Date</label>
-        <div>@Model.TransactionDto.PaymentDate</div>
-        <input type="hidden" asp-for="TransactionDto.PaymentDate" />
-    </div>
-
-    <!-- Appointment Id Field -->
-    <div class="form-group">
-        <label>Appointment Id</label>
-        <div>@Model.TransactionDto.AppointmentId</div>
-        <input type="hidden" asp-for="TransactionDto.AppointmentId" />
-    </div>
-
-    <!-- Medical Record Id Field -->
-    <div class="form-group">
-        <label>Medical Record Id</label>
-        <div>@Model.TransactionDto.MedicalRecordId</div>
-        <input type="hidden" asp-for="TransactionDto.MedicalRecordId" />
-    </div>
-
-    <!-- Hospitalization Id Field -->
-    <div class="form-group">
-        <label>Hospitalization Id</label>
-        <div>@Model.TransactionDto.HospitalizationId</div>
-        <input type="hidden" asp-for="TransactionDto.HospitalizationId" />
-    </div>
-
-    <!-- Medical Items Field -->
-    <div class="form-group">
-        <label>Medical Items</label>
-        <ul>
-            @if (Model.TransactionDto.MedicalItems != null)
-            {
-                @foreach (var item in Model.TransactionDto.MedicalItems)
-                {
-                    <li>@item.MedicalItemId - Quantity: @item.Quantity</li>
-                }
-            }
-        </ul>
-        <input type="hidden" asp-for="TransactionDto.MedicalItems" />
-    </div>
-
-    <!-- Services Field -->
-    <div class="form-group">
-        <label>Services</label>
-        <ul>
-            @if (Model.TransactionDto.Services != null)
-            {
-                @foreach (var service in Model.TransactionDto.Services)
-                {
-                    <li>@service.ServiceId - Quantity: @service.Quantity</li>
-                }
-            }
-        </ul>
-        <input type="hidden" asp-for="TransactionDto.Services" />
-    </div>
-
-    <!-- Submit Button -->
-    <button type="submit" class="btn btn-primary">Create</button>
-</form>
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
