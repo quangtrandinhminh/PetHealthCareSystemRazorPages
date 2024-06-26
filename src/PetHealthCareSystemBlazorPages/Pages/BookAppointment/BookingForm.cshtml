@@ -4,6 +4,56 @@
     ViewData["Title"] = "Book an Appointment";
 }
 
+<style>
+    /* Additional CSS styles */
+    .select-list {
+        display: flex;
+        overflow-x: auto;
+        border: 1px solid #ccc;
+        max-width: 100%;
+    }
+
+    .select-item {
+        min-width: 200px;
+        cursor: pointer;
+        padding: 10px;
+        border-right: 1px solid #ddd;
+        flex-shrink: 0;
+    }
+
+        .select-item.selected-item {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .select-item:last-child {
+            border-right: none;
+        }
+
+    .time-slots {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+        max-width: 100%;
+        overflow-x: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    .time-slot-item {
+        cursor: pointer;
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+
+        .time-slot-item.selected-item {
+            background-color: #007bff;
+            color: #fff;
+        }
+</style>
+
 @if (Model != null)
 {
     <div class="container mt-5">
@@ -15,31 +65,37 @@
                     </div>
                     <div class="card-body">
                         <form method="post">
-                            @if (Model.DisplayedPetList != null)
+                            @if (Model.DisplayedPetList != null && Model.DisplayedPetList.Any())
                             {
                                 <div class="form-group">
-                                    <label asp-for="AppointmentBookRequest.PetIdList">Select Pet</label>
-                                    <select class="form-control" asp-for="AppointmentBookRequest.PetIdList" required multiple>
-                                        <option value="">-- Select Pet --</option>
+                                    <label>Select Pet (1 to 3)</label>
+                                    <div id="pet-list" class="select-list">
                                         @foreach (var pet in Model.DisplayedPetList)
                                         {
-                                            <option value="@pet.Id">@pet.Name</option>
+                                            <div class="select-item" data-id="@pet.Id" data-type="pet">
+                                                @pet.Name
+                                            </div>
                                         }
-                                    </select>
+                                    </div>
+                                    <input type="hidden" asp-for="AppointmentBookRequest.PetIdList" id="selected-pet-id" />
+                                    <span asp-validation-for="AppointmentBookRequest.PetIdList" class="text-danger"></span>
                                 </div>
                             }
 
-                            @if (Model.DisplayedServiceList != null)
+                            @if (Model.DisplayedServiceList != null && Model.DisplayedServiceList.Any())
                             {
                                 <div class="form-group">
-                                    <label asp-for="AppointmentBookRequest.ServiceIdList">Select Service</label>
-                                    <select class="form-control" asp-for="AppointmentBookRequest.ServiceIdList" required multiple>
-                                        <option value="">-- Select Service --</option>
+                                    <label>Select Service (1 to 3)</label>
+                                    <div id="service-list" class="select-list">
                                         @foreach (var service in Model.DisplayedServiceList)
                                         {
-                                            <option value="@service.Id">@service.Name</option>
+                                            <div class="select-item" data-id="@service.Id" data-type="service">
+                                                @service.Name
+                                            </div>
                                         }
-                                    </select>
+                                    </div>
+                                    <input type="hidden" asp-for="AppointmentBookRequest.ServiceIdList" id="selected-service-id" />
+                                    <span asp-validation-for="AppointmentBookRequest.ServiceIdList" class="text-danger"></span>
                                 </div>
                             }
 
@@ -47,24 +103,28 @@
                             {
                                 <div class="form-group">
                                     <label asp-for="AppointmentBookRequest.AppointmentDate">Select Date</label>
-                                    <input id="appointment-date" class="form-control" asp-for="AppointmentBookRequest.AppointmentDate" type="date" onchange="" value="@Model.AppointmentBookRequest.AppointmentDate" required />
+                                    <input id="appointment-date" class="form-control" asp-for="AppointmentBookRequest.AppointmentDate" type="date" required />
                                 </div>
 
                                 <div class="form-group">
-                                    <label asp-for="AppointmentBookRequest.TimetableId">Select Timeslot</label>
-                                    <select id="appointment-time" class="form-control" asp-for="AppointmentBookRequest.TimetableId" onchange="" required>
-                                        <option value="">-- Select Timeslot --</option>
+                                    <label>Select Timeslot</label>
+                                    <div id="time-slot-list" class="time-slots">
                                         @foreach (var timeSlot in Model.DisplayedTimeTableList)
                                         {
-                                            <option value="@timeSlot.Id">@($"{timeSlot.StartTime:hh\\:mm} - {timeSlot.EndTime:hh\\:mm}")</option>
+                                            <div class="time-slot-item" data-id="@timeSlot.Id" data-start-time="@timeSlot.StartTime" data-end-time="@timeSlot.EndTime">
+                                                @($"{timeSlot.StartTime:hh\\:mm} - {timeSlot.EndTime:hh\\:mm}")
+                                            </div>
                                         }
-                                    </select>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label asp-for="AppointmentBookRequest.VetId">Select Vet</label>
-                                    <select id="vet-id" class="form-control" asp-for="AppointmentBookRequest.VetId" required>
-                                    </select>
+                                    <label>Select Vet</label>
+                                    <div id="vet-list" class="select-list">
+                                        <!-- The vet list will be populated dynamically -->
+                                    </div>
+                                    <input type="hidden" asp-for="AppointmentBookRequest.VetId" id="selected-vet-id" />
+                                    <p id="no-vets-message">No vets available for the selected date and time slot.</p>
                                 </div>
                             }
 
@@ -81,40 +141,150 @@ else
     <p>Model is null.</p>
 }
 
-<script>
-        const selectedDate = document.getElementById("appointment-date");
-        const selectedTime = document.getElementById("appointment-time");
-        const vetList = document.getElementById("vet-id");
-
-        selectedDate.addEventListener("change", handleDateAndTimeChange);
-        selectedTime.addEventListener("change", handleDateAndTimeChange);
-
-        function handleDateAndTimeChange() {
-            var date = selectedDate.value;
-            var timeID = selectedTime.value;
-
-            if (date && timeID) {
-                fetch(`/BookAppointment/BookingForm?handler=VetByDateAndTime&date=${date}&timeTableId=${timeID}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        vetList.innerHTML = '';
-                        data.forEach(vet => {
-                            var option = document.createElement("option");
-                            option.value = vet.id; // Ensure `id` matches the property in your `vet` object
-                            option.text = vet.fullName; // Ensure `fullName` matches the property in your `vet` object
-                            vetList.appendChild(option);
-                        });
-                    })
-                    .catch(error => console.error('Error fetching vets:', error));
-            }
-        }
-    </script>
 
 @section Scripts {
-    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const selectedDate = document.getElementById("appointment-date");
+    const timeSlotList = document.getElementById("time-slot-list");
+    const petList = document.getElementById("pet-list");
+    const selectedPetIdInput = document.getElementById("selected-pet-id");
+    const serviceList = document.getElementById("service-list");
+    const selectedServiceIdInput = document.getElementById("selected-service-id");
+    const vetListContainer = document.getElementById("vet-list");
+    const selectedVetIdInput = document.getElementById("selected-vet-id");
+    const noVetsMessage = document.getElementById("no-vets-message");
+
+    // Set default value for date input to tomorrow
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1); // Tomorrow's date
+
+    // Set default value and min/max dates for appointment date
+    selectedDate.valueAsDate = tomorrow; // Default value
+    selectedDate.min = tomorrow.toISOString().split('T')[0]; // Minimum date
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 15); // 15 days ahead
+    selectedDate.max = maxDate.toISOString().split('T')[0]; // Maximum date
+
+    // Event listeners
+    selectedDate.addEventListener("change", handleDateChange);
+    timeSlotList.addEventListener("click", handleTimeSlotSelect);
+    petList.addEventListener("click", (event) => handleSelectItemClick(event, selectedPetIdInput));
+    serviceList.addEventListener("click", (event) => handleSelectItemClick(event, selectedServiceIdInput));
+    vetListContainer.addEventListener("click", (event) => handleVetSelection(event));
+
+    function handleDateChange() {
+        console.log("Date changed");
+        // Add logic if needed for date change
+    }
+
+    function handleTimeSlotSelect(event) {
+        const selectedSlot = event.target.closest('.time-slot-item');
+        if (selectedSlot) {
+            // Clear previously selected slots
+            const selectedSlots = timeSlotList.querySelectorAll('.time-slot-item.selected-item');
+            selectedSlots.forEach(slot => slot.classList.remove('selected-item'));
+
+            // Highlight the clicked slot
+            selectedSlot.classList.add('selected-item');
+
+            const timeTableId = selectedSlot.getAttribute('data-id');
+            const startTime = selectedSlot.getAttribute('data-start-time');
+            const endTime = selectedSlot.getAttribute('data-end-time');
+            const date = selectedDate.valueAsDate.toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+
+            // Call function to load vets based on time slot
+            loadVetsByTimeSlot(date, timeTableId);
+        }
+    }
+
+    function loadVetsByTimeSlot(date, timeTableId) {
+        fetch(`/BookAppointment/BookingForm?handler=VetByDateAndTime&date=${date}&timeTableId=${timeTableId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                vetListContainer.innerHTML = '';
+
+                if (data.length > 0) {
+                    noVetsMessage.style.display = 'none';
+
+                    // Populate the div with fetched vet data
+                    data.forEach(vet => {
+                        const vetItem = document.createElement("div");
+                        vetItem.classList.add("select-item");
+                        vetItem.setAttribute("data-id", vet.id);
+                        vetItem.setAttribute("data-type", "vet");
+                        vetItem.textContent = vet.fullName;
+                        vetListContainer.appendChild(vetItem);
+                    });
+                } else {
+                    noVetsMessage.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching vets:', error);
+            });
+    }
+
+    function handleSelectItemClick(event, hiddenInput) {
+        const selectedItem = event.target;
+        if (selectedItem.classList.contains("select-item")) {
+            const itemId = selectedItem.getAttribute("data-id");
+            const itemType = selectedItem.getAttribute("data-type");
+            const isSelected = selectedItem.classList.contains("selected-item");
+
+            if (!isSelected && countSelectedItems(itemType) >= 3) {
+                alert(`You can select a maximum of 3 ${itemType}s.`);
+                return;
+            }
+
+            selectedItem.classList.toggle("selected-item");
+
+            updateSelectedItems(hiddenInput, itemType);
+        }
+    }
+
+    function handleVetSelection(event) {
+        const selectedVet = event.target.closest('.select-item');
+        if (selectedVet && selectedVet.getAttribute("data-type") === "vet") {
+            const vetId = selectedVet.getAttribute("data-id");
+            const vetName = selectedVet.textContent;
+
+            // Remove previous selected item highlight
+            const previouslySelected = vetListContainer.querySelector('.select-item.selected-item');
+            if (previouslySelected) {
+                previouslySelected.classList.remove('selected-item');
+            }
+
+            // Highlight the clicked vet
+            selectedVet.classList.add('selected-item');
+
+            // Update hidden input or perform further actions
+            selectedVetIdInput.value = vetId;
+
+            console.log(`Selected Vet ID: ${vetId}, Name: ${vetName}`);
+            // Example: update some other hidden input or perform further actions
+        }
+    }
+
+    function countSelectedItems(type) {
+        const selectedItems = document.querySelectorAll(`.select-item.selected-item[data-type="${type}"]`);
+        return selectedItems.length;
+    }
+
+    function updateSelectedItems(hiddenInput, type) {
+        const selectedIds = [];
+        const selectedItems = document.querySelectorAll(`.select-item.selected-item[data-type="${type}"]`);
+        selectedItems.forEach(item => {
+            selectedIds.push(parseInt(item.getAttribute("data-id")));
+        });
+        hiddenInput.value = selectedIds.join(","); // Store as comma-separated values
+    }
+});
+
+    </script>
 }

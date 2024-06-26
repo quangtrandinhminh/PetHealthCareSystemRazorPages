@@ -6,7 +6,9 @@ using BusinessObject.DTO.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using Service.IServices;
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -18,14 +20,14 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
         private readonly IPetService _petService;
         private readonly IService _service;
         private readonly IAppointmentService _appointmentService;
-        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly ILogger<BookingFormModel> _logger;
 
-        public BookingFormModel(IPetService petService, IService service, IAppointmentService appointmentService, IHttpContextAccessor contextAccessor)
+        public BookingFormModel(IPetService petService, IService service, IAppointmentService appointmentService, ILogger<BookingFormModel> logger)
         {
-            _contextAccessor = contextAccessor;
             _petService = petService;
             _service = service;
             _appointmentService = appointmentService;
+            _logger = logger;
         }
 
         [BindProperty]
@@ -36,28 +38,46 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
         public List<TimeTableResponseDto> DisplayedTimeTableList { get; set; }
         public List<UserResponseDto> DisplayedVetList { get; set; }
 
+
         public async Task OnGetAsync()
         {
             AppointmentBookRequest = new AppointmentBookRequestDto();
-            await InitializeData(); // Ensure to await this method
+            await InitializeData();
         }
 
         private async Task InitializeData()
         {
-            DisplayedPetList = await _petService.GetAllPetsForCustomerAsync(2002);
-            DisplayedServiceList = await _service.GetAllServiceAsync();
-            DisplayedTimeTableList = await _appointmentService.GetAllTimeFramesForBookingAsync();
+            try
+            {
+                DisplayedPetList = await _petService.GetAllPetsForCustomerAsync(2002);
+                DisplayedServiceList = await _service.GetAllServiceAsync();
+                DisplayedTimeTableList = await _appointmentService.GetAllTimeFramesForBookingAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error initializing data.");
+            }
         }
 
         public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
-                await OnGetAsync(); // Reinitialize lists if validation fails
+                await OnGetAsync();
                 return Page();
             }
 
             // Process form submission (e.g., save data)
+            var bookingAppointmentRequest = new AppointmentBookRequestDto
+            {
+                ServiceIdList = AppointmentBookRequest.ServiceIdList.ToList(),
+                PetIdList = AppointmentBookRequest.PetIdList.ToList(),
+                AppointmentDate = AppointmentBookRequest.AppointmentDate,
+                TimetableId = AppointmentBookRequest.TimetableId,
+                VetId = AppointmentBookRequest.VetId
+            };
+
+            await _appointmentService.BookOnlineAppointmentAsync(bookingAppointmentRequest);
 
             return RedirectToPage("TransactionPage");
         }
@@ -69,9 +89,18 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
 
         public async Task<JsonResult> OnGetVetByDateAndTime(string date, int timeTableId)
         {
-            var appointmentDate = DateOnly.Parse(date);
-            var vetList = await _appointmentService.GetFreeWithTimeFrameAndDateAsync(appointmentDate, timeTableId);
-            return new JsonResult(vetList);
+            try
+            {
+                var appointmentDate = DateOnly.Parse(date);
+                var vetList = await _appointmentService.GetFreeWithTimeFrameAndDateAsync(appointmentDate, timeTableId);
+                return new JsonResult(vetList);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching vets.");
+                return new JsonResult(new { success = false, message = "Error fetching vets." });
+            }
         }
+
     }
 }
