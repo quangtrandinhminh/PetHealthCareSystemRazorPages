@@ -1,0 +1,147 @@
+﻿@page
+@model PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Transaction</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Hospitalization ID
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.HospitalizationId
+        </dd>
+        <dt class="col-sm-2">
+            Total
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.Total
+        </dd>
+        <dt class="col-sm-2">
+            Payment Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.PaymentDate
+        </dd>
+        <dt class="col-sm-2">
+            Status
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.Status
+        </dd>
+        <dt class="col-sm-2">
+            Payment Method
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.PaymentMethod
+        </dd>
+        <dt class="col-sm-2">
+            Payment Note
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.PaymentNote
+        </dd>
+        <dt class="col-sm-2">
+            Payment ID
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.PaymentId
+        </dd>
+        <dt class="col-sm-2">
+            Payment Staff ID
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.PaymentStaffId
+        </dd>
+        <dt class="col-sm-2">
+            Payment Staff Name
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.PaymentStaffName
+        </dd>
+        <dt class="col-sm-2">
+            Note
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.Note
+        </dd>
+        <dt class="col-sm-2">
+            Refund Percentage
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.RefundPercentage
+        </dd>
+        <dt class="col-sm-2">
+            Refund Payment ID
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.RefundPaymentId
+        </dd>
+        <dt class="col-sm-2">
+            Refund Reason
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.RefundReason
+        </dd>
+        <dt class="col-sm-2">
+            Refund Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.RefundDate
+        </dd>
+        <dt class="col-sm-2">
+            Customer
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.CustomerName
+        </dd>
+        <dt class="col-sm-2">
+            Appointment ID
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.AppointmentId
+        </dd>
+        <dt class="col-sm-2">
+            Medical Record ID
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.MedicalRecordId
+        </dd>
+        <dt class="col-sm-2">
+            Created By
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.CreatedByName
+        </dd>
+        <dt class="col-sm-2">
+            Last Updated By
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.LastUpdatedByName
+        </dd>
+        <dt class="col-sm-2">
+            Created Time
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.CreatedTime
+        </dd>
+        <dt class="col-sm-2">
+            Last Updated Time
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Transaction.LastUpdatedTime
+        </dd>
+        <dt class="col-sm-2">
+            Deleted Time
+        </dt>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>

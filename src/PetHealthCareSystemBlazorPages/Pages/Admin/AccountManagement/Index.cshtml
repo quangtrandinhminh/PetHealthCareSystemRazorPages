@@ -1,0 +1,186 @@
+﻿@page
+@model PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].Avatar)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].BirthDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].CreatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].LastUpdatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].DeletedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].CreatedTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].LastUpdatedTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].DeletedTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].Verified)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].OTP)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].OTPExpired)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].PhoneNumberConfirmed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].ConcurrencyStamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].NormalizedUserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].NormalizedEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].EmailConfirmed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].PasswordHash)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].TwoFactorEnabled)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].LockoutEnd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].LockoutEnabled)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserEntity[0].AccessFailedCount)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.UserEntity) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Avatar)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BirthDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeletedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdatedTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeletedTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Verified)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OTP)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OTPExpired)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumberConfirmed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ConcurrencyStamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NormalizedUserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NormalizedEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmailConfirmed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PasswordHash)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TwoFactorEnabled)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LockoutEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LockoutEnabled)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccessFailedCount)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
