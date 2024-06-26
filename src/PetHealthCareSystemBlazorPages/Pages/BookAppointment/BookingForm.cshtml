@@ -4,85 +4,117 @@
     ViewData["Title"] = "Book an Appointment";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10 col-sm-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Book an Appointment</h4>
-                </div>
-                <div class="card-body">
-                    <form method="post">
-                        <div class="form-group">
-                            <label asp-for="AppointmentBookRequest.PetIdList">Select Pet</label>
-                            <select class="form-control" asp-for="AppointmentBookRequest.PetIdList" required multiple>
-                                <option value="">-- Select Pet --</option>
-                                @foreach (var pet in Model.DisplayedPetList)
-                                {
-                                    <option value="@pet.Id">@pet.Name</option>
-                                }
-                            </select>
-                        </div>
+@if (Model != null)
+{
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Book an Appointment</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            @if (Model.DisplayedPetList != null)
+                            {
+                                <div class="form-group">
+                                    <label asp-for="AppointmentBookRequest.PetIdList">Select Pet</label>
+                                    <select class="form-control" asp-for="AppointmentBookRequest.PetIdList" required multiple>
+                                        <option value="">-- Select Pet --</option>
+                                        @foreach (var pet in Model.DisplayedPetList)
+                                        {
+                                            <option value="@pet.Id">@pet.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            }
 
-                        <div class="form-group">
-                            <label asp-for="AppointmentBookRequest.ServiceIdList">Select Service</label>
-                            <select class="form-control" asp-for="AppointmentBookRequest.ServiceIdList" required multiple>
-                                <option value="">-- Select Service --</option>
-                                @foreach (var service in Model.DisplayedServiceList)
-                                {
-                                    <option value="@service.Id">@service.Name</option>
-                                }
-                            </select>
-                        </div>
+                            @if (Model.DisplayedServiceList != null)
+                            {
+                                <div class="form-group">
+                                    <label asp-for="AppointmentBookRequest.ServiceIdList">Select Service</label>
+                                    <select class="form-control" asp-for="AppointmentBookRequest.ServiceIdList" required multiple>
+                                        <option value="">-- Select Service --</option>
+                                        @foreach (var service in Model.DisplayedServiceList)
+                                        {
+                                            <option value="@service.Id">@service.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            }
 
-                        <div class="form-group">
-                            <label asp-for="AppointmentBookRequest.AppointmentDate">Select Date</label>
-                            <input class="form-control" asp-for="AppointmentBookRequest.AppointmentDate" type="date" onchange="LoadVets()" required />
-                        </div>
+                            @if (Model.AppointmentBookRequest != null)
+                            {
+                                <div class="form-group">
+                                    <label asp-for="AppointmentBookRequest.AppointmentDate">Select Date</label>
+                                    <input id="appointment-date" class="form-control" asp-for="AppointmentBookRequest.AppointmentDate" type="date" onchange="" value="@Model.AppointmentBookRequest.AppointmentDate" required />
+                                </div>
 
-                        <div class="form-group">
-                            <label asp-for="AppointmentBookRequest.TimetableId">Select Timeslot</label>
-                            <select class="form-control" asp-for="AppointmentBookRequest.TimetableId" onchange="LoadVets()" required>
-                                <option value="">-- Select Timeslot --</option>
-                                @foreach (var timeSlot in Model.DisplayedTimeTableList)
-                                {
-                                    <option value="@timeSlot.Id">@($"{timeSlot.StartTime:hh\\:mm} - {timeSlot.EndTime:hh\\:mm}")</option>
-                                }
-                            </select>
-                        </div>
+                                <div class="form-group">
+                                    <label asp-for="AppointmentBookRequest.TimetableId">Select Timeslot</label>
+                                    <select id="appointment-time" class="form-control" asp-for="AppointmentBookRequest.TimetableId" onchange="" required>
+                                        <option value="">-- Select Timeslot --</option>
+                                        @foreach (var timeSlot in Model.DisplayedTimeTableList)
+                                        {
+                                            <option value="@timeSlot.Id">@($"{timeSlot.StartTime:hh\\:mm} - {timeSlot.EndTime:hh\\:mm}")</option>
+                                        }
+                                    </select>
+                                </div>
 
-                        <!-- Placeholder for _VetOptionsPartial -->
-                        <div id="vetOptionsPartialContainer">
-                            @await Html.PartialAsync("_VetOptionsPartial", Model)
-                        </div>
+                                <div class="form-group">
+                                    <label asp-for="AppointmentBookRequest.VetId">Select Vet</label>
+                                    <select id="vet-id" class="form-control" asp-for="AppointmentBookRequest.VetId" required>
+                                    </select>
+                                </div>
+                            }
 
-                        <button type="submit" class="btn btn-primary btn-block">Book Appointment</button>
-                    </form>
+                            <button type="submit" class="btn btn-primary btn-block">Book Appointment</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+}
+else
+{
+    <p>Model is null.</p>
+}
 
-@section Scripts {
-    <script>
-        function LoadVets() {
-            var formData = {
-                'AppointmentBookRequest.AppointmentDate': document.getElementById('AppointmentBookRequest_AppointmentDate').value,
-                'AppointmentBookRequest.TimetableId': document.getElementById('AppointmentBookRequest_TimetableId').value
-            };
+<script>
+        const selectedDate = document.getElementById("appointment-date");
+        const selectedTime = document.getElementById("appointment-time");
+        const vetList = document.getElementById("vet-id");
 
-            $.ajax({
-                url: '/BookAppointment/BookingForm?handler=Vets',
-                type: 'GET',
-                data: formData,
-                success: function (result) {
-                    $('#vetOptionsPartialContainer').html(result); // Replace partial view content
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error loading vets:', error);
-                }
-            });
+        selectedDate.addEventListener("change", handleDateAndTimeChange);
+        selectedTime.addEventListener("change", handleDateAndTimeChange);
+
+        function handleDateAndTimeChange() {
+            var date = selectedDate.value;
+            var timeID = selectedTime.value;
+
+            if (date && timeID) {
+                fetch(`/BookAppointment/BookingForm?handler=VetByDateAndTime&date=${date}&timeTableId=${timeID}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        vetList.innerHTML = '';
+                        data.forEach(vet => {
+                            var option = document.createElement("option");
+                            option.value = vet.id; // Ensure `id` matches the property in your `vet` object
+                            option.text = vet.fullName; // Ensure `fullName` matches the property in your `vet` object
+                            vetList.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching vets:', error));
+            }
         }
     </script>
+
+@section Scripts {
+    
 }

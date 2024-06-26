@@ -3,10 +3,12 @@ using BusinessObject.DTO.Pet;
 using BusinessObject.DTO.Service;
 using BusinessObject.DTO.TimeTable;
 using BusinessObject.DTO.User;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service.IServices;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
@@ -16,9 +18,11 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
         private readonly IPetService _petService;
         private readonly IService _service;
         private readonly IAppointmentService _appointmentService;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public BookingFormModel(IPetService petService, IService service, IAppointmentService appointmentService)
+        public BookingFormModel(IPetService petService, IService service, IAppointmentService appointmentService, IHttpContextAccessor contextAccessor)
         {
+            _contextAccessor = contextAccessor;
             _petService = petService;
             _service = service;
             _appointmentService = appointmentService;
@@ -27,24 +31,29 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
         [BindProperty]
         public AppointmentBookRequestDto AppointmentBookRequest { get; set; }
 
-        public List<PetResponseDto> DisplayedPetList { get; set; } = new List<PetResponseDto>();
-        public List<ServiceResponseDto> DisplayedServiceList { get; set; } = new List<ServiceResponseDto>();
-        public List<TimeTableResponseDto> DisplayedTimeTableList { get; set; } = new List<TimeTableResponseDto>();
-        public List<UserResponseDto> DisplayedVetList { get; set; } = new List<UserResponseDto>();
+        public List<PetResponseDto> DisplayedPetList { get; set; }
+        public List<ServiceResponseDto> DisplayedServiceList { get; set; }
+        public List<TimeTableResponseDto> DisplayedTimeTableList { get; set; }
+        public List<UserResponseDto> DisplayedVetList { get; set; }
 
         public async Task OnGetAsync()
         {
-            AppointmentBookRequest = new AppointmentBookRequestDto(); // Initialize here
+            AppointmentBookRequest = new AppointmentBookRequestDto();
+            await InitializeData(); // Ensure to await this method
+        }
+
+        private async Task InitializeData()
+        {
             DisplayedPetList = await _petService.GetAllPetsForCustomerAsync(2002);
             DisplayedServiceList = await _service.GetAllServiceAsync();
             DisplayedTimeTableList = await _appointmentService.GetAllTimeFramesForBookingAsync();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
-                OnGetAsync(); // Reinitialize lists if validation fails
+                await OnGetAsync(); // Reinitialize lists if validation fails
                 return Page();
             }
 
@@ -53,23 +62,16 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             return RedirectToPage("TransactionPage");
         }
 
-        public async Task<IActionResult> OnGetVetsAsync()
+        public void SaveObjectToSession()
         {
-            if (AppointmentBookRequest != null && !string.IsNullOrEmpty(AppointmentBookRequest.AppointmentDate) && AppointmentBookRequest.TimetableId != 0)
-            {
-                // Parse the date string to DateOnly if needed
-                DateOnly appointmentDate = DateOnly.Parse(AppointmentBookRequest.AppointmentDate);
-
-                DisplayedVetList = await _appointmentService.GetFreeWithTimeFrameAndDateAsync(appointmentDate, AppointmentBookRequest.TimetableId);
-            }
-            else
-            {
-                DisplayedVetList.Clear(); // Clear the list if date or timetable is not selected
-            }
-
-            // Return the partial view with the updated model
-            return Partial("_VetOptionsPartial", this);
+            HttpContext.Session.SetString("BookAppointmentRequest", JsonSerializer.Serialize(AppointmentBookRequest));
         }
 
+        public async Task<JsonResult> OnGetVetByDateAndTime(string date, int timeTableId)
+        {
+            var appointmentDate = DateOnly.Parse(date);
+            var vetList = await _appointmentService.GetFreeWithTimeFrameAndDateAsync(appointmentDate, timeTableId);
+            return new JsonResult(vetList);
+        }
     }
 }
