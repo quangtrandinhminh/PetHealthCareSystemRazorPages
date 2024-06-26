@@ -1,0 +1,52 @@
+﻿@page "{customerId:int}"
+@model PetHealthCareSystemRazorPages.Pages.Staff.BookingTransaction.DetailsModel
+
+@{
+    ViewData["Title"] = "Customer Transactions Details";
+}
+
+<h1>Customer Transactions Details</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Transaction ID</th>
+            <th>Total</th>
+            <th>Payment Date</th>
+            <th>Status</th>
+            <th>Payment Method</th>
+            <th>Payment Note</th>
+            <th>Payment ID</th>
+            <th>Payment Staff Name</th>
+            <th>Note</th>
+            <th>Refund Percentage</th>
+            <th>Refund Payment ID</th>
+            <th>Refund Reason</th>
+            <th>Refund Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var transaction in Model.Transactions.Items)
+        {
+            <tr>
+                <td>@transaction.Id</td>
+                <td>@transaction.Total</td>
+                <td>@transaction.PaymentDate</td>
+                <td>@transaction.Status</td>
+                <td>@transaction.PaymentMethod</td>
+                <td>@transaction.PaymentNote</td>
+                <td>@transaction.PaymentId</td>
+                <td>@transaction.PaymentStaffName</td>
+                <td>@transaction.Note</td>
+                <td>@transaction.RefundPercentage</td>
+                <td>@transaction.RefundPaymentId</td>
+                <td>@transaction.RefundReason</td>
+                <td>@transaction.RefundDate</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
