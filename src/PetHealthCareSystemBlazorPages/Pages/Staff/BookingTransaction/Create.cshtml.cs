@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingTransaction
 {
-    [Authorize(Roles = "Staff")]
     public class CreateModel : PageModel
     {
         private readonly ITransactionService _transactionService;

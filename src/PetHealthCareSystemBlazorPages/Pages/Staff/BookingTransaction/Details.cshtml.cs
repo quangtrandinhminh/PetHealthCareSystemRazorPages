@@ -3,12 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using BusinessObject.DTO.Transaction;
 using Service.IServices;
-using Repository.Extensions;
-using Microsoft.AspNetCore.Authorization;
+using Utility.Exceptions;
 
 namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingTransaction
 {
-    [Authorize(Roles = "Staff")]
     public class DetailsModel : PageModel
     {
         private readonly ITransactionService _transactionService;
@@ -18,25 +16,30 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingTransaction
             _transactionService = transactionService;
         }
 
-        public PaginatedList<TransactionResponseDto> Transactions { get; set; }
-        public int CustomerId { get; set; }
+        public TransactionResponseWithDetailsDto Transaction { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? customerId, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (customerId == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            CustomerId = customerId.Value;
-            Transactions = await _transactionService.GetTransactionsByCustomerIdAsync(CustomerId, pageNumber, pageSize);
-
-            if (Transactions == null || Transactions.Items.Count == 0)
+            try
             {
-                return NotFound();
-            }
+                Transaction = await _transactionService.GetTransactionByIdAsync(id.Value);
+                if (Transaction == null)
+                {
+                    return NotFound();
+                }
 
-            return Page();
+                return Page();
+            }
+            catch (AppException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }
