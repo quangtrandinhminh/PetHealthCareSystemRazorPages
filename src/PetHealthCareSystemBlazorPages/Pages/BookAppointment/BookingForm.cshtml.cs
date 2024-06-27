@@ -85,13 +85,9 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             };
 
             var userId = int.Parse(HttpContext.Session.GetString("UserId"));
-            await _appointmentService.BookOnlineAppointmentAsync(AppointmentBookRequest, userId);
-            return RedirectToPage("TransactionPage");
-        }
-
-        public void SaveObjectToSession()
-        {
-            HttpContext.Session.SetString("BookAppointmentRequest", JsonSerializer.Serialize(AppointmentBookRequest));
+            AppointmentResponseDto appointmentResponse = await _appointmentService.BookOnlineAppointmentAsync(AppointmentBookRequest, userId);
+            HttpContext.Session.SetString("appointment", JsonSerializer.Serialize(appointmentResponse));
+            return RedirectToPage("./TransactionForm");
         }
 
         public async Task<JsonResult> OnGetVetByDateAndTime(string date, int timeTableId)
