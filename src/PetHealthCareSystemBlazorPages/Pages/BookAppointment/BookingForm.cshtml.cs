@@ -39,7 +39,6 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
         public List<TimeTableResponseDto> DisplayedTimeTableList { get; set; }
         public List<UserResponseDto> DisplayedVetList { get; set; }
 
-
         public async Task OnGetAsync()
         {
             var role = HttpContext.Session.GetString("Role");
@@ -68,29 +67,26 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             }
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPost(string petIdList, string serviceIdList, string appointmentDate, int timeTableId, int vetId)
         {
-            /*if (!ModelState.IsValid)
+            //if (!ModelState.IsValid)
+            //{
+            //    await OnGetAsync();
+            //    return Page();
+            //}
+
+            AppointmentBookRequest = new AppointmentBookRequestDto
             {
-                await OnGetAsync();
-                return Page();
-            }*/
+                PetIdList = ConvertStringToIntList(petIdList),
+                ServiceIdList = ConvertStringToIntList(serviceIdList),
+                AppointmentDate = appointmentDate,
+                TimetableId = timeTableId,
+                VetId = vetId
+            };
 
-            // Process form submission (e.g., save data)
-
-                var bookingAppointmentRequest = new AppointmentBookRequestDto
-                {
-                    ServiceIdList = AppointmentBookRequest.ServiceIdList.ToList(),
-                    PetIdList = AppointmentBookRequest.PetIdList.ToList(),
-                    AppointmentDate = AppointmentBookRequest.AppointmentDate,
-                    TimetableId = AppointmentBookRequest.TimetableId,
-                    VetId = AppointmentBookRequest.VetId
-                };
-
-                var userId = int.Parse(HttpContext.Session.GetString("UserId"));
-                await _appointmentService.BookOnlineAppointmentAsync(bookingAppointmentRequest, userId);
-                return RedirectToPage("TransactionPage");
-
+            var userId = int.Parse(HttpContext.Session.GetString("UserId"));
+            await _appointmentService.BookOnlineAppointmentAsync(AppointmentBookRequest, userId);
+            return RedirectToPage("TransactionPage");
         }
 
         public void SaveObjectToSession()
@@ -114,5 +110,11 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             }
         }
 
+        public static List<int> ConvertStringToIntList(string input)
+        {
+            return input.Split(',')
+                        .Select(int.Parse)
+                        .ToList();
+        }
     }
 }
