@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Utility.Enum
+@{
     var role = Context.Session.GetString("Role");
     var name = Context.Session.GetString("Username");
     var id = Context.Session.GetString("UserId");
@@ -55,7 +56,7 @@
                         <!-- Logo -->
                         <div class="col-xl-2 col-lg-2 col-md-1">
                             <div class="logo">
-                                <a asp-page="HomePage"><img src="~/assets/img/logo/logo.png" alt=""></a>
+                                <a asp-page="/HomePage"><img src="~/assets/img/logo/logo.png" alt=""></a>
                             </div>
                         </div>
                         <div class="col-xl-10 col-lg-10 col-md-10">
@@ -66,16 +67,16 @@
                                         <ul id="navigation">
                                             <li><a href="/">Home</a></li>
 
-                                            <li><a href="about.html">About</a></li>
-                                            <li><a href="services.html">Services</a></li>
+                                            <li><a href="">About</a></li>
+                                            <li><a href="">Services</a></li>
 
                                             @if (role is null)
                                             {
 
-                                                <a class="btn btn-primary" asp-area="" asp-page="Login" style="background-color:#0069d9">Login</a>
+                                                <a class="btn btn-primary" asp-area="" asp-page="/Login" style="background-color:#0069d9">Login</a>
                                          
                                             }
-                                            else
+                                            else if (role.Contains(UserRole.Customer.ToString()))
                                             {
                                                 <li><a asp-page="/Pet/Index">Pet</a></li>
                                                 <li>
@@ -83,7 +84,20 @@
                                                     <ul class="submenu">
                       
                                                         <li>
-                                                            <a class="nav-link text-dark" asp-area="" asp-page="Logout">Logout</a>
+                                                            <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            }
+                                            else if (role.Contains(UserRole.Staff.ToString()))
+                                            {
+                                                <li><a asp-page="Staff/StaffDashboard/Index">Dashboard</a></li>
+                                                <li>
+                                                    <a class="nav-link text-dark">Welcome, @name</a>
+                                                    <ul class="submenu">
+
+                                                        <li>
+                                                            <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
                                                         </li>
                                                     </ul>
                                                 </li>
