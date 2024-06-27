@@ -78,7 +78,7 @@
                                             </div>
                                         }
                                     </div>
-                                    <input type="hidden" asp-for="AppointmentBookRequest.PetIdList" id="selected-pet-id" />
+                                    <input type="hidden" id="selected-pet-id" name="petIdList" />
                                     <span asp-validation-for="AppointmentBookRequest.PetIdList" class="text-danger"></span>
                                 </div>
                             }
@@ -95,7 +95,7 @@
                                             </div>
                                         }
                                     </div>
-                                    <input type="hidden" asp-for="AppointmentBookRequest.ServiceIdList" id="selected-service-id" />
+                                    <input type="hidden" id="selected-service-id" name="serviceIdList" />
                                     <span asp-validation-for="AppointmentBookRequest.ServiceIdList" class="text-danger"></span>
                                 </div>
                             }
@@ -104,7 +104,7 @@
                             {
                                 <div class="form-group">
                                     <label asp-for="AppointmentBookRequest.AppointmentDate">Select Date</label>
-                                    <input id="appointment-date" class="form-control" asp-for="AppointmentBookRequest.AppointmentDate" type="date" required />
+                                    <input id="appointment-date" class="form-control" type="date" name="appointmentDate" required />
                                 </div>
 
                                 <div class="form-group">
@@ -117,6 +117,7 @@
                                             </div>
                                         }
                                     </div>
+                                    <input type="hidden" id="selected-timetable-id" name="timeTableId" />
                                 </div>
 
                                 <div class="form-group">
@@ -124,7 +125,7 @@
                                     <div id="vet-list" class="select-list">
                                         <!-- The vet list will be populated dynamically -->
                                     </div>
-                                    <input type="hidden" asp-for="AppointmentBookRequest.VetId" id="selected-vet-id" />
+                                    <input type="hidden" id="selected-vet-id" name="vetId" />
                                     <p id="no-vets-message">No vets available for the selected date and time slot.</p>
                                 </div>
                             }
@@ -148,146 +149,162 @@ else
     }
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-    const selectedDate = document.getElementById("appointment-date");
-    const timeSlotList = document.getElementById("time-slot-list");
-    const petList = document.getElementById("pet-list");
-    const selectedPetIdInput = document.getElementById("selected-pet-id");
-    const serviceList = document.getElementById("service-list");
-    const selectedServiceIdInput = document.getElementById("selected-service-id");
-    const vetListContainer = document.getElementById("vet-list");
-    const selectedVetIdInput = document.getElementById("selected-vet-id");
-    const noVetsMessage = document.getElementById("no-vets-message");
+            const selectedDate = document.getElementById("appointment-date");
+            const timeSlotList = document.getElementById("time-slot-list");
+            const petList = document.getElementById("pet-list");
+            const selectedPetIdInput = document.getElementById("selected-pet-id");
+            const serviceList = document.getElementById("service-list");
+            const selectedServiceIdInput = document.getElementById("selected-service-id");
+            const selectedTimeTableIdInput = document.getElementById("selected-timetable-id");
+            const vetListContainer = document.getElementById("vet-list");
+            const selectedVetIdInput = document.getElementById("selected-vet-id");
+            const noVetsMessage = document.getElementById("no-vets-message");
 
-    // Set default value for date input to tomorrow
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1); // Tomorrow's date
+            // Set default value for date input to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1); // Tomorrow's date
 
-    // Set default value and min/max dates for appointment date
-    selectedDate.valueAsDate = tomorrow; // Default value
-    selectedDate.min = tomorrow.toISOString().split('T')[0]; // Minimum date
-    const maxDate = new Date();
-    maxDate.setDate(maxDate.getDate() + 15); // 15 days ahead
-    selectedDate.max = maxDate.toISOString().split('T')[0]; // Maximum date
+            let appointmentBookRequest = {
+                petIdList: [],
+                serviceIdList: [],
+                appointmentDate: tomorrow,
+                timeTableId: '',
+                vetId: ''
+            };
 
-    // Event listeners
-    selectedDate.addEventListener("change", handleDateChange);
-    timeSlotList.addEventListener("click", handleTimeSlotSelect);
-    petList.addEventListener("click", (event) => handleSelectItemClick(event, selectedPetIdInput));
-    serviceList.addEventListener("click", (event) => handleSelectItemClick(event, selectedServiceIdInput));
-    vetListContainer.addEventListener("click", (event) => handleVetSelection(event));
+            // Set default value and min/max dates for appointment date
+            selectedDate.valueAsDate = tomorrow; // Default value
+            selectedDate.min = tomorrow.toISOString().split('T')[0]; // Minimum date
+            const maxDate = new Date();
+            maxDate.setDate(maxDate.getDate() + 15); // 15 days ahead
+            selectedDate.max = maxDate.toISOString().split('T')[0]; // Maximum date
 
-    function handleDateChange() {
-        console.log("Date changed");
-        // Add logic if needed for date change
-    }
+            // Event listeners
+            selectedDate.addEventListener("change", handleDateChange);
+            timeSlotList.addEventListener("click", handleTimeSlotSelect);
+            petList.addEventListener("click", (event) => handleSelectItemClick(event, selectedPetIdInput, 'petIdList'));
+            serviceList.addEventListener("click", (event) => handleSelectItemClick(event, selectedServiceIdInput, 'serviceIdList'));
+            vetListContainer.addEventListener("click", (event) => handleVetSelection(event));
 
-    function handleTimeSlotSelect(event) {
-        const selectedSlot = event.target.closest('.time-slot-item');
-        if (selectedSlot) {
-            // Clear previously selected slots
-            const selectedSlots = timeSlotList.querySelectorAll('.time-slot-item.selected-item');
-            selectedSlots.forEach(slot => slot.classList.remove('selected-item'));
+            function handleDateChange() {
+                appointmentBookRequest.appointmentDate = selectedDate.value;
+                console.log("Date changed: ", appointmentBookRequest);
+            }
 
-            // Highlight the clicked slot
-            selectedSlot.classList.add('selected-item');
+            function handleTimeSlotSelect(event) {
+                const selectedSlot = event.target.closest('.time-slot-item');
+                if (selectedSlot) {
+                    // Clear previously selected slots
+                    const selectedSlots = timeSlotList.querySelectorAll('.time-slot-item.selected-item');
+                    selectedSlots.forEach(slot => slot.classList.remove('selected-item'));
 
-            const timeTableId = selectedSlot.getAttribute('data-id');
-            const startTime = selectedSlot.getAttribute('data-start-time');
-            const endTime = selectedSlot.getAttribute('data-end-time');
-            const date = selectedDate.valueAsDate.toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+                    // Highlight the clicked slot
+                    selectedSlot.classList.add('selected-item');
 
-            // Call function to load vets based on time slot
-            loadVetsByTimeSlot(date, timeTableId);
-        }
-    }
+                    appointmentBookRequest.timeTableId = selectedSlot.getAttribute('data-id');
+                    selectedTimeTableIdInput.value = selectedSlot.getAttribute('data-id');
 
-    function loadVetsByTimeSlot(date, timeTableId) {
-        fetch(`/BookAppointment/BookingForm?handler=VetByDateAndTime&date=${date}&timeTableId=${timeTableId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    const startTime = selectedSlot.getAttribute('data-start-time');
+                    const endTime = selectedSlot.getAttribute('data-end-time');
+                    const date = selectedDate.valueAsDate.toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+
+                    console.log("Selected Time Slot: ", { timeTableId: appointmentBookRequest.timeTableId, startTime, endTime });
+
+                    // Call function to load vets based on time slot
+                    loadVetsByTimeSlot(date, appointmentBookRequest.timeTableId);
                 }
-                return response.json();
-            })
-            .then(data => {
-                vetListContainer.innerHTML = '';
+            }
 
-                if (data.length > 0) {
-                    noVetsMessage.style.display = 'none';
+            function loadVetsByTimeSlot(date, timeTableId) {
+                console.log("Loading vets for date: ", date, " and timeTableId: ", timeTableId);
 
-                    // Populate the div with fetched vet data
-                    data.forEach(vet => {
-                        const vetItem = document.createElement("div");
-                        vetItem.classList.add("select-item");
-                        vetItem.setAttribute("data-id", vet.id);
-                        vetItem.setAttribute("data-type", "vet");
-                        vetItem.textContent = vet.fullName;
-                        vetListContainer.appendChild(vetItem);
+                fetch(`/BookAppointment/BookingForm?handler=VetByDateAndTime&date=${date}&timeTableId=${timeTableId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("Vets data: ", data);
+
+                        vetListContainer.innerHTML = '';
+
+                        if (data.length > 0) {
+                            noVetsMessage.style.display = 'none';
+
+                            // Populate the div with fetched vet data
+                            data.forEach(vet => {
+                                const vetItem = document.createElement("div");
+                                vetItem.classList.add("select-item");
+                                vetItem.setAttribute("data-id", vet.id);
+                                vetItem.setAttribute("data-type", "vet");
+                                vetItem.textContent = vet.fullName;
+                                vetListContainer.appendChild(vetItem);
+                            });
+                        } else {
+                            noVetsMessage.style.display = 'block';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching vets:', error);
                     });
-                } else {
-                    noVetsMessage.style.display = 'block';
+            }
+
+            function handleSelectItemClick(event, hiddenInput, type) {
+                const selectedItem = event.target;
+                if (selectedItem.classList.contains("select-item")) {
+                    const itemId = selectedItem.getAttribute("data-id");
+                    const itemType = selectedItem.getAttribute("data-type");
+                    const isSelected = selectedItem.classList.contains("selected-item");
+
+                    if (!isSelected && countSelectedItems(itemType) >= 3) {
+                        alert(`You can select a maximum of 3 ${itemType}s.`);
+                        return;
+                    }
+
+                    selectedItem.classList.toggle("selected-item");
+
+                    updateSelectedItems(hiddenInput, type, itemType);
                 }
-            })
-            .catch(error => {
-                console.error('Error fetching vets:', error);
-            });
-    }
-
-    function handleSelectItemClick(event, hiddenInput) {
-        const selectedItem = event.target;
-        if (selectedItem.classList.contains("select-item")) {
-            const itemId = selectedItem.getAttribute("data-id");
-            const itemType = selectedItem.getAttribute("data-type");
-            const isSelected = selectedItem.classList.contains("selected-item");
-
-            if (!isSelected && countSelectedItems(itemType) >= 3) {
-                alert(`You can select a maximum of 3 ${itemType}s.`);
-                return;
             }
 
-            selectedItem.classList.toggle("selected-item");
-
-            updateSelectedItems(hiddenInput, itemType);
-        }
-    }
-
-    function handleVetSelection(event) {
-        const selectedVet = event.target.closest('.select-item');
-        if (selectedVet && selectedVet.getAttribute("data-type") === "vet") {
-            const vetId = selectedVet.getAttribute("data-id");
-            const vetName = selectedVet.textContent;
-
-            // Remove previous selected item highlight
-            const previouslySelected = vetListContainer.querySelector('.select-item.selected-item');
-            if (previouslySelected) {
-                previouslySelected.classList.remove('selected-item');
+            function countSelectedItems(type) {
+                const selectedItems = document.querySelectorAll(`.select-item.selected-item[data-type="${type}"]`);
+                console.log(`Selected ${type}s count: `, selectedItems.length);
+                return selectedItems.length;
             }
 
-            // Highlight the clicked vet
-            selectedVet.classList.add('selected-item');
+            function updateSelectedItems(hiddenInput, type, itemType) {
+                const selectedIds = [];
+                const selectedItems = document.querySelectorAll(`.select-item.selected-item[data-type="${itemType}"]`);
+                selectedItems.forEach(item => {
+                    selectedIds.push(parseInt(item.getAttribute("data-id")));
+                });
+                hiddenInput.value = selectedIds.join(","); // Store as comma-separated values
 
-            // Update hidden input or perform further actions
-            selectedVetIdInput.value = vetId;
+                appointmentBookRequest[type] = selectedIds;
+                console.log(`Updated ${itemType} IDs: `, hiddenInput.value);
+                console.log("Updated AppointmentBookRequest: ", appointmentBookRequest);
+            }
 
-            console.log(`Selected Vet ID: ${vetId}, Name: ${vetName}`);
-            // Example: update some other hidden input or perform further actions
-        }
-    }
+            function handleVetSelection(event) {
+                const selectedVet = event.target.closest('.select-item[data-type="vet"]');
+                if (selectedVet) {
+                    // Clear previously selected vet
+                    const selectedVets = vetListContainer.querySelectorAll('.select-item.selected-item[data-type="vet"]');
+                    selectedVets.forEach(vet => vet.classList.remove('selected-item'));
 
-    function countSelectedItems(type) {
-        const selectedItems = document.querySelectorAll(`.select-item.selected-item[data-type="${type}"]`);
-        return selectedItems.length;
-    }
+                    // Highlight the clicked vet
+                    selectedVet.classList.add('selected-item');
+                    selectedVetIdInput.value = selectedVet.getAttribute("data-id");
 
-    function updateSelectedItems(hiddenInput, type) {
-        const selectedIds = [];
-        const selectedItems = document.querySelectorAll(`.select-item.selected-item[data-type="${type}"]`);
-        selectedItems.forEach(item => {
-            selectedIds.push(parseInt(item.getAttribute("data-id")));
+                    appointmentBookRequest.vetId = selectedVetIdInput.value;
+                    console.log("Selected Vet ID: ", selectedVetIdInput.value);
+                    console.log("Updated AppointmentBookRequest: ", appointmentBookRequest);
+                }
+            }
+
         });
-        hiddenInput.value = selectedIds.join(","); // Store as comma-separated values
-    }
-});
-
     </script>
 }
