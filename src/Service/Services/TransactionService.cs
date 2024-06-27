@@ -223,55 +223,61 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
         }
 
         // for each service in list, create transaction detail
-        var serviceTasks = dto.Services?.Select(async service =>
+        var serviceDetails = new List<TransactionDetail>();
+        if (dto.Services != null)
         {
-            var serviceEntity = await _serviceRepository.GetSingleAsync(s => s.Id == service.ServiceId);
-            if (serviceEntity == null)
+            foreach (var service in dto.Services)
             {
-                throw new AppException(ResponseCodeConstants.NOT_FOUND,
-                    ResponseMessageConstantsService.SERVICE_NOT_FOUND + $": {service.ServiceId}",
-                    StatusCodes.Status404NotFound);
+                var serviceEntity = await _serviceRepository.GetSingleAsync(s => s.Id == service.ServiceId);
+                if (serviceEntity == null)
+                {
+                    throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                        ResponseMessageConstantsService.SERVICE_NOT_FOUND + $": {service.ServiceId}",
+                        StatusCodes.Status404NotFound);
+                }
+                serviceDetails.Add(new TransactionDetail
+                {
+                    ServiceId = service.ServiceId,
+                    Name = serviceEntity.Name,
+                    Quantity = service.Quantity,
+                    Price = serviceEntity.Price,
+                    SubTotal = serviceEntity.Price * service.Quantity,
+                    TransactionId = transactionEntity.Id,
+                });
             }
-            return new TransactionDetail
-            {
-                ServiceId = service.ServiceId,
-                Name = serviceEntity.Name,
-                Quantity = service.Quantity,
-                Price = serviceEntity.Price,
-                SubTotal = serviceEntity.Price * service.Quantity,
-                TransactionId = transactionEntity.Id,
-            };
-        }).ToArray() ?? [];
+        }
 
         // for each medical item in list, create transaction detail
-        var medicalItemTasks = dto.MedicalItems?.Select(async medicalItem =>
+        var medicalItemDetails = new List<TransactionDetail>();
+        if (dto.MedicalItems != null)
         {
-            var medicalItemEntity = await _medicalItemRepository.GetSingleAsync(m => m.Id == medicalItem.MedicalItemId);
-            if (medicalItemEntity == null)
+            foreach (var medicalItem in dto.MedicalItems)
             {
-                throw new AppException(ResponseCodeConstants.NOT_FOUND,
-                    ResponseMessageConstantsMedicalItem.MEDICAL_ITEM_NOT_FOUND + $": {medicalItem.MedicalItemId}",
-                    StatusCodes.Status404NotFound);
+                var medicalItemEntity = await _medicalItemRepository.GetSingleAsync(m => m.Id == medicalItem.MedicalItemId);
+                if (medicalItemEntity == null)
+                {
+                    throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                        ResponseMessageConstantsMedicalItem.MEDICAL_ITEM_NOT_FOUND + $": {medicalItem.MedicalItemId}",
+                        StatusCodes.Status404NotFound);
+                }
+                medicalItemDetails.Add(new TransactionDetail
+                {
+                    MedicalItemId = medicalItem.MedicalItemId,
+                    Name = medicalItemEntity.Name,
+                    Quantity = medicalItem.Quantity,
+                    Price = medicalItemEntity.Price,
+                    SubTotal = medicalItemEntity.Price * medicalItem.Quantity,
+                    TransactionId = transactionEntity.Id,
+                });
             }
-            return new TransactionDetail
-            {
-                MedicalItemId = medicalItem.MedicalItemId,
-                Name = medicalItemEntity.Name,
-                Quantity = medicalItem.Quantity,
-                Price = medicalItemEntity.Price,
-                SubTotal = medicalItemEntity.Price * medicalItem.Quantity,
-                TransactionId = transactionEntity.Id,
-            };
-        }).ToArray() ?? [];
+        }
 
-        var transactionDetails = (await Task.WhenAll(serviceTasks))
-            .Concat(await Task.WhenAll(medicalItemTasks)).ToList();
+        var transactionDetails = serviceDetails.Concat(medicalItemDetails).ToList();
         transactionEntity.TransactionDetails = transactionDetails;
         transactionEntity.Total = transactionDetails.Sum(detail => detail.SubTotal);
 
         await _transactionRepository.AddAsync(transactionEntity);
     }
-
     public async Task UpdatePaymentByStaffAsync(int id, int userId)
     {
         _logger.Information($"Update payment status for Transaction {id} by Staff {userId}");
