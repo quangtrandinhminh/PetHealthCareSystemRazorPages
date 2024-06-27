@@ -1,13 +1,13 @@
+using Azure;
 using BusinessObject.DTO.Appointment;
 using BusinessObject.DTO.Pet;
 using BusinessObject.DTO.Transaction;
 using BusinessObject.DTO.User;
-using BusinessObject.DTO.Vet;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service.IServices;
-using Service.Services;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using Utility.Enum;
 
 namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
 {
@@ -28,36 +28,67 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             _userService = userService;
         }
 
-        public void OnGet()
-        {
-        }
-
-        public AppointmentBookRequestDto AppointmentBookRequestDto { get; set; }
-
-        public List<PetResponseDto> SelectedPets {  get; set; }
-
+        public AppointmentResponseDto AppointmentResponseDto { get; set; }
+        public List<PetResponseDto> SelectedPets { get; set; }
         public UserResponseDto SelectedVet { get; set; }
-
-        [BindProperty]
         public TransactionDropdownDto TransactionDropdownDto { get; set; }
-
-        [BindProperty]
         public List<TransactionServicesDto> TransactionServices { get; set; }
 
-        public void OnPost()
+        public async Task OnGet()
         {
+            var role = HttpContext.Session.GetString("Role");
+            if (role == null || !role.Contains(UserRole.Customer.ToString()))
+            {
+                Response.Redirect("/Login");
+                return;
+            }
+
+            await InitializeData();
         }
 
-        public async void InitializeData()
+        public async Task OnPost(int paymentMethod, string appointmentResponseDtoJson)
         {
-            AppointmentBookRequestDto = LoadObjectFromSession();
+            AppointmentResponseDto = JsonSerializer.Deserialize<AppointmentResponseDto>(appointmentResponseDtoJson);
+            TransactionDropdownDto = _transactionService.GetTransactionDropdownData();
+
+            if (AppointmentResponseDto == null)
+            {
+                throw new Exception("AppointmentResponseDto is null.");
+            }
+
+            TransactionRequestDto transactionRequestDto = new TransactionRequestDto
+            {
+                PaymentMethod = paymentMethod,
+                Services = TransactionServices,
+                PaymentDate = DateTime.Now,
+                AppointmentId = AppointmentResponseDto.Id,
+                Status = 1
+            };
+
+            var userId = int.Parse(HttpContext.Session.GetString("UserId"));
+
+            await _transactionService.CreateTransactionAsync(transactionRequestDto, userId);
+
+            Response.Redirect("/Login");
+            return;
+        }
+
+        private async Task InitializeData()
+        {
+            var tempData = HttpContext.Session.GetString("appointment");
 
             try
             {
+                AppointmentResponseDto = JsonSerializer.Deserialize<AppointmentResponseDto>(tempData);
                 TransactionDropdownDto = _transactionService.GetTransactionDropdownData();
-                TransactionServices = CreateTransactionServices(AppointmentBookRequestDto.ServiceIdList);
-                SelectedPets = await LoadSelectedPetList(AppointmentBookRequestDto.PetIdList);
-                SelectedVet = await _userService.GetVetByIdAsync(AppointmentBookRequestDto.VetId);
+
+                if (AppointmentResponseDto != null)
+                {
+                    SelectedPets = await LoadSelectedPetList(AppointmentResponseDto.Pets.Select(p => p.Id).ToList());
+                    SelectedVet = AppointmentResponseDto.Vet;
+                    var quantity = AppointmentResponseDto.Pets.Count;
+                    TransactionServices = CreateTransactionServices(AppointmentResponseDto.Services.Select(s => s.Id).ToList(), quantity);
+                }
             }
             catch (Exception ex)
             {
@@ -76,29 +107,14 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             return petList;
         }
 
-
-        private static List<TransactionServicesDto> CreateTransactionServices(List<int> serviceIdList)
+        private static List<TransactionServicesDto> CreateTransactionServices(List<int> serviceIdList, int quantity)
         {
             var transactionServices = new List<TransactionServicesDto>();
             foreach (var serviceId in serviceIdList)
             {
-                transactionServices.Add(new TransactionServicesDto { ServiceId = serviceId, Quantity = 1 });
+                transactionServices.Add(new TransactionServicesDto { ServiceId = serviceId, Quantity = quantity });
             }
             return transactionServices;
-        }
-
-        public AppointmentBookRequestDto LoadObjectFromSession()
-        {
-            var tempString = HttpContext.Session.GetString("BookAppointmentRequest");
-            if (tempString != null)
-            {
-                return JsonSerializer.Deserialize<AppointmentBookRequestDto>(tempString);
-            }
-            else
-            {
-                RedirectToPage("BookingForm");
-                return null;
-            }
         }
     }
 }

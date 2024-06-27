@@ -1,23 +1,70 @@
 ﻿@page
+@using System.Text.Json;
+@using Utility.Enum;
 @model PetHealthCareSystemRazorPages.Pages.BookAppointment.TransactionFormModel
 @{
+    ViewData["Title"] = "Transaction Form";
 }
 
-<div class="page-conatainer">
-    <div class="form-header-block form-block">
-        <h2>Payment</h2>
-    </div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
 
-    <div class="form-block">
-        <label>Pets</label>
+                    <h4 class="mb-0">Transaction Form</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" name="appointmentResponseDtoJson" value="@JsonSerializer.Serialize(Model.AppointmentResponseDto)" />
+                        <input type="hidden" name="transactionServicesJson" value="@JsonSerializer.Serialize(Model.TransactionServices)" />
 
-        <div class="pet-info-block">
+                        <div class="form-group">
+                            <label for="paymentMethod">Select Payment Method</label>
+                            <select id="paymentMethod" name="paymentMethod" class="form-control">
+                                <option value="1">Cash</option>
+                            </select>
+                        </div>
 
+                        <div class="form-group">
+                            <label for="appointmentDate">Appointment Date</label>
+                            <input type="text" id="appointmentDate" class="form-control" value="@Model.AppointmentResponseDto.AppointmentDate" readonly />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="timeTable">Time Table</label>
+                            <input type="text" id="timeTable" class="form-control" value="@Model.AppointmentResponseDto.TimeTable.StartTime - @Model.AppointmentResponseDto.TimeTable.EndTime" readonly />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="vet">Veterinarian</label>
+                            <input type="text" id="vet" class="form-control" value="@Model.SelectedVet.FullName" readonly />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pets">Pets</label>
+                            <ul id="pets" class="list-group">
+                                @foreach (var pet in Model.SelectedPets)
+                                {
+                                    <li class="list-group-item">@pet.Name</li>
+                                }
+                            </ul>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="services">Services</label>
+                            <ul id="services" class="list-group">
+                                @foreach (var service in Model.AppointmentResponseDto.Services)
+                                {
+                                    <li class="list-group-item">@service.Name</li>
+                                }
+                            </ul>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div >
-
-    </div>
-
 </div>
