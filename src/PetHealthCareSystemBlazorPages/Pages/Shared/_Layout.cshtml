@@ -55,7 +55,7 @@
                         <!-- Logo -->
                         <div class="col-xl-2 col-lg-2 col-md-1">
                             <div class="logo">
-                                <a asp-page="HomePage"><img src="~/assets/img/logo/logo.png" alt=""></a>
+                                <a asp-page="/HomePage"><img src="~/assets/img/logo/logo.png" alt=""></a>
                             </div>
                         </div>
                         <div class="col-xl-10 col-lg-10 col-md-10">
@@ -67,23 +67,41 @@
                                             <li><a href="/">Home</a></li>
 
                                             <li><a href="about.html">About</a></li>
-                                            <li><a href="services.html">Services</a></li>
-
+                                            <li><a href="/">Services</a></li>
                                             @if (role is null)
                                             {
 
-                                                <a class="btn btn-primary" asp-area="" asp-page="Login" style="background-color:#0069d9">Login</a>
-                                         
+                                                <a class="btn btn-primary" asp-area="" asp-page="/Login" style="background-color:#0069d9">Login</a>
+
                                             }
+
+                                            
                                             else
                                             {
-                                                <li><a asp-page="/Pet/Index">Pet</a></li>
+                                                @if (role == "Admin")
+                                                {
+                                                    <li><a asp-page="/Admin/AdminDashboard/Index">Dashboard</a></li>
+                                                }
+                                                else if (role == "Staff")
+                                                {
+                                                    <li><a asp-page="/Staff/StaffDashboard/Index">Dashboard</a></li>
+                                                }
+                                                else if (role == "Vet")
+                                                {
+                                                    <li><a asp-page="/Vet/VetDashboard/Index">Dashboard</a></li>
+                                                }
+                                                else                                                {
+
+                                                    <li><a asp-page="/Pet/Index">Pet</a></li>
+                                                }
+
+
                                                 <li>
                                                     <a class="nav-link text-dark">Welcome, @name</a>
                                                     <ul class="submenu">
                       
                                                         <li>
-                                                            <a class="nav-link text-dark" asp-area="" asp-page="Logout">Logout</a>
+                                                            <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
                                                         </li>
                                                     </ul>
                                                 </li>

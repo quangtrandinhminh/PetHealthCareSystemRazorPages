@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace PetHealthCareSystemRazorPages.Pages.Vet.VetDashBoard
+namespace PetHealthCareSystemRazorPages.Pages.Vet.VetDashboard
 {
     public class IndexModel : PageModel
     {
