@@ -53,6 +53,10 @@
             background-color: #007bff;
             color: #fff;
         }
+
+    .main-body{
+        margin-top: 100px;
+    }
 </style>
 
 @if (Model != null)
@@ -60,7 +64,7 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-lg-8 col-md-10 col-sm-12">
-                <div class="card shadow-sm">
+                <div class="main-body card shadow-sm">
                     <div class="card-header bg-primary text-white">
                         <h4 class="mb-0">Book an Appointment</h4>
                     </div>
@@ -79,7 +83,7 @@
                                         }
                                     </div>
                                     <input type="hidden" id="selected-pet-id" name="petIdList" />
-                                    <span asp-validation-for="AppointmentBookRequest.PetIdList" class="text-danger"></span>
+                                    <span id="pet-error" class="text-danger"></span>
                                 </div>
                             }
 
@@ -96,7 +100,7 @@
                                         }
                                     </div>
                                     <input type="hidden" id="selected-service-id" name="serviceIdList" />
-                                    <span asp-validation-for="AppointmentBookRequest.ServiceIdList" class="text-danger"></span>
+                                    <span id="service-error" class="text-danger"></span>
                                 </div>
                             }
 
@@ -126,6 +130,7 @@
                                         <!-- The vet list will be populated dynamically -->
                                     </div>
                                     <input type="hidden" id="selected-vet-id" name="vetId" />
+                                    <span id="vet-error" class="text-danger"></span>
                                     <p id="no-vets-message">No vets available for the selected date and time slot.</p>
                                 </div>
                             }
@@ -137,6 +142,7 @@
             </div>
         </div>
     </div>
+
 }
 else
 {
@@ -159,6 +165,11 @@ else
             const vetListContainer = document.getElementById("vet-list");
             const selectedVetIdInput = document.getElementById("selected-vet-id");
             const noVetsMessage = document.getElementById("no-vets-message");
+            const form = document.querySelector("form");
+
+            const petError = document.getElementById("pet-error");
+            const serviceError = document.getElementById("service-error");
+            const vetError = document.getElementById("vet-error");
 
             // Set default value for date input to tomorrow
             const tomorrow = new Date();
@@ -185,6 +196,7 @@ else
             petList.addEventListener("click", (event) => handleSelectItemClick(event, selectedPetIdInput, 'petIdList'));
             serviceList.addEventListener("click", (event) => handleSelectItemClick(event, selectedServiceIdInput, 'serviceIdList'));
             vetListContainer.addEventListener("click", (event) => handleVetSelection(event));
+            form.addEventListener("submit", handleFormSubmit);
 
             function handleDateChange() {
                 appointmentBookRequest.appointmentDate = selectedDate.value;
@@ -305,6 +317,43 @@ else
                 }
             }
 
+            function handleFormSubmit(event) {
+                clearErrorMessages(); // Clear previous error messages
+                if (!validateSelections()) {
+                    event.preventDefault(); // Prevent form submission if validation fails
+                }
+            }
+
+            function validateSelections() {
+                let valid = true;
+
+                const selectedPets = document.querySelectorAll('.select-item.selected-item[data-type="pet"]');
+                const selectedServices = document.querySelectorAll('.select-item.selected-item[data-type="service"]');
+                const selectedVets = document.querySelectorAll('.select-item.selected-item[data-type="vet"]');
+
+                if (selectedPets.length === 0) {
+                    petError.textContent = 'Please select at least one pet.';
+                    valid = false;
+                }
+
+                if (selectedServices.length === 0) {
+                    serviceError.textContent = 'Please select at least one service.';
+                    valid = false;
+                }
+
+                if (selectedVets.length === 0) {
+                    vetError.textContent = 'Please select one vet.';
+                    valid = false;
+                }
+
+                return valid; // All validations passed
+            }
+
+            function clearErrorMessages() {
+                petError.textContent = '';
+                serviceError.textContent = '';
+                vetError.textContent = '';
+            }
         });
     </script>
 }
