@@ -53,7 +53,6 @@ builder.Services.AddScoped<IMedicalItemService, MedicalItemService>();
 builder.Services.AddScoped<IMedicalService, MedicalService>();
 builder.Services.AddScoped<IPetService, PetService>();
 builder.Services.AddScoped<IService, ServiceService>();
-builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddIdentity<UserEntity, RoleEntity>()

@@ -9,18 +9,16 @@ using DataAccessLayer;
 using Service.IServices;
 using Utility.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingTransaction
 {
-    [Authorize(Roles = "Staff")]
     public class EditModel : PageModel
     {
-        private readonly AppDbContext _context;
         private readonly ITransactionService _transactionService;
 
         public EditModel(AppDbContext context, ITransactionService transactionService)
         {
-            _context = context;
             _transactionService = transactionService;
         }
 
@@ -34,47 +32,37 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingTransaction
                 return NotFound();
             }
 
-            var transaction = await _context.Transactions.FirstOrDefaultAsync(m => m.Id == id);
+            var transaction = await _transactionService.GetTransactionByIdAsync(id.Value);
+
             if (transaction == null)
             {
                 return NotFound();
             }
-            Transaction = transaction;
-            ViewData["AppointmentId"] = new SelectList(_context.Appointments, "Id", "Id");
-            ViewData["CustomerId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["MedicalRecordId"] = new SelectList(_context.MedicalRecords, "Id", "Id");
+
+            string userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return RedirectToPage("/Login");
+            }
+
+            int userId = int.Parse(userIdString);
+
+            ViewData["UserId"] = new SelectList(new List<int> { userId }, "Id", "Id");
+
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            string userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString))
             {
-                return Page();
+                return RedirectToPage("/Login");
             }
-
-            var userId = User.FindFirst("UserId")?.Value; // Assuming you have the user's ID in the claims
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
-
+            int userId = int.Parse(userIdString);
             try
             {
-                await _transactionService.UpdatePaymentByStaffAsync(Transaction.Id, int.Parse(userId));
-                _context.Attach(Transaction).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TransactionExists(Transaction.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                await _transactionService.UpdatePaymentByStaffAsync(Transaction.Id,userId);
             }
             catch (AppException ex)
             {
@@ -83,11 +71,6 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingTransaction
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool TransactionExists(int id)
-        {
-            return _context.Transactions.Any(e => e.Id == id);
         }
     }
 }
