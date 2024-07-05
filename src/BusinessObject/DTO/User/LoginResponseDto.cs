@@ -15,7 +15,7 @@ namespace BusinessObject.DTO.User
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }
         public string? Address { get; set; }
-        public DateOnly? BirthDate { get; set; }
+        public DateTimeOffset? BirthDate { get; set; }
         public string? Token { get; set; }
         public string? RefreshToken { get; set; }
         public DateTimeOffset? RefreshTokenExpiredTime { get; set; }
