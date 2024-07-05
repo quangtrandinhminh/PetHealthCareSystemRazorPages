@@ -1,19 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using BusinessObject.Entities;
 
-namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement
+namespace PetHealthCareSystemRazorPages.Pages.Staff.Appointment
 {
-    public class IndexModel : PageModel
+    public class BookingManagement : PageModel
     {
         private readonly DataAccessLayer.AppDbContext _context;
 
-        public IndexModel(DataAccessLayer.AppDbContext context)
+        public BookingManagement(DataAccessLayer.AppDbContext context)
         {
             _context = context;
         }
 
-        public IList<Appointment> Appointment { get;set; } = default!;
+        public IList<BusinessObject.Entities.Appointment> Appointment { get;set; } = default!;
 
         public async Task OnGetAsync()
         {

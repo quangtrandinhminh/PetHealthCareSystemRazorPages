@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObject.DTO.Appointment;
-using Service.IServices;
+﻿using BusinessObject.DTO.Appointment;
 using BusinessObject.DTO.Pet;
 using BusinessObject.DTO.Service;
 using BusinessObject.DTO.TimeTable;
 using BusinessObject.DTO.User;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Service.IServices;
 using Utility.Exceptions;
 
-namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement
+namespace PetHealthCareSystemRazorPages.Pages.Staff.Appointment
 {
     public class CreateModel : PageModel
     {
@@ -86,7 +86,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement
             {
                 var userId = int.Parse(HttpContext.Session.GetString("UserId"));
                 await _appointmentService.BookOnlineAppointmentAsync(AppointmentBookRequestDto, userId);
-                return RedirectToPage("./Index");
+                return RedirectToPage("./BookingManagement");
             }
             catch (AppException ex)
             {

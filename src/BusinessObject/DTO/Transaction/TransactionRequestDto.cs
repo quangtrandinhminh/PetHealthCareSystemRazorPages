@@ -8,7 +8,6 @@ public class TransactionRequestDto
 {
     public int? AppointmentId { get; set; }
     public int? MedicalRecordId { get; set; }
-    public int? HospitalizationId { get; set; }
 
     [Required]
     public int PaymentMethod { get; set; }

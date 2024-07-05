@@ -11,19 +11,12 @@ public class TransactionResponseDto
     public string? CustomerName { get; set; }
     public int? AppointmentId { get; set; }
     public int? MedicalRecordId { get; set; }
-    public int? HospitalizationId { get; set; }
+    public int? PaymentStaffId { get; set; }
+    public string? PaymentStaffName { get; set; }
     public decimal Total { get; set; }
     public DateTimeOffset? PaymentDate { get; set; }
     public string Status { get; set; }
     public string? PaymentMethod { get; set; }
-    public string? PaymentNote { get; set; }
-    public string? PaymentId { get; set; }
-    public int? PaymentStaffId { get; set; }
-    public string? PaymentStaffName { get; set; }
-    public string? Note { get; set; }
-    public string? RefundPaymentId { get; set; }
-    public decimal? RefundPercentage { get; set; }
-    public string? RefundReason { get; set; }
     public DateTimeOffset? RefundDate { get; set; }
     public int? CreatedBy { get; set; }
     public string? CreatedByName { get; set; }

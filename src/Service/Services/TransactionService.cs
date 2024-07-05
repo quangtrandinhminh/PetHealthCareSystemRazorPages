@@ -39,7 +39,7 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
         _logger.Information("Get all transactions");
         var transactions = _transactionRepository.GetAllWithCondition(
             t => t.DeletedTime == null,
-            t => t.Customer);
+            t => t.Customer).OrderByDescending(t => t.CreatedTime);
         if (transactions == null)
         {
             throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsTransaction.TRANSACTION_NOT_FOUND, StatusCodes.Status404NotFound);
@@ -63,7 +63,7 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
 
     public async Task<PaginatedList<TransactionResponseDto>> GetTransactionsByCustomerIdAsync(int customerId, int pageNumber, int pageSize)
     {
-        _logger.Information("Get all transactions by customer id");
+        _logger.Information($"Get all transactions by customer {customerId}");
         var transactions = _transactionRepository.GetAllWithCondition(t =>
             t.CustomerId == customerId && t.DeletedTime == null,
             t => t.Customer);
@@ -77,11 +77,38 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
         return await PaginatedList<TransactionResponseDto>.CreateAsync(response, pageNumber, pageSize);
     }
 
-    public async Task<TransactionResponseWithDetailsDto> GetTransactionByIdAsync(int id)
+    public async Task<TransactionResponseDto> GetTransactionByAppointmentIdAsync(int appointmentId)
     {
-        _logger.Information("Get transaction by id");
+        _logger.Information("Get transaction by appointment {@appointmentId}", appointmentId);
+        var transaction = await _transactionRepository.GetSingleAsync(t => t.AppointmentId == appointmentId);
+        if (transaction == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                               ResponseMessageConstantsTransaction.TRANSACTION_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
 
-        var transaction = await _transactionRepository.GetSingleAsync(t => t.Id == id,
+        var response = _mapper.Map(transaction);
+        return response;
+    }
+
+    public async Task<TransactionResponseDto> GetTransactionByMedicalRecordIdAsync(int medicalRecordId)
+    {
+        _logger.Information("Get transaction by medical record {@medicalRecordId}", medicalRecordId);
+        var transaction = await _transactionRepository.GetSingleAsync(t => t.MedicalRecordId == medicalRecordId);
+        if (transaction == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                                              ResponseMessageConstantsTransaction.TRANSACTION_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
+
+        var response = _mapper.Map(transaction);
+        return response;
+    }
+    public async Task<TransactionResponseWithDetailsDto> GetTransactionByIdAsync(int transactionId)
+    {
+        _logger.Information($"Get transaction {transactionId}");
+
+        var transaction = await _transactionRepository.GetSingleAsync(t => t.Id == transactionId,
             false, t => t.TransactionDetails,
             t => t.Customer);
         if (transaction == null)
@@ -127,7 +154,9 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
 
     public async Task CreateTransactionAsync(TransactionRequestDto dto, int userId)
     {
-        _logger.Information("Create transaction {@dto}", dto);
+        _logger.Information("Create transaction {@dto} by {@userId}", dto, userId);
+
+        #region validate dto
         var userEntity = await _userManager.FindByIdAsync(userId.ToString());
         if (userEntity == null)
         {
@@ -160,12 +189,33 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
 
         }
 
-        /*if (dto.AppointmentId == null && dto.MedicalRecordId == null &&
-            dto.HospitalizationId == null)
+        if (dto.AppointmentId == null && dto.MedicalRecordId == null)
         {
             throw new AppException(ResponseCodeConstants.BAD_REQUEST
                 , ResponseMessageConstantsTransaction.INVALID_TRANSACTION, StatusCodes.Status400BadRequest);
-        }*/
+        }
+
+        if (dto.AppointmentId == null && dto.MedicalRecordId != null)
+        {
+            var transactionByMedicalRecord = await _transactionRepository.GetSingleAsync(t => t.MedicalRecordId == dto.MedicalRecordId);
+            if (transactionByMedicalRecord != null)
+            {
+                throw new AppException(ResponseCodeConstants.EXISTED,
+                                       ResponseMessageConstantsTransaction.TRANSACTION_EXISTED + $" cho lịch hẹn số {dto.AppointmentId}", 
+                                       StatusCodes.Status400BadRequest);
+            }
+        }
+
+        if (dto.AppointmentId != null && dto.MedicalRecordId == null)
+        {
+            var transactionByAppointment = await _transactionRepository.GetSingleAsync(t => t.AppointmentId == dto.AppointmentId);
+            if (transactionByAppointment != null)
+            {
+                throw new AppException(ResponseCodeConstants.EXISTED,
+                                                          ResponseMessageConstantsTransaction.TRANSACTION_EXISTED + $" cho hồ sơ bệnh án số {dto.MedicalRecordId}", 
+                                                          StatusCodes.Status400BadRequest);
+            }
+        }
 
         var appointmentTask = dto.AppointmentId != null
             ? _appointmentRepository.GetSingleAsync(a => a.Id == dto.AppointmentId)
@@ -175,13 +225,8 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
             ? _medicalRecordRepository.GetSingleAsync(mr => mr.Id == dto.MedicalRecordId)
             : Task.FromResult<MedicalRecord>(null);
 
-        var hospitalizationTask = dto.HospitalizationId != null
-            ? _hospitalizationRepository.GetSingleAsync(h => h.Id == dto.HospitalizationId)
-            : Task.FromResult<Hospitalization>(null);
-
         var appointment = await appointmentTask;
         var medicalRecord = await medicalRecordTask;
-        var hospitalization = await hospitalizationTask;
 
         if (dto.AppointmentId != null && appointment == null)
         {
@@ -195,18 +240,16 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
                 ResponseMessageConstantsMedicalRecord.MEDICAL_RECORD_NOT_FOUND, StatusCodes.Status404NotFound);
         }
 
-        if (dto.HospitalizationId != null && hospitalization == null)
-        {
-            throw new AppException(ResponseCodeConstants.NOT_FOUND,
-                ResponseMessageConstantsHospitalization.HOSPITALIZATION_NOT_FOUND, StatusCodes.Status404NotFound);
-        }
-
         if ((dto.MedicalItems == null || dto.MedicalItems.Count == 0) && (dto.Services == null || dto.Services.Count == 0))
         {
             throw new AppException(ResponseCodeConstants.BAD_REQUEST,
                 ResponseMessageConstantsTransaction.TRANSACTION_DETAIL_REQUIRED,
                 StatusCodes.Status400BadRequest);
         }
+        
+
+        #endregion
+        
 
         var transactionEntity = _mapper.Map(dto);
         transactionEntity.CreatedBy = userEntity.Id;
@@ -226,50 +269,14 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
         var serviceDetails = new List<TransactionDetail>();
         if (dto.Services != null)
         {
-            foreach (var service in dto.Services)
-            {
-                var serviceEntity = await _serviceRepository.GetSingleAsync(s => s.Id == service.ServiceId);
-                if (serviceEntity == null)
-                {
-                    throw new AppException(ResponseCodeConstants.NOT_FOUND,
-                        ResponseMessageConstantsService.SERVICE_NOT_FOUND + $": {service.ServiceId}",
-                        StatusCodes.Status404NotFound);
-                }
-                serviceDetails.Add(new TransactionDetail
-                {
-                    ServiceId = service.ServiceId,
-                    Name = serviceEntity.Name,
-                    Quantity = service.Quantity,
-                    Price = serviceEntity.Price,
-                    SubTotal = serviceEntity.Price * service.Quantity,
-                    TransactionId = transactionEntity.Id,
-                });
-            }
+            serviceDetails = await CheckServicesAsync(dto.Services, _serviceRepository);
         }
 
         // for each medical item in list, create transaction detail
         var medicalItemDetails = new List<TransactionDetail>();
         if (dto.MedicalItems != null)
         {
-            foreach (var medicalItem in dto.MedicalItems)
-            {
-                var medicalItemEntity = await _medicalItemRepository.GetSingleAsync(m => m.Id == medicalItem.MedicalItemId);
-                if (medicalItemEntity == null)
-                {
-                    throw new AppException(ResponseCodeConstants.NOT_FOUND,
-                        ResponseMessageConstantsMedicalItem.MEDICAL_ITEM_NOT_FOUND + $": {medicalItem.MedicalItemId}",
-                        StatusCodes.Status404NotFound);
-                }
-                medicalItemDetails.Add(new TransactionDetail
-                {
-                    MedicalItemId = medicalItem.MedicalItemId,
-                    Name = medicalItemEntity.Name,
-                    Quantity = medicalItem.Quantity,
-                    Price = medicalItemEntity.Price,
-                    SubTotal = medicalItemEntity.Price * medicalItem.Quantity,
-                    TransactionId = transactionEntity.Id,
-                });
-            }
+            medicalItemDetails = await CheckMedicalItemsAsync(dto.MedicalItems, _medicalItemRepository);
         }
 
         var transactionDetails = serviceDetails.Concat(medicalItemDetails).ToList();
@@ -278,9 +285,85 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
 
         await _transactionRepository.AddAsync(transactionEntity);
     }
-    public async Task UpdatePaymentByStaffAsync(int id, int userId)
+
+    public async Task CreateTransactionForHospitalization(TransactionRequestDto dto, int staffId)
     {
-        _logger.Information($"Update payment status for Transaction {id} by Staff {userId}");
+        _logger.Information("Create transaction for hospitalization {@dto} by {@staffId}", dto, staffId);
+        var userEntity = await _userManager.FindByIdAsync(staffId.ToString());
+        if (userEntity == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                               ResponseMessageIdentity.INVALID_USER, StatusCodes.Status404NotFound);
+        }
+
+        if (dto.Status == (int)TransactionStatus.Cancelled || dto.Status == (int)TransactionStatus.Refund)
+        {
+            throw new AppException(ResponseCodeConstants.BAD_REQUEST,
+                               ResponseMessageConstantsTransaction.INVALID_TRANSACTION_STATUS,
+                                              StatusCodes.Status400BadRequest);
+        }
+
+        if (dto.Status == (int)TransactionStatus.Paid)
+        {
+            if (dto.PaymentMethod != (int)PaymentMethod.Cash)
+            {
+                throw new AppException(ResponseCodeConstants.BAD_REQUEST,
+                                       ResponseMessageConstantsTransaction.INVALID_PAYMENT_METHOD,
+                                                          StatusCodes.Status400BadRequest);
+            }
+
+            if (string.IsNullOrEmpty(dto.PaymentId) || string.IsNullOrEmpty(dto.PaymentDate.ToString()))
+            {
+                throw new AppException(ResponseCodeConstants.BAD_REQUEST,
+                                                          ResponseMessageConstantsTransaction.PAYMENT_REQUIRED,
+                                                                                                                   StatusCodes.Status400BadRequest);
+            }
+
+        }
+
+        if (dto.MedicalRecordId != null)
+        {
+            var transactionByMedicalRecord = await _transactionRepository.GetSingleAsync(t => t.MedicalRecordId == dto.MedicalRecordId);
+            if (transactionByMedicalRecord != null)
+            {
+                throw new AppException(ResponseCodeConstants.EXISTED,
+                                                          ResponseMessageConstantsTransaction.TRANSACTION_EXISTED + $" cho lịch hẹn số {dto.AppointmentId}", 
+                                                                                                StatusCodes.Status400BadRequest);
+            }
+        }
+
+        var medicalRecord = await _medicalRecordRepository.GetSingleAsync(mr => mr.Id == dto.MedicalRecordId, false,
+            mr => mr.Appointment, mr => mr.Hospitalization);
+        var days = 0;
+        if (medicalRecord != null && medicalRecord.Hospitalization is not null)
+        {
+            foreach (var hospitalization in medicalRecord.Hospitalization)
+            {
+                days++;
+            }
+        }
+
+        var transaction = _mapper.Map(dto);
+        transaction.CreatedBy = userEntity.Id;
+        transaction.CustomerId = (int)medicalRecord.Appointment.CreatedBy;
+        transaction.PaymentStaffId = userEntity.Id;
+        transaction.PaymentStaffName = userEntity.FullName;
+        transaction.Total = transaction.TransactionDetails.Sum(detail => detail.SubTotal);
+        /*transaction.TransactionDetails.Add(new TransactionDetail
+        {
+            Name = "Phí nhập viện",
+            Quantity = days,
+            Price = hospitalizationEntity.Price,
+            SubTotal = hospitalizationEntity.Price * hospitalization.Quantity,
+            TransactionId = dto.Id,
+        });*/
+
+        await _transactionRepository.AddAsync(transaction);
+    }
+
+    public async Task UpdatePaymentByStaffAsync(int transactionId, int userId)
+    {
+        _logger.Information($"Update payment status for Transaction {transactionId} by Staff {userId}");
         var userEntity = await _userManager.FindByIdAsync(userId.ToString());
         if (userEntity == null)
         {
@@ -288,7 +371,7 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
                                ResponseMessageIdentity.INVALID_USER, StatusCodes.Status404NotFound);
         }
 
-        var transaction = await _transactionRepository.GetSingleAsync(t => t.Id == id);
+        var transaction = await _transactionRepository.GetSingleAsync(t => t.Id == transactionId);
         if (transaction == null)
         {
             throw new AppException(ResponseCodeConstants.NOT_FOUND,
@@ -308,5 +391,61 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
         transaction.Status = TransactionStatus.Paid;
 
         await _transactionRepository.UpdateAsync(transaction);
+    }
+
+    public static async Task<List<TransactionDetail>> CheckMedicalItemsAsync(List<TransactionMedicalItemsDto> medicalItems,
+        IMedicalItemRepository medicalItemRepository)
+    {
+        var medicalItemDetails = new List<TransactionDetail>();
+        if (medicalItems.Count > 0)
+        {
+            foreach (var medicalItem in medicalItems)
+            {
+                var medicalItemEntity = await medicalItemRepository.GetSingleAsync(m => m.Id == medicalItem.MedicalItemId);
+                if (medicalItemEntity == null)
+                {
+                    throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                                               ResponseMessageConstantsMedicalItem.MEDICAL_ITEM_NOT_FOUND + $": {medicalItem.MedicalItemId}",
+                                                                      StatusCodes.Status404NotFound);
+                }
+                medicalItemDetails.Add(new TransactionDetail
+                {
+                    MedicalItemId = medicalItem.MedicalItemId,
+                    Name = medicalItemEntity.Name,
+                    Quantity = medicalItem.Quantity,
+                    Price = medicalItemEntity.Price,
+                    SubTotal = medicalItemEntity.Price * medicalItem.Quantity,
+                });
+            }
+        }
+        return medicalItemDetails;
+    }
+
+    public static async Task<List<TransactionDetail>> CheckServicesAsync(List<TransactionServicesDto> services,
+        IServiceRepository serviceRepository)
+    {
+        var serviceDetails = new List<TransactionDetail>();
+        if (services.Count > 0)
+        {
+            foreach (var service in services)
+            {
+                var serviceEntity = await serviceRepository.GetSingleAsync(s => s.Id == service.ServiceId);
+                if (serviceEntity == null)
+                {
+                    throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                                                                      ResponseMessageConstantsService.SERVICE_NOT_FOUND + $": {service.ServiceId}",
+                                                                                                                                           StatusCodes.Status404NotFound);
+                }
+                serviceDetails.Add(new TransactionDetail
+                {
+                    ServiceId = service.ServiceId,
+                    Name = serviceEntity.Name,
+                    Quantity = service.Quantity,
+                    Price = serviceEntity.Price,
+                    SubTotal = serviceEntity.Price * service.Quantity,
+                });
+            }
+        }
+        return serviceDetails;
     }
 }

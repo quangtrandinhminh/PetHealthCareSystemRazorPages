@@ -22,161 +22,107 @@ public class PetService(IServiceProvider serviceProvider) : IPetService
 
     public async Task<List<PetResponseDto>> GetAllPetsForCustomerAsync(int id)
     {
-        try
-        {
-            _logger.Information("Get all pet for customer");
+        _logger.Information("Get all pet for customer");
 
-            var list = await _petRepo.GetAllPetsByCustomerIdAsync(id);
+        var list = await _petRepo.GetAllPetsByCustomerIdAsync(id);
 
-            var listDto = _mapper.Map(list);
+        var listDto = _mapper.Map(list);
 
-            return listDto.ToList();
-        }
-        catch (Exception ex)
-        {
-            _logger.Error(ex.Message);
-            throw new AppException(ResponseCodeConstants.INTERNAL_SERVER_ERROR,
-                ResponseMessageConstantsCommon.SERVER_ERROR);
-        }
+        return listDto.ToList();
     }
 
     public async Task<PetResponseDto> GetPetForCustomerAsync(int ownerId, int petId)
     {
-        try
+        _logger.Information("Get pet for customer by id");
+
+        var list = await _petRepo.GetAllPetsByCustomerIdAsync(ownerId);
+
+        var pet = list.Where(e => e.Id == petId).FirstOrDefault();
+
+        if (pet == null)
         {
-            _logger.Information("Get pet for customer by id");
-
-            var list = await _petRepo.GetAllPetsByCustomerIdAsync(ownerId);
-
-            var pet = list.Where(e => e.Id == petId).FirstOrDefault();
-
-            if (pet == null)
-            {
-                throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsPet.PET_NOT_FOUND,
-                    StatusCodes.Status404NotFound);
-            }
-
-            return _mapper.Map(pet);
+            throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsPet.PET_NOT_FOUND,
+                StatusCodes.Status404NotFound);
         }
-        catch (Exception ex)
-        {
-            _logger.Error(ex.Message);
-            throw new AppException(ResponseCodeConstants.INTERNAL_SERVER_ERROR,
-                ResponseMessageConstantsCommon.SERVER_ERROR);
-        }
+
+        return _mapper.Map(pet);
     }
 
     public async Task<PetResponseDto> GetPetByIdAsync(int id)
     {
-        try
-        {
-            _logger.Information("Get pet by id");
+        _logger.Information("Get pet by id");
 
-            var pet = await _petRepo.GetSingleAsync(p => p.Id == id);
-            if (pet == null)
-            {
-                throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.PET_NOT_FOUND,
-                    StatusCodes.Status400BadRequest);
-            }
-
-            return _mapper.Map(pet);
-        }
-        catch (Exception ex)
+        var pet = await _petRepo.GetSingleAsync(p => p.Id == id);
+        if (pet == null)
         {
-            _logger.Error(ex.Message);
-            throw new AppException(ResponseCodeConstants.INTERNAL_SERVER_ERROR,
-                ResponseMessageConstantsCommon.SERVER_ERROR);
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.PET_NOT_FOUND,
+                StatusCodes.Status400BadRequest);
         }
+
+        return _mapper.Map(pet);
     }
 
     public async Task CreatePetAsync(PetRequestDto pet, int ownerId)
     {
-        try
+        var user = await _userManager.FindByIdAsync(ownerId.ToString());
+
+        if (user == null)
         {
-            var user = await _userManager.FindByIdAsync(ownerId.ToString());
-
-            if (user == null)
-            {
-                throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.OWNER_NOT_FOUND,
-                    StatusCodes.Status400BadRequest);
-            }
-
-            var createPet = _mapper.Map(pet);
-            createPet.OwnerID = ownerId;
-
-            await _petRepo.CreatePetAsync(createPet);
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.OWNER_NOT_FOUND,
+                StatusCodes.Status400BadRequest);
         }
-        catch (Exception ex)
-        {
-            _logger.Error(ex.Message);
-            throw new AppException(ResponseCodeConstants.INTERNAL_SERVER_ERROR,
-                ResponseMessageConstantsCommon.SERVER_ERROR);
-        }
+
+        var createPet = _mapper.Map(pet);
+        createPet.OwnerID = ownerId;
+
+        await _petRepo.CreatePetAsync(createPet);
     }
 
     public async Task UpdatePetAsync(PetUpdateRequestDto pet, int ownerId)
     {
-        try
+        // Checking pet in the database
+        var findPet = await _petRepo.FindByConditionAsync(e => e.Id == pet.Id);
+
+        var existPet = findPet.FirstOrDefault();
+
+        if (existPet == null || existPet.DeletedBy != null)
         {
-            // Checking pet in the database
-            var findPet = await _petRepo.FindByConditionAsync(e => e.Id == pet.Id);
-
-            var existPet = findPet.FirstOrDefault();
-
-            if (existPet == null || existPet.DeletedBy != null)
-            {
-                throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.PET_NOT_FOUND,
-                    StatusCodes.Status400BadRequest);
-            }
-
-            if (existPet.OwnerID != ownerId)
-            {
-                throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.NOT_YOUR_PET,
-                    StatusCodes.Status400BadRequest);
-            }
-
-            var updatePet = _mapper.Map(pet);
-            updatePet.OwnerID = existPet.OwnerID;
-
-            await _petRepo.UpdatePetAsync(updatePet);
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.PET_NOT_FOUND,
+                StatusCodes.Status400BadRequest);
         }
-        catch (Exception ex)
+
+        if (existPet.OwnerID != ownerId)
         {
-            _logger.Error(ex.Message);
-            throw new AppException(ResponseCodeConstants.INTERNAL_SERVER_ERROR,
-                ResponseMessageConstantsCommon.SERVER_ERROR);
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.NOT_YOUR_PET,
+                StatusCodes.Status400BadRequest);
         }
+
+        var updatePet = _mapper.Map(pet);
+        updatePet.OwnerID = existPet.OwnerID;
+
+        await _petRepo.UpdatePetAsync(updatePet);
     }
 
     public async Task DeletePetAsync(int id, int ownerId)
     {
-        try
+        // Checking pet in the database
+        var findPet = await _petRepo.FindByConditionAsync(e => e.Id == id);
+
+        var existPet = findPet.FirstOrDefault();
+
+        if (existPet == null || existPet.DeletedBy != null)
         {
-            // Checking pet in the database
-            var findPet = await _petRepo.FindByConditionAsync(e => e.Id == id);
-
-            var existPet = findPet.FirstOrDefault();
-
-            if (existPet == null || existPet.DeletedBy != null)
-            {
-                throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.PET_NOT_FOUND,
-                    StatusCodes.Status400BadRequest);
-            }
-
-            if (existPet.OwnerID != ownerId)
-            {
-                throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.NOT_YOUR_PET,
-                    StatusCodes.Status400BadRequest);
-            }
-
-            existPet.DeletedBy = existPet.OwnerID;
-            await _petRepo.UpdatePetAsync(existPet);
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.PET_NOT_FOUND,
+                StatusCodes.Status400BadRequest);
         }
-        catch (Exception ex)
+
+        if (existPet.OwnerID != ownerId)
         {
-            _logger.Error(ex.Message);
-            throw new AppException(ResponseCodeConstants.INTERNAL_SERVER_ERROR,
-                ResponseMessageConstantsCommon.SERVER_ERROR);
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.NOT_YOUR_PET,
+                StatusCodes.Status400BadRequest);
         }
+
+        existPet.DeletedBy = existPet.OwnerID;
+        await _petRepo.UpdatePetAsync(existPet);
     }
 }

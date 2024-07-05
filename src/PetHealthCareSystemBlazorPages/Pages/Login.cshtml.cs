@@ -12,6 +12,10 @@ namespace PetHealthCareSystemBlazorPages.Pages
     public class LoginModel : PageModel
     {
         private readonly IAuthService _authService;
+        private const string ADMIN_PAGE = "/Admin/AdminDashboard";
+        private const string STAFF_PAGE = "/Staff/StaffDashboard";
+        private const string VET_PAGE = "/Vet/VetDashBoard";
+        private const string HOME_PAGE = "/HomePage";
 
         public LoginModel(IAuthService authService)
         {
@@ -31,33 +35,28 @@ namespace PetHealthCareSystemBlazorPages.Pages
             try
             {
                 var response = await _authService.Authenticate(LoginUser);
-                if (response == null)
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
 
                 // Store user session information
-                HttpContext.Session.SetString("UserId", response.Id);
-                HttpContext.Session.SetString("Username", response.UserName);
+                HttpContext.Session.SetString("UserId", response.Id.ToString());
+                if (response.UserName != null) HttpContext.Session.SetString("Username", response.UserName);
                 HttpContext.Session.SetString("Role", string.Join(",", response.Role));
 
                 // Redirect based on user role
                 if (response.Role.Contains("Admin"))
                 {
-                    return RedirectToPage("/Admin/AdminDashboard/Index");
+                    return RedirectToPage(ADMIN_PAGE);
                 }
                 else if (response.Role.Contains("Staff"))
                 {
-                    return RedirectToPage("/Staff/StaffDashboard/Index");
+                    return RedirectToPage(STAFF_PAGE);
                 }
                 else if (response.Role.Contains("Vet")) // Check if "customer" role exists in the list
                 {
-                    return RedirectToPage("/Vet/VetDashBoard/Index");
+                    return RedirectToPage(VET_PAGE);
                 }
                 else
                 {
-                    return RedirectToPage("/HomePage");
+                    return RedirectToPage(HOME_PAGE);
                 }
                 return Page();
             }

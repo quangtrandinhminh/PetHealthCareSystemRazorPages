@@ -174,6 +174,7 @@ namespace Service.Services
                 var response = _mapper.UserToLoginResponseDto(account);
                 response.Token = token;
                 response.RefreshToken = refreshToken.Token;
+                response.RefreshTokenExpiredTime = refreshToken.Expires;
                 response.Role = roles;
                 return response;
             }
@@ -202,6 +203,7 @@ namespace Service.Services
                 var response = _mapper.UserToLoginResponseDto(account);
                 response.Token = jwtToken;
                 response.RefreshToken = newRefreshToken.Token;
+                response.RefreshTokenExpiredTime = refreshToken.Expires;
                 response.Role = roles;
                 return response;
             }

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using BusinessObject.Entities;
-using DataAccessLayer;
 
-namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement
+namespace PetHealthCareSystemRazorPages.Pages.Staff.Appointment
 {
     public class DetailsModel : PageModel
     {
@@ -19,7 +13,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingManagement
             _context = context;
         }
 
-        public Appointment Appointment { get; set; } = default!;
+        public BusinessObject.Entities.Appointment Appointment { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {

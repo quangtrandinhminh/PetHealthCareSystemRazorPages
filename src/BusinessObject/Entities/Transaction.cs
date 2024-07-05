@@ -19,8 +19,6 @@ public class Transaction : BaseEntity
     public int? AppointmentId { get; set; }
     public int? MedicalRecordId { get; set; }
     
-    public int? HospitalizationId { get; set; }
-    
     [Column(TypeName = "decimal(18, 0)")]
     [Range(0, Double.MaxValue)]
     public decimal Total { get; set; }

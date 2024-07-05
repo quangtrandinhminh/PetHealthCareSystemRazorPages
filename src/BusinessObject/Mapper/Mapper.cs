@@ -1,5 +1,6 @@
 ﻿using BusinessObject.DTO.MedicalItem;
 using System.Globalization;
+using BusinessObject.DTO.MedicalRecord;
 using BusinessObject.DTO.Pet;
 using BusinessObject.DTO.Service;
 using BusinessObject.DTO.TimeTable;
@@ -91,4 +92,13 @@ public partial class MapperlyMapper
 
     // transaction detail
     public partial IList<TransactionDetailResponseDto> Map(IList<TransactionDetail> entity);
+
+    // medical record
+    public partial MedicalRecord Map(MedicalRecordRequestDto request);
+    public partial MedicalRecordResponseDto Map(MedicalRecord entity);
+
+    public partial MedicalRecordResponseDtoWithDetails MedicalRecordToMedicalRecordResponseDtoWithDetails(
+        MedicalRecord entity);
+    public partial void Map(MedicalRecordResponseDto request, MedicalRecord entity);
+    public partial IQueryable<MedicalRecordResponseDto> Map(IQueryable<MedicalRecord> entity);
 }
