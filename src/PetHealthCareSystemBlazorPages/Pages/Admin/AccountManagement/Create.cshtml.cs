@@ -1,33 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using BusinessObject.DTO.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObject.Entities.Identity;
-using DataAccessLayer;
+using Service.IServices;
 
 namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
 {
     public class CreateModel : PageModel
     {
-        private readonly DataAccessLayer.AppDbContext _context;
+        private readonly IAuthService _authService;
 
-        public CreateModel(DataAccessLayer.AppDbContext context)
+        public CreateModel(IAuthService authService)
         {
-            _context = context;
+            _authService = authService;
         }
+
+        [BindProperty]
+        public RegisterDto RegisterDto { get; set; } = default!;
+
+        [BindProperty]
+        public int Role { get; set; }
 
         public IActionResult OnGet()
         {
             return Page();
         }
 
-        [BindProperty]
-        public UserEntity UserEntity { get; set; } = default!;
-
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -35,10 +33,16 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
                 return Page();
             }
 
-            _context.Users.Add(UserEntity);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
+            try
+            {
+                await _authService.RegisterByAdmin(RegisterDto, Role);
+                return RedirectToPage("./Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }
