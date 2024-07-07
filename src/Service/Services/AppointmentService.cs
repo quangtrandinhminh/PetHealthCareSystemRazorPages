@@ -272,6 +272,42 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         return new PaginatedList<AppointmentResponseDto>(appointmentDtos, totalAppointments, pageNumber, pageSize);
     }
 
+    public async Task<AppointmentResponseDto> GetAppointmentByAppointmentId(int appointmentId)
+    {
+        _logger.Information($"Get appointment by appointment id {appointmentId}");
+        var appointment = await _appointmentRepo.GetSingleAsync(a => a.Id == appointmentId,
+            false, a => a.AppointmentPets, a => a.Services,
+            a => a.TimeTable);
+        if (appointment == null)
+        {
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsAppointment.APPOINTMENT_NOT_FOUND);
+        }
+
+        var pets = new List<Pet>();
+        foreach (var ap in appointment.AppointmentPets)
+        {
+            var pet = await _petRepository.GetSingleAsync(p => p.Id == ap.PetId);
+            pets.Add(pet);
+        }
+        var vet = await _userRepository.GetSingleAsync(u => u.Id == appointment.VetId);
+        if (vet == null)
+        {
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsVet.VET_NOT_FOUND);
+        }
+        var owner = await _userRepository.GetSingleAsync(u => u.Id == pets[0].OwnerID);
+
+        var response = _mapper.Map(appointment);
+        response.Pets = _mapper.Map(pets);
+        foreach (var pet in response.Pets)
+        {
+            if (pet != null) pet.OwnerName = owner?.FullName;
+        }
+
+        response.Vet = _mapper.UserToUserResponseDto(vet);
+
+        return response;
+    }
+
     private async Task<AppointmentResponseDto> ToAppointmentResponseDto(IEnumerable<Appointment> appointments,
         IList<UserResponseDto> vets, Appointment e)
     {
