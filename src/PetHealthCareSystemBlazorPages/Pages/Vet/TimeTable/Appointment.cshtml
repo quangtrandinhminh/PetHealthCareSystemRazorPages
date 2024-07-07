@@ -24,6 +24,7 @@
         justify-content: center;
         margin-bottom: 20px;
     }
+   
 
     .create-btn {
         border-radius: 5px;
@@ -89,10 +90,6 @@
     <main role="main" class="pb-3">
         <h1>Appointments</h1>
 
-        <p>
-            <a asp-page="Create">Create New</a>
-        </p>
-
         <table class="table">
             <thead>
                 <tr>
@@ -105,12 +102,16 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().TimeTable.EndTime)
                     </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Status)
+                    </th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                @if (Model.Appointment != null)
+                @if (Model.Appointment.Items != null)
                 {
+                    
                     foreach (var item in Model.Appointment.Items)
                     {
                         <tr>
@@ -124,12 +125,26 @@
                                 @Html.DisplayFor(modelItem => item.TimeTable.EndTime)
                             </td>
                             <td>
-                                <a asp-page="./Edit" asp-route-id="@item">Edit</a> |
-                                <a asp-page="./Details" asp-route-id="@item">Details</a> |
-                                <a asp-page="./Delete" asp-route-id="@item">Delete</a>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                            <td>
+                                <a asp-page="./CreateMedical" asp-route-id="@item.Id">MakeRecord</a> |
                             </td>
                         </tr>
                     }
+                    @if (Model.Appointment.HasNextPage)
+                    {
+                        <form method="post" asp-page-handler="NextPage">
+                            <button style="color:#0069d9" type="submit">Next Page</button>
+                        </form>
+                        
+                    }
+
+                    @if (Model.Appointment.HasPreviousPage)
+                    {
+                        <a asp-page="/Appointment" asp-route-page="@Model.Appointment.PageNumber" style="color:#0069d9">Previous Page</a>
+                    }
+                   
                 }
                 else
                 {
@@ -139,6 +154,7 @@
                 }
             </tbody>
         </table>
+
 
     </main>
 </div>

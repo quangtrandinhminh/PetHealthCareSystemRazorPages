@@ -4,6 +4,92 @@
 @{
     ViewData["Title"] = "BookingManagement";
 }
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+    }
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7;
+        color: #333;
+    }
+
+    .page-title {
+        margin-top: 150px;
+        text-align: center;
+        font-size: 3em;
+        color: #444;
+        font-weight: bold;
+    }
+
+    .create-btn-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+
+    .create-btn {
+        border-radius: 5px;
+        color: white;
+        background-color: #0069d9;
+        padding: 10px 20px;
+        text-decoration: none;
+        font-size: 1.2em;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .create-btn:hover {
+            background-color: red;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+    .table {
+        width: 80%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        justify-content:center;
+    }
+
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .table th {
+            background-color: #0069d9;
+            color: white;
+            font-size: 1.1em;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .table td a {
+            margin: 0 5px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+            .table td a:hover {
+                text-decoration: underline;
+                color: #0056b3;
+            }
+
+</style>
 <div style="width:100%; height:100vh; display:flex; justify-content:center; flex-direction:column ">
     <h1 style="text-align:center">BookingManagement</h1>
 
@@ -14,53 +100,47 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Appointment[0].AppointmentDate)
+                @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Appointment[0].Note)
+                @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().AppointmentDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Appointment[0].Status)
+                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Note)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Appointment[0].BookingType)
+                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Appointment[0].Rating)
+                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().BookingType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Appointment[0].Feedback)
+                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Rating)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Appointment[0].VetId)
+                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Feedback)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Appointment[0].TimeTable)
+                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Vet)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Appointment[0].CreatedBy)
+                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().TimeTable.StartTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Appointment[0].LastUpdatedBy)
+                @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().TimeTable.EndTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Appointment[0].DeletedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Appointment[0].CreatedTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Appointment[0].LastUpdatedTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Appointment[0].DeletedTime)
+                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Pets)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Appointment) {
+@foreach (var item in Model.Appointment.Items) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.AppointmentDate)
             </td>
@@ -80,28 +160,16 @@
                 @Html.DisplayFor(modelItem => item.Feedback)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.VetId)
+                @Html.DisplayFor(modelItem => item.Vet.FullName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TimeTable.Id)
+                @Html.DisplayFor(modelItem => item.TimeTable.StartTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreatedBy)
+                @Html.DisplayFor(modelItem => item.TimeTable.EndTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LastUpdatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastUpdatedTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedTime)
+                @Html.DisplayFor(modelItem => item.Pets)
             </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |

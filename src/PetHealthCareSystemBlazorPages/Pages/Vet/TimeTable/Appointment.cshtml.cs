@@ -12,6 +12,8 @@ using BusinessObject.DTO.Appointment;
 using System.Configuration;
 using Repository.Extensions;
 using BusinessObject.DTO.User;
+using Azure;
+using Microsoft.Identity.Client;
 
 namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
 {
@@ -24,9 +26,10 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
             _appointmentService = appointmentService;
         }
 
-        public PaginatedList<AppointmentResponseDto> Appointment { get;set; } = default!;
+        [BindProperty]
+        public PaginatedList<AppointmentResponseDto> Appointment { get; set; } = default!;
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int? page)
         {
             var accountId = HttpContext.Session.GetString("UserId"); // Assuming UserId is stored in Session
             var accountRole = HttpContext.Session.GetString("Role");
@@ -37,19 +40,49 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
             }
             try
             {
+
                 int pagenumber = 1;
-                int pagesize = 5;
+                int pagesize = 3;
                 int id = int.Parse(accountId);
                 var date = DateTime.Now.ToString("yyyy-MM-dd");
-                Appointment = await _appointmentService.GetVetAppointmentsAsync(id, date, pagenumber, pagesize);
+                //if (check == null)
+                //{
+                //    pagenumber = 2;
+                //}
+                //else if (check.Equals("next"))
+                //{
+                //    pagenumber = Appointment.PageNumber + 1;
+                //}
+                //else
+                //{
+                //    pagenumber = Appointment.PageNumber - 1;
+                //}
+                if (page == null)
+                {
+                    
+                }
+                else
+                {
+                    pagenumber = (int)page;
+                }
+                var appoint = await _appointmentService.GetVetAppointmentsAsync(id, date, pagenumber, pagesize);
+                Appointment = appoint;
+                return Page();
+                
             }
             catch (Exception ex)
             {
                 Appointment = new PaginatedList<AppointmentResponseDto>();
                 ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
             }
             
         }
+        //public async Task OnPostNextPage() // Use OnPost to handle form submission
+        //{
+        //    string check = "next";
+        //    await OnGetAsync(check);
+        //}
         private bool IsVetRole(string accountRole)
         {
             // Example check if "admin" is contained in the roles list

@@ -23,7 +23,11 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="manifest" href="site.webmanifest">
-    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.ico">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
 
     <link rel="stylesheet" href="~/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/assets/css/owl.carousel.min.css">
@@ -81,7 +85,7 @@
                                         <li><a href="/">Home</a></li>
 
                                         <li><a href="">About</a></li>
-                                        <li><a href="">Services</a></li>
+                                        <li><a href="/Service/Index">Services</a></li>
 
                                         @if (role is null)
                                         {
@@ -95,7 +99,9 @@
                                             <li>
                                                 <a class="nav-link text-dark">Welcome, @name</a>
                                                 <ul class="submenu">
-                  
+                                                    <li>
+                                                        <a class="nav-link text-dark" asp-area="" asp-page="/BookAppointment/TransactionForm">Transaction</a>
+                                                    </li>
                                                     <li>
                                                         <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
                                                     </li>
@@ -104,7 +110,33 @@
                                         }
                                         else if (role.Contains(UserRole.Staff.ToString()))
                                         {
-                                            <li><a asp-page="Staff/StaffDashboard">Dashboard</a></li>
+                                            <li><a asp-page="/Staff/StaffDashboard">Dashboard</a></li>
+                                            <li>
+                                                <a class="nav-link text-dark">Welcome, @name</a>
+                                                <ul class="submenu">
+
+                                                    <li>
+                                                        <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        }
+                                        else if (role.Contains(UserRole.Vet.ToString()))
+                                        {
+                                            <li><a asp-page="/Vet/VetDashboard/Index">Dashboard</a></li>
+                                            <li>
+                                                <a class="nav-link text-dark">Welcome, @name</a>
+                                                <ul class="submenu">
+
+                                                    <li>
+                                                        <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        }
+                                        else if (role.Contains(UserRole.Admin.ToString()))
+                                        {
+                                            <li><a asp-page="/Admin/AdminDashboard/Index">Dashboard</a></li>
                                             <li>
                                                 <a class="nav-link text-dark">Welcome, @name</a>
                                                 <ul class="submenu">
@@ -143,9 +175,9 @@
                 @RenderBody()
             </main>
         </div> 
-    })
+    }
    
-    <footer>
+    <footer >
         <!-- Footer Start-->
         <div class="footer-area footer-padding position-relative">
             <div class="container">

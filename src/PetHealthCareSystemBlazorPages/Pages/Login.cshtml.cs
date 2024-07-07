@@ -12,9 +12,9 @@ namespace PetHealthCareSystemBlazorPages.Pages
     public class LoginModel : PageModel
     {
         private readonly IAuthService _authService;
-        private const string ADMIN_PAGE = "/Admin/AdminDashboard";
+        private const string ADMIN_PAGE = "/Admin/AdminDashboard/Index";
         private const string STAFF_PAGE = "/Staff/StaffDashboard";
-        private const string VET_PAGE = "/Vet/VetDashBoard";
+        private const string VET_PAGE = "/Vet/VetDashBoard/Index";
         private const string HOME_PAGE = "/HomePage";
 
         public LoginModel(IAuthService authService)
