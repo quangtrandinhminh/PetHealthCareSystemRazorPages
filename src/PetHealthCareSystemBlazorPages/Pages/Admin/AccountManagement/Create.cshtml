@@ -7,141 +7,49 @@
 
 <h1>Create</h1>
 
-<h4>UserEntity</h4>
+<h4>Register User</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="UserEntity.FullName" class="control-label"></label>
-                <input asp-for="UserEntity.FullName" class="form-control" />
-                <span asp-validation-for="UserEntity.FullName" class="text-danger"></span>
+                <label asp-for="RegisterDto.FullName" class="control-label"></label>
+                <input asp-for="RegisterDto.FullName" class="form-control" />
+                <span asp-validation-for="RegisterDto.FullName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserEntity.Address" class="control-label"></label>
-                <input asp-for="UserEntity.Address" class="form-control" />
-                <span asp-validation-for="UserEntity.Address" class="text-danger"></span>
+                <label asp-for="RegisterDto.UserName" class="control-label"></label>
+                <input asp-for="RegisterDto.UserName" class="form-control" />
+                <span asp-validation-for="RegisterDto.UserName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserEntity.Avatar" class="control-label"></label>
-                <input asp-for="UserEntity.Avatar" class="form-control" />
-                <span asp-validation-for="UserEntity.Avatar" class="text-danger"></span>
+                <label asp-for="RegisterDto.Email" class="control-label"></label>
+                <input asp-for="RegisterDto.Email" class="form-control" />
+                <span asp-validation-for="RegisterDto.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserEntity.BirthDate" class="control-label"></label>
-                <input asp-for="UserEntity.BirthDate" class="form-control" />
-                <span asp-validation-for="UserEntity.BirthDate" class="text-danger"></span>
+                <label asp-for="RegisterDto.PhoneNumber" class="control-label"></label>
+                <input asp-for="RegisterDto.PhoneNumber" class="form-control" />
+                <span asp-validation-for="RegisterDto.PhoneNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserEntity.CreatedBy" class="control-label"></label>
-                <input asp-for="UserEntity.CreatedBy" class="form-control" />
-                <span asp-validation-for="UserEntity.CreatedBy" class="text-danger"></span>
+                <label asp-for="RegisterDto.Password" class="control-label"></label>
+                <input asp-for="RegisterDto.Password" class="form-control" type="password" />
+                <span asp-validation-for="RegisterDto.Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserEntity.LastUpdatedBy" class="control-label"></label>
-                <input asp-for="UserEntity.LastUpdatedBy" class="form-control" />
-                <span asp-validation-for="UserEntity.LastUpdatedBy" class="text-danger"></span>
+                <label asp-for="RegisterDto.ConfirmPassword" class="control-label"></label>
+                <input asp-for="RegisterDto.ConfirmPassword" class="form-control" type="password" />
+                <span asp-validation-for="RegisterDto.ConfirmPassword" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserEntity.DeletedBy" class="control-label"></label>
-                <input asp-for="UserEntity.DeletedBy" class="form-control" />
-                <span asp-validation-for="UserEntity.DeletedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.CreatedTime" class="control-label"></label>
-                <input asp-for="UserEntity.CreatedTime" class="form-control" />
-                <span asp-validation-for="UserEntity.CreatedTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.LastUpdatedTime" class="control-label"></label>
-                <input asp-for="UserEntity.LastUpdatedTime" class="form-control" />
-                <span asp-validation-for="UserEntity.LastUpdatedTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.DeletedTime" class="control-label"></label>
-                <input asp-for="UserEntity.DeletedTime" class="form-control" />
-                <span asp-validation-for="UserEntity.DeletedTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.Verified" class="control-label"></label>
-                <input asp-for="UserEntity.Verified" class="form-control" />
-                <span asp-validation-for="UserEntity.Verified" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.OTP" class="control-label"></label>
-                <input asp-for="UserEntity.OTP" class="form-control" />
-                <span asp-validation-for="UserEntity.OTP" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.OTPExpired" class="control-label"></label>
-                <input asp-for="UserEntity.OTPExpired" class="form-control" />
-                <span asp-validation-for="UserEntity.OTPExpired" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="UserEntity.PhoneNumberConfirmed" /> @Html.DisplayNameFor(model => model.UserEntity.PhoneNumberConfirmed)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.ConcurrencyStamp" class="control-label"></label>
-                <input asp-for="UserEntity.ConcurrencyStamp" class="form-control" />
-                <span asp-validation-for="UserEntity.ConcurrencyStamp" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.UserName" class="control-label"></label>
-                <input asp-for="UserEntity.UserName" class="form-control" />
-                <span asp-validation-for="UserEntity.UserName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.NormalizedUserName" class="control-label"></label>
-                <input asp-for="UserEntity.NormalizedUserName" class="form-control" />
-                <span asp-validation-for="UserEntity.NormalizedUserName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.Email" class="control-label"></label>
-                <input asp-for="UserEntity.Email" class="form-control" />
-                <span asp-validation-for="UserEntity.Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.NormalizedEmail" class="control-label"></label>
-                <input asp-for="UserEntity.NormalizedEmail" class="form-control" />
-                <span asp-validation-for="UserEntity.NormalizedEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="UserEntity.EmailConfirmed" /> @Html.DisplayNameFor(model => model.UserEntity.EmailConfirmed)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.PasswordHash" class="control-label"></label>
-                <input asp-for="UserEntity.PasswordHash" class="form-control" />
-                <span asp-validation-for="UserEntity.PasswordHash" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.PhoneNumber" class="control-label"></label>
-                <input asp-for="UserEntity.PhoneNumber" class="form-control" />
-                <span asp-validation-for="UserEntity.PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="UserEntity.TwoFactorEnabled" /> @Html.DisplayNameFor(model => model.UserEntity.TwoFactorEnabled)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.LockoutEnd" class="control-label"></label>
-                <input asp-for="UserEntity.LockoutEnd" class="form-control" />
-                <span asp-validation-for="UserEntity.LockoutEnd" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="UserEntity.LockoutEnabled" /> @Html.DisplayNameFor(model => model.UserEntity.LockoutEnabled)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserEntity.AccessFailedCount" class="control-label"></label>
-                <input asp-for="UserEntity.AccessFailedCount" class="form-control" />
-                <span asp-validation-for="UserEntity.AccessFailedCount" class="text-danger"></span>
+                <label asp-for="Role" class="control-label"></label>
+                <select asp-for="Role" class="form-control">
+                    <option value="1">Customer</option>
+                    <option value="2">Staff</option>
+                </select>
+                <span asp-validation-for="Role" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -155,5 +63,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
