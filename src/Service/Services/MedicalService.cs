@@ -205,11 +205,11 @@ public class MedicalService(IServiceProvider serviceProvider) : IMedicalService
 
         // check if pet have medical record for this appointment
         var existedMedicalRecord = await _medicalRecordRepository.GetSingleAsync(mr =>
-               mr.AppointmentId == dto.AppointmentId && mr.PetId == dto.PetId);
+                       mr.AppointmentId == dto.AppointmentId && mr.PetId == dto.PetId);
         if (existedMedicalRecord != null)
         {
             throw new AppException(ResponseCodeConstants.BAD_REQUEST,
-                                      ResponseMessageConstantsMedicalRecord.MEDICAL_RECORD_EXISTED, StatusCodes.Status400BadRequest);
+                                              ResponseMessageConstantsMedicalRecord.MEDICAL_RECORD_EXISTED, StatusCodes.Status400BadRequest);
         }
 
         // check next appointment valid

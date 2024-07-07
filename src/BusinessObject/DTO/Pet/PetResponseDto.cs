@@ -9,4 +9,6 @@ public class PetResponseDto
     public string? Gender { get; set; }
     public DateOnly DateOfBirth { get; set; }
     public bool IsNeutered { get; set; }
+    public string OwnerName { get; set; } = string.Empty;
+    public bool? HasMedicalRecord { get; set; } = null;
 }

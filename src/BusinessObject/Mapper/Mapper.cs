@@ -43,7 +43,8 @@ public partial class MapperlyMapper
             Breed = entity.Breed,
             Gender = entity.Gender,
             DateOfBirth = DateOnly.FromDateTime(entity.DateOfBirth.Date),
-            IsNeutered = entity.IsNeutered
+            IsNeutered = entity.IsNeutered,
+            OwnerName = entity.Owner?.FullName ?? "N/A",
         };
 
         return response;

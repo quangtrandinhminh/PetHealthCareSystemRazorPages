@@ -9,7 +9,7 @@ namespace DataAccessLayer.Base
     {
         public static IQueryable<T?> GetAll()
         {
-            using var context = new AppDbContext();
+            var context = new AppDbContext();
             var dbSet = context.Set<T>();
             return dbSet.AsQueryable().AsNoTracking();
         }

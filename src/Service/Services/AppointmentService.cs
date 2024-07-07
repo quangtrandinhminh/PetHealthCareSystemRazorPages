@@ -29,6 +29,10 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         serviceProvider.GetRequiredService<IAppointmentRepository>();
     private readonly IServiceRepository _serviceRepo =
         serviceProvider.GetRequiredService<IServiceRepository>();
+    private readonly IUserRepository _userRepository =
+        serviceProvider.GetRequiredService<IUserRepository>();
+    private readonly IMedicalRecordRepository _medicalRecordRepository =
+        serviceProvider.GetRequiredService<IMedicalRecordRepository>();
     private readonly IPetRepository _petRepository =
         serviceProvider.GetRequiredService<IPetRepository>();
     private readonly IAppointmentPetRepository _appointmentPetRepo =
@@ -275,6 +279,26 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
 
         var pets = e.AppointmentPets.Select(ap => ap.Pet).ToList();
 
+        var ownerName = await _userRepository.GetFullnameAsyncs(pets[0].OwnerID);
+
+        foreach (var pet in pets)
+        {
+            pet.Owner = new() { FullName = ownerName };
+        }
+
+        var petsDto = _mapper.Map(pets);
+
+        foreach (var petResponseDto in petsDto)
+        {
+            var mr =
+                await _medicalRecordRepository.GetSingleAsync(e =>
+                    e.AppointmentId == e.Id && e.PetId == petResponseDto.Id);
+
+            bool hasMedicalRecord = mr != null;
+
+            petResponseDto.HasMedicalRecord = hasMedicalRecord;
+        }
+
         var timeTable = (await _timeTableRepo.FindByConditionAsync(tt => tt.Id == e.TimeTableId)).FirstOrDefault(); // Adjust this line if `TimeTableId` is not the correct property name
 
         return new AppointmentResponseDto()
@@ -285,7 +309,7 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
             BookingType = e.BookingType.ToString(),
             Vet = vet,
             Feedback = e.Feedback,
-            Pets = _mapper.Map(pets),
+            Pets = petsDto,
             Rating = e.Rating,
             TimeTable = new TimeTableResponseDto()
             {
