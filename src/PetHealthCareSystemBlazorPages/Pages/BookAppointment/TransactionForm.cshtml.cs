@@ -33,6 +33,7 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
         public UserResponseDto SelectedVet { get; set; }
         public TransactionDropdownDto TransactionDropdownDto { get; set; }
         public List<TransactionServicesDto> TransactionServices { get; set; }
+        public decimal Total {  get; set; }
 
         public async Task OnGet()
         {
@@ -50,6 +51,26 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
         {
             AppointmentResponseDto = JsonSerializer.Deserialize<AppointmentResponseDto>(appointmentResponseDtoJson);
             TransactionDropdownDto = _transactionService.GetTransactionDropdownData();
+
+            var tempData = HttpContext.Session.GetString("appointment");
+
+            try
+            {
+                AppointmentResponseDto = JsonSerializer.Deserialize<AppointmentResponseDto>(tempData);
+                TransactionDropdownDto = _transactionService.GetTransactionDropdownData();
+
+                if (AppointmentResponseDto != null)
+                {
+                    SelectedPets = await LoadSelectedPetList(AppointmentResponseDto.Pets.Select(p => p.Id).ToList());
+                    SelectedVet = AppointmentResponseDto.Vet;
+                    var quantity = AppointmentResponseDto.Pets.Count;
+                    TransactionServices = CreateTransactionServices(AppointmentResponseDto.Services.Select(s => s.Id).ToList(), quantity);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString(), ex);
+            }
 
             if (AppointmentResponseDto == null)
             {
@@ -69,7 +90,7 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
 
             await _transactionService.CreateTransactionAsync(transactionRequestDto, userId);
 
-            Response.Redirect("/Login");
+            Response.Redirect("./SuccessBooking");
             return;
         }
 
@@ -82,12 +103,15 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
                 AppointmentResponseDto = JsonSerializer.Deserialize<AppointmentResponseDto>(tempData);
                 TransactionDropdownDto = _transactionService.GetTransactionDropdownData();
 
+                int quantity;
+
                 if (AppointmentResponseDto != null)
                 {
                     SelectedPets = await LoadSelectedPetList(AppointmentResponseDto.Pets.Select(p => p.Id).ToList());
                     SelectedVet = AppointmentResponseDto.Vet;
-                    var quantity = AppointmentResponseDto.Pets.Count;
+                    quantity = AppointmentResponseDto.Pets.Count;
                     TransactionServices = CreateTransactionServices(AppointmentResponseDto.Services.Select(s => s.Id).ToList(), quantity);
+                    Total = PaymentCalculation(quantity);
                 }
             }
             catch (Exception ex)
@@ -115,6 +139,22 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
                 transactionServices.Add(new TransactionServicesDto { ServiceId = serviceId, Quantity = quantity });
             }
             return transactionServices;
+        }
+
+        private decimal PaymentCalculation(int quantity)
+        {
+            decimal total = 0;
+
+            var tempData = HttpContext.Session.GetString("appointment");
+
+            var appointmentResponse = JsonSerializer.Deserialize<AppointmentResponseDto>(tempData);
+
+            foreach (var service in appointmentResponse.Services)
+            {
+                total += service.Price * quantity;
+            }
+
+            return total;
         }
     }
 }

@@ -6,65 +6,199 @@
     ViewData["Title"] = "Transaction Form";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10 col-sm-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
+<style>
+    .transaction-form-container {
+        margin-top: 100px;
+    }
 
-                    <h4 class="mb-0">Transaction Form</h4>
-                </div>
-                <div class="card-body">
-                    <form method="post">
-                        <input type="hidden" name="appointmentResponseDtoJson" value="@JsonSerializer.Serialize(Model.AppointmentResponseDto)" />
-                        <input type="hidden" name="transactionServicesJson" value="@JsonSerializer.Serialize(Model.TransactionServices)" />
+    .transaction-form-wrapper {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        max-width: 600px;
+        margin: auto;
+    }
 
-                        <div class="form-group">
-                            <label for="paymentMethod">Select Payment Method</label>
-                            <select id="paymentMethod" name="paymentMethod" class="form-control">
-                                <option value="1">Cash</option>
-                            </select>
-                        </div>
+    .transaction-form-group {
+        margin-bottom: 15px;
+    }
 
-                        <div class="form-group">
-                            <label for="appointmentDate">Appointment Date</label>
-                            <input type="text" id="appointmentDate" class="form-control" value="@Model.AppointmentResponseDto.AppointmentDate" readonly />
-                        </div>
+        .transaction-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
 
-                        <div class="form-group">
-                            <label for="timeTable">Time Table</label>
-                            <input type="text" id="timeTable" class="form-control" value="@Model.AppointmentResponseDto.TimeTable.StartTime - @Model.AppointmentResponseDto.TimeTable.EndTime" readonly />
-                        </div>
+    .transaction-form-input {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
 
-                        <div class="form-group">
-                            <label for="vet">Veterinarian</label>
-                            <input type="text" id="vet" class="form-control" value="@Model.SelectedVet.FullName" readonly />
-                        </div>
+    .transaction-form-list {
+        list-style-type: none;
+        padding-left: 0;
+    }
 
-                        <div class="form-group">
-                            <label for="pets">Pets</label>
-                            <ul id="pets" class="list-group">
-                                @foreach (var pet in Model.SelectedPets)
-                                {
-                                    <li class="list-group-item">@pet.Name</li>
-                                }
-                            </ul>
-                        </div>
+    .transaction-form-list-item {
+        background-color: #fff;
+        padding: 10px;
+        border: 1px solid #ddd;
+        margin-bottom: 5px;
+        border-radius: 4px;
+    }
 
-                        <div class="form-group">
-                            <label for="services">Services</label>
-                            <ul id="services" class="list-group">
-                                @foreach (var service in Model.AppointmentResponseDto.Services)
-                                {
-                                    <li class="list-group-item">@service.Name</li>
-                                }
-                            </ul>
-                        </div>
+    .transaction-form-total {
+        font-weight: bold;
+    }
 
-                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
-                    </form>
-                </div>
+    .transaction-form-submit-container {
+        text-align: right;
+    }
+
+    .transaction-form-submit-btn {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+        .transaction-form-submit-btn:hover {
+            background-color: #0056b3;
+        }
+</style>
+
+<div class="transaction-form-container">
+    <div class="transaction-form-wrapper">
+        <h2>Transaction Form</h2>
+        <form method="post">
+            <input type="hidden" name="appointmentResponseDtoJson" value="@JsonSerializer.Serialize(Model.AppointmentResponseDto)" />
+            <input type="hidden" name="transactionServicesJson" value="@JsonSerializer.Serialize(Model.TransactionServices)" />
+
+            <div class="transaction-form-group">
+                <label for="paymentMethod">Select Payment Method</label>
+                <select id="paymentMethod" name="paymentMethod" class="transaction-form-input">
+                    @foreach (var paymentMethod in Model.TransactionDropdownDto.PaymentMethods)
+                    {
+                        <option value="@paymentMethod.Id">@paymentMethod.Value</option>
+                    }
+                </select>
             </div>
-        </div>
+
+            <div class="transaction-form-group">
+                <label for="appointmentDate">Appointment Date</label>
+                <input type="text" id="appointmentDate" value="@Model.AppointmentResponseDto.AppointmentDate" readonly class="transaction-form-input" />
+            </div>
+
+            <div class="transaction-form-group">
+                <label for="timeTable">Time Table</label>
+                <input type="text" id="timeTable" value="@Model.AppointmentResponseDto.TimeTable.StartTime - @Model.AppointmentResponseDto.TimeTable.EndTime" readonly class="transaction-form-input" />
+            </div>
+
+            <div class="transaction-form-group">
+                <label for="vet">Veterinarian</label>
+                <input type="text" id="vet" value="@Model.SelectedVet.FullName" readonly class="transaction-form-input" />
+            </div>
+
+            <div class="transaction-form-group">
+                <label for="pets">Pets</label>
+                <ul id="pets" class="transaction-form-list">
+                    @foreach (var pet in Model.SelectedPets)
+                    {
+                        <li class="transaction-form-list-item">@pet.Name</li>
+                    }
+                </ul>
+            </div>
+
+            <div class="transaction-form-group">
+                <label for="services">Services</label>
+                <ul id="services" class="transaction-form-list">
+                    @foreach (var service in Model.AppointmentResponseDto.Services)
+                    {
+                        <li class="transaction-form-list-item">@service.Name</li>
+                    }
+                </ul>
+            </div>
+
+            <div class="transaction-form-group">
+                <label for="total">Total</label>
+                <span class="transaction-form-total">@Model.Total</span>
+            </div>
+
+            <div class="transaction-form-submit-container">
+                <button type="submit" class="transaction-form-submit-btn">Submit</button>
+            </div>
+        </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const formContainer = document.querySelector('.transaction-form-wrapper');
+            formContainer.style.boxShadow = '0 4px 8px 0 rgba(0, 0, 0, 0.2)';
+            formContainer.style.padding = '20px';
+            formContainer.style.backgroundColor = '#f9f9f9';
+            formContainer.style.borderRadius = '8px';
+            formContainer.style.maxWidth = '600px';
+            formContainer.style.margin = 'auto';
+
+            const formGroups = document.querySelectorAll('.transaction-form-group');
+            formGroups.forEach(group => {
+                group.style.marginBottom = '15px';
+            });
+
+            const labels = document.querySelectorAll('label');
+            labels.forEach(label => {
+                label.style.display = 'block';
+                label.style.marginBottom = '5px';
+                label.style.fontWeight = 'bold';
+            });
+
+            const inputs = document.querySelectorAll('.transaction-form-input');
+            inputs.forEach(input => {
+                input.style.width = '100%';
+                input.style.padding = '8px';
+                input.style.borderRadius = '4px';
+                input.style.border = '1px solid #ccc';
+                input.style.boxSizing = 'border-box';
+            });
+
+            const ulElements = document.querySelectorAll('.transaction-form-list');
+            ulElements.forEach(ul => {
+                ul.style.listStyleType = 'none';
+                ul.style.paddingLeft = '0';
+            });
+
+            const liElements = document.querySelectorAll('.transaction-form-list-item');
+            liElements.forEach(li => {
+                li.style.backgroundColor = '#fff';
+                li.style.padding = '10px';
+                li.style.border = '1px solid #ddd';
+                li.style.marginBottom = '5px';
+                li.style.borderRadius = '4px';
+            });
+
+            const submitBtn = document.querySelector('.transaction-form-submit-btn');
+            submitBtn.style.backgroundColor = '#007bff';
+            submitBtn.style.color = '#fff';
+            submitBtn.style.padding = '10px 20px';
+            submitBtn.style.border = 'none';
+            submitBtn.style.borderRadius = '4px';
+            submitBtn.style.cursor = 'pointer';
+            submitBtn.style.fontSize = '16px';
+            submitBtn.addEventListener('mouseover', function () {
+                this.style.backgroundColor = '#0056b3';
+            });
+            submitBtn.addEventListener('mouseout', function () {
+                this.style.backgroundColor = '#007bff';
+            });
+        });
+    </script>
+}
