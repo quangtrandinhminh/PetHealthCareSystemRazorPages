@@ -10,19 +10,24 @@ using DataAccessLayer;
 using BusinessObject.DTO.Pet;
 using Service.IServices;
 using Utility.Enum;
+using BusinessObject.DTO.MedicalRecord;
+using Repository.Extensions;
 
 namespace PetHealthCareSystemRazorPages.Pages.Pet
 {
     public class DetailsModel : PageModel
     {
         private readonly IPetService _petService;
+        private readonly IMedicalService _medicalService;
 
-        public DetailsModel(IPetService petService)
+        public DetailsModel(IPetService petService, IMedicalService medicalService)
         {
             _petService = petService;
+            _medicalService = medicalService;
         }
 
         public PetResponseDto Pet { get; set; } = default!;
+        public PaginatedList<MedicalRecordResponseDto> MedicalRecords { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -46,7 +51,9 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
             {
                 Response.Redirect("/Login");
             }
-            
+
+            MedicalRecords = await _medicalService.GetAllMedicalRecordByPetId(id.GetValueOrDefault(), 1, 5);
+
             return Page();
         }
     }
