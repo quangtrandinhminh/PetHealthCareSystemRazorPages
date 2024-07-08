@@ -100,6 +100,7 @@
 <div class="appointment-list-container">
     <div class="appointment-list-header">
         <h1>Appointment List</h1>
+        <a asp-page="/BookAppointment/BookingForm">Create New</a>
     </div>
 
     @if (Model.Appointment != null && Model.Appointment.Items.Any())
@@ -129,9 +130,8 @@
                         <td>@Html.DisplayFor(modelItem => item.Vet.FullName)</td>
                         <td>@Html.DisplayFor(modelItem => item.Status)</td>
                         <td class="appointment-list-actions">
-                            <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
-                            <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
-                            <a asp-page="./Delete" asp-route-id="@item.Id">Cancel</a>
+                            <a asp-page="./Detail" asp-route-id="@item.Id">Details</a>
+                            <a asp-page="./Cancel" asp-route-id="@item.Id">Cancel</a>
                         </td>
                     </tr>
                 }

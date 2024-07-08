@@ -9,6 +9,7 @@ using BusinessObject.Entities;
 using DataAccessLayer;
 using BusinessObject.DTO.Pet;
 using Service.IServices;
+using Utility.Enum;
 
 namespace PetHealthCareSystemRazorPages.Pages.Pet
 {
@@ -25,6 +26,13 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            var role = HttpContext.Session.GetString("Role");
+
+            if (role == null || !role.Contains(UserRole.Customer.ToString()))
+            {
+                Response.Redirect("/Login");
+            }
+
             if (id == null)
             {
                 return NotFound();
