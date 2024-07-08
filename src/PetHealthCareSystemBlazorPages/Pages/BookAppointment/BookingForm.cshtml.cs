@@ -84,7 +84,7 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
                 VetId = vetId
             };
 
-            var userId = int.Parse(HttpContext.Session.GetString("UserId"));
+            var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
             AppointmentResponseDto appointmentResponse = await _appointmentService.BookOnlineAppointmentAsync(AppointmentBookRequest, userId);
             HttpContext.Session.SetString("appointment", JsonSerializer.Serialize(appointmentResponse));
             return RedirectToPage("./TransactionForm");

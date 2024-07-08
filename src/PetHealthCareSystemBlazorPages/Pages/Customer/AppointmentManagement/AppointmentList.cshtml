@@ -1,4 +1,159 @@
 ﻿@page
 @model PetHealthCareSystemRazorPages.Pages.Customer.AppointmentManagement.AppointmentListModel
+
 @{
+    ViewData["Title"] = "Appointment List";
 }
+
+<style>
+    .appointment-list-container {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        max-width: 1200px;
+        margin: 100px auto;
+    }
+
+    .appointment-list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+        .appointment-list-header h1 {
+            margin: 0;
+        }
+
+        .appointment-list-header a {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+            .appointment-list-header a:hover {
+                background-color: #0056b3;
+            }
+
+    .appointment-list-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .appointment-list-table th,
+        .appointment-list-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .appointment-list-table th {
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+
+        .appointment-list-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .appointment-list-table tr:hover {
+            background-color: #e9ecef;
+        }
+
+    .appointment-list-actions a {
+        margin-right: 10px;
+        color: #007bff;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+        .appointment-list-actions a:hover {
+            color: #0056b3;
+        }
+
+    .appointment-list-pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .appointment-list-pagination a {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0 5px;
+            transition: background-color 0.3s;
+        }
+
+            .appointment-list-pagination a:hover {
+                background-color: #0056b3;
+            }
+</style>
+
+<div class="appointment-list-container">
+    <div class="appointment-list-header">
+        <h1>Appointment List</h1>
+    </div>
+
+    @if (Model.Appointment != null && Model.Appointment.Items.Any())
+    {
+        <table class="appointment-list-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Type</th>
+                    <th>Rating</th>
+                    <th>Veterinarian</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Appointment.Items)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.TimeTable.StartTime)</td>
+                        <td>@Html.DisplayFor(modelItem => item.TimeTable.EndTime)</td>
+                        <td>@Html.DisplayFor(modelItem => item.BookingType)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Rating)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Vet.FullName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                        <td class="appointment-list-actions">
+                            <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+                            <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
+                            <a asp-page="./Delete" asp-route-id="@item.Id">Cancel</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No appointments found.</p>
+    }
+
+    <div class="appointment-list-pagination">
+        Page @(Model.Appointment?.PageNumber ?? 0) of @(Model.Appointment?.TotalPages ?? 0)
+    </div>
+    <div class="appointment-list-pagination">
+        @if (Model.Appointment?.HasPreviousPage == true)
+        {
+            <a asp-page="./AppointmentList" asp-route-pageNumber="@(Model.Appointment.PageNumber - 1)">Previous</a>
+        }
+        @if (Model.Appointment?.HasNextPage == true)
+        {
+            <a asp-page="./AppointmentList" asp-route-pageNumber="@(Model.Appointment.PageNumber + 1)">Next</a>
+        }
+    </div>
+</div>
