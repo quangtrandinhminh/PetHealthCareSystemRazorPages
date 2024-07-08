@@ -1,20 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BusinessObject.DTO.User;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Http;
-using Utility.Exceptions;
 using Service.IServices;
-using BusinessObject.DTO.User;
-using System.Threading.Tasks;
-using System.Linq;
+using Utility.Exceptions;
 
-namespace PetHealthCareSystemBlazorPages.Pages
+namespace PetHealthCareSystemRazorPages.Pages
 {
     public class LoginModel : PageModel
     {
         private readonly IAuthService _authService;
         private const string ADMIN_PAGE = "/Admin/AdminDashboard";
         private const string STAFF_PAGE = "/Staff/StaffDashboard";
-        private const string VET_PAGE = "/Vet/VetDashBoard";
+        private const string VET_PAGE = "/Vet/VetDashBoard/Index";
         private const string HOME_PAGE = "/HomePage";
 
         public LoginModel(IAuthService authService)
