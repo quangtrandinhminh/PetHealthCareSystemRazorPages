@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Staff\StaffDashboard\" />
     <Folder Include="wwwroot\css\Template\" />
     <Folder Include="wwwroot\js\Template\" />
   </ItemGroup>
