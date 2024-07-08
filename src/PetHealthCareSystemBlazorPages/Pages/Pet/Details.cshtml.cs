@@ -26,6 +26,9 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
+
+
             var role = HttpContext.Session.GetString("Role");
 
             if (role == null || !role.Contains(UserRole.Customer.ToString()))
@@ -35,13 +38,13 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
 
             if (id == null)
             {
-                return NotFound();
+                Response.Redirect("/Login");
             }
 
-            Pet = await _petService.GetPetForCustomerAsync(2002, id.GetValueOrDefault());
+            Pet = await _petService.GetPetForCustomerAsync(userId, id.GetValueOrDefault());
             if (Pet == null)
             {
-                return NotFound();
+                Response.Redirect("/Login");
             }
             
             return Page();
