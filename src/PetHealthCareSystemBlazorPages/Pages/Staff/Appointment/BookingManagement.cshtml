@@ -2,7 +2,7 @@
 @model BookingManagement
 
 @{
-    ViewData["Title"] = "BookingManagement";
+    ViewData["Title"] = "Booking Management";
 }
 <style>
     .container {
@@ -91,93 +91,75 @@
 
 </style>
 <div style="width:100%; height:100vh; display:flex; justify-content:center; flex-direction:column ">
-    <h1 style="text-align:center">BookingManagement</h1>
+    <h1 style="text-align:center">Booking Management</h1>
 
-<p style="width:140px;border-radius:20px;border:1px solid black;text-align:center">
+    <p style="width:140px; border-radius:20px; border:1px solid black; text-align:center">
         <a style="color: black" asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().AppointmentDate)
-            </th>
-            <th>
-                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Note)
-            </th>
-            <th>
-                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Status)
-            </th>
-            <th>
-                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().BookingType)
-            </th>
-            <th>
-                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Rating)
-            </th>
-            <th>
-                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Feedback)
-            </th>
-            <th>
-                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Vet)
-            </th>
-            <th>
-                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().TimeTable.StartTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().TimeTable.EndTime)
-            </th>
-            <th>
-                    @Html.DisplayNameFor(model => model.Appointment.Items.FirstOrDefault().Pets)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Appointment.Items) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppointmentDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BookingType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Feedback)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Vet.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimeTable.StartTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimeTable.EndTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pets)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Appointment Date
+                </th>
+                <th>
+                    Note
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                    Booking Type
+                </th>
+                <th>
+                    Rating
+                </th>
+                <th>
+                    Feedback
+                </th>
+                @*  <th>
+                CreatedTime
+                </th>
+                <th>
+                UpdatedTime
+                </th> *@
+                <th>
+                    VetName
+                </th>
+                <th>
+                    StartTime
+                </th>
+                <th>
+                    EndTime
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Appointments.Items)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                    <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Note)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                    <td>@Html.DisplayFor(modelItem => item.BookingType)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Rating)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Feedback)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Vet.FullName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TimeTable.StartTime)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TimeTable.EndTime)</td>
+                    <td>
+                        <a style="color:black" asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a style="color:black" asp-page="./Details" asp-route-id="@item.Id">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>

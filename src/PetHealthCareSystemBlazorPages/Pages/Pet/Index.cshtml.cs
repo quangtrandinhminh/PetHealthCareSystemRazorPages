@@ -11,6 +11,8 @@ using Service.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using BusinessObject.DTO.Pet;
+using System.Data;
+using Utility.Enum;
 
 namespace PetHealthCareSystemRazorPages.Pages.Pet
 {
@@ -28,7 +30,17 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
         public async Task OnGetAsync()
         {
             var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
+
+            var role = HttpContext.Session.GetString("Role");
+
+            if (role == null || !role.Contains(UserRole.Customer.ToString()))
+            {
+                Response.Redirect("/Login");
+                return;
+            }
+
             Pet = await _petService.GetAllPetsForCustomerAsync(userId);
+
         }
     }
 }

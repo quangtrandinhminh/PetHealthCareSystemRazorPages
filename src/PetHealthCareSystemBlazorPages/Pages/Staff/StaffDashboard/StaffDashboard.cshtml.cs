@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace PetHealthCareSystemRazorPages.Pages.Staff
+namespace PetHealthCareSystemRazorPages.Pages.Staff.StaffDashboard
 {
     public class StaffDashboard : PageModel
     {

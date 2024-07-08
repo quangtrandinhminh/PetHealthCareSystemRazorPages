@@ -1,27 +1,27 @@
 ﻿using BusinessObject.DTO.Appointment;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Repository.Extensions;
 using Service.IServices;
+using BusinessObject.DTO.Appointment;
+using Repository.Extensions;
+using System.Threading.Tasks;
 
 namespace PetHealthCareSystemRazorPages.Pages.Staff.Appointment
 {
     public class BookingManagement : PageModel
     {
-        private readonly IAppointmentService _appoint;
+        private readonly DataAccessLayer.AppDbContext _context;
 
-        public BookingManagement(IAppointmentService appoint)
+        public BookingManagement(DataAccessLayer.AppDbContext context)
         {
-            _appoint = appoint;
+            _context = context;
         }
 
-        public PaginatedList<AppointmentResponseDto> Appointment { get;set; } = default!;
+        public IList<BusinessObject.Entities.Appointment> Appointment { get;set; } = default!;
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int pageNumber = 1, int pageSize = 10)
         {
-            int pageSize = 5;
-            int pageNumber = 1;
-            Appointment = await _appoint.GetAllAppointmentsAsync(pageNumber,pageSize);
+            Appointment = await _context.Appointments
+                .Include(a => a.TimeTable).ToListAsync();
         }
     }
 }
