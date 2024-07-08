@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BusinessObject.DTO.User;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Http;
-using Utility.Exceptions;
 using Service.IServices;
-using BusinessObject.DTO.User;
-using System.Threading.Tasks;
-using System.Linq;
+using Utility.Exceptions;
 
-namespace PetHealthCareSystemBlazorPages.Pages
+namespace PetHealthCareSystemRazorPages.Pages
 {
     public class LoginModel : PageModel
     {

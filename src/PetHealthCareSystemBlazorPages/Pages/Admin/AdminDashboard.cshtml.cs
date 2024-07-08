@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace PetHealthCareSystemRazorPages.Pages.Admin.AdminDashboard
+namespace PetHealthCareSystemRazorPages.Pages.Admin
 {
-    public class IndexModel : PageModel
+    public class AdminDashboard : PageModel
     {
         public IActionResult OnGet()
         {
