@@ -22,7 +22,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Customer.AppointmentManagement
 
         public PaginatedList<AppointmentResponseDto> Appointment { get; set; } = default!;
 
-        public async Task OnGetAsync(int? pageNumber)
+        public async Task<IActionResult> OnGetAsync(int? pageNumber)
         {
             var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
 
@@ -32,11 +32,12 @@ namespace PetHealthCareSystemRazorPages.Pages.Customer.AppointmentManagement
             if (role == null || !role.Contains(UserRole.Customer.ToString()))
             {
                 Response.Redirect("/Login");
-                return;
             }
                 
             int pageSize = 5;
             Appointment = await _appointmentService.GetUserAppointmentsAsync(pageNumber ?? 1, pageSize, userId, DateOnly.MinValue.ToString());
+
+            return Page();
         }
     }
 }
