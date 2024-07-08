@@ -1,0 +1,79 @@
+﻿@page
+@model BookingManagement
+
+@{
+    ViewData["Title"] = "Booking Management";
+}
+<div style="width:100%; height:100vh; display:flex; justify-content:center; flex-direction:column ">
+    <h1 style="text-align:center">Booking Management</h1>
+
+    <p style="width:140px; border-radius:20px; border:1px solid black; text-align:center">
+        <a style="color: black" asp-page="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Appointment Date
+                </th>
+                <th>
+                    Note
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                    Booking Type
+                </th>
+                <th>
+                    Rating
+                </th>
+                <th>
+                    Feedback
+                </th>
+                @*  <th>
+                CreatedTime
+                </th>
+                <th>
+                UpdatedTime
+                </th> *@
+                <th>
+                    VetName
+                </th>
+                <th>
+                    StartTime
+                </th>
+                <th>
+                    EndTime
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Appointments.Items)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                    <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Note)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                    <td>@Html.DisplayFor(modelItem => item.BookingType)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Rating)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Feedback)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Vet.FullName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TimeTable.StartTime)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TimeTable.EndTime)</td>
+                    <td>
+                        <a style="color:black" asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a style="color:black" asp-page="./Details" asp-route-id="@item.Id">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

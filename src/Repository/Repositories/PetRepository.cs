@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Entities;
+using Microsoft.EntityFrameworkCore;
 using Repository.Base;
 using Repository.Interfaces;
 
@@ -8,8 +9,8 @@ public class PetRepository : BaseRepository<Pet>, IPetRepository
 {
     public async Task<List<Pet>> GetAllPetsByCustomerIdAsync(int id)
     {
-        var list = await GetAllAsync();
-        return list.Where(e => e.OwnerID == id && e.DeletedBy == null).ToList();
+        var list = GetAll().Include(e => e.Owner);
+        return await list.Where(e => e.OwnerID == id && e.DeletedBy == null).ToListAsync();
     }
 
     public async Task UpdatePetAsync(Pet pet)

@@ -25,6 +25,7 @@ public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
     public DbSet<AppointmentPet> AppointmentPets { get; set; }
     public DbSet<MedicalRecord> MedicalRecords { get; set; }
     public DbSet<Service> Services { get; set; }
+    public DbSet<MedicalItem> MedicalItems { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<TimeTable> TimeTables { get; set; }
     public DbSet<Cage> Cage { get; set; }
@@ -107,6 +108,72 @@ public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
         };
         modelBuilder.Entity<UserEntity>().HasData(admin);
 
+        var staff = new UserEntity
+        {
+            Id = 2,
+            UserName = "staff",
+            NormalizedUserName = "staff",
+            Email = "staff@email.com",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("12345678"),
+            SecurityStamp = Guid.NewGuid().ToString(),
+        };
+        modelBuilder.Entity<UserEntity>().HasData(staff);
+
+        var vet1 = new UserEntity
+        {
+            Id = 3,
+            FullName = "John Doe",
+            UserName = "johndoe",
+            NormalizedUserName = "JOHNDOE",
+            Address = "123 Main St",
+            Email = "johndoe@example.com",
+            BirthDate = DateTimeOffset.Parse("1985-06-15T00:00:00+00:00"),
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("12345678"),
+            SecurityStamp = Guid.NewGuid().ToString(),
+        };
+        modelBuilder.Entity<UserEntity>().HasData(vet1);
+
+        var vet2 = new UserEntity
+        {
+            Id = 4,
+            FullName = "Jane Smith",
+            UserName = "janesmith",
+            NormalizedUserName = "JANESMITH",
+            Address = "456 Elm St",
+            Email = "janesmith@example.com",
+            BirthDate = DateTimeOffset.Parse("1990-09-20T00:00:00+00:00"),
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("12345678"),
+            SecurityStamp = Guid.NewGuid().ToString(),
+        };
+        modelBuilder.Entity<UserEntity>().HasData(vet2);
+
+        var vet3 = new UserEntity
+        {
+            Id = 5,
+            FullName = "Alice Johnson",
+            UserName = "alicejohnson",
+            NormalizedUserName = "ALICEJOHNSON",
+            Address = "789 Pine St",
+            Email = "alicejohnson@example.com",
+            BirthDate = DateTimeOffset.Parse("1978-03-25T00:00:00+00:00"),
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("12345678"),
+            SecurityStamp = Guid.NewGuid().ToString(),
+        };
+        modelBuilder.Entity<UserEntity>().HasData(vet3);
+
+        var cus1 = new UserEntity
+        {
+            Id = 6,
+            FullName = "Cus One",
+            UserName = "cus1",
+            NormalizedUserName = "CUS1",
+            Address = "123 Main St",
+            Email = "cus1@example.com",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("12345"),
+            SecurityStamp = Guid.NewGuid().ToString(),
+        };
+        modelBuilder.Entity<UserEntity>().HasData(cus1);
+
         var roles = new List<RoleEntity>
         {
             new()
@@ -142,6 +209,41 @@ public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
             RoleId = 1
         };
         modelBuilder.Entity<UserRoleEntity>().HasData(adminUserRole);
+
+        var staffUserRole = new UserRoleEntity
+        {
+            UserId = staff.Id,
+            RoleId = 2
+        };
+        modelBuilder.Entity<UserRoleEntity>().HasData(staffUserRole);
+
+        var vet1UserRole = new UserRoleEntity
+        {
+            UserId = vet1.Id,
+            RoleId = 3
+        };
+        modelBuilder.Entity<UserRoleEntity>().HasData(vet1UserRole);
+
+        var vet2UserRole = new UserRoleEntity
+        {
+            UserId = vet2.Id,
+            RoleId = 3
+        };
+        modelBuilder.Entity<UserRoleEntity>().HasData(vet2UserRole);
+
+        var vet3UserRole = new UserRoleEntity
+        {
+            UserId = vet3.Id,
+            RoleId = 3
+        };
+        modelBuilder.Entity<UserRoleEntity>().HasData(vet3UserRole);
+
+        var cus1UserRole = new UserRoleEntity
+        {
+            UserId = cus1.Id,
+            RoleId = 4
+        };
+        modelBuilder.Entity<UserRoleEntity>().HasData(cus1UserRole);
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {

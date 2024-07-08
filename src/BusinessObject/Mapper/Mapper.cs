@@ -1,5 +1,7 @@
 ﻿using BusinessObject.DTO.MedicalItem;
 using System.Globalization;
+using BusinessObject.DTO.Appointment;
+using BusinessObject.DTO.MedicalRecord;
 using BusinessObject.DTO.Pet;
 using BusinessObject.DTO.Service;
 using BusinessObject.DTO.TimeTable;
@@ -42,7 +44,8 @@ public partial class MapperlyMapper
             Breed = entity.Breed,
             Gender = entity.Gender,
             DateOfBirth = DateOnly.FromDateTime(entity.DateOfBirth.Date),
-            IsNeutered = entity.IsNeutered
+            IsNeutered = entity.IsNeutered,
+            OwnerName = entity.Owner?.FullName ?? "N/A",
         };
 
         return response;
@@ -91,4 +94,16 @@ public partial class MapperlyMapper
 
     // transaction detail
     public partial IList<TransactionDetailResponseDto> Map(IList<TransactionDetail> entity);
+
+    // medical record
+    public partial MedicalRecord Map(MedicalRecordRequestDto request);
+    public partial MedicalRecordResponseDto Map(MedicalRecord entity);
+
+    public partial MedicalRecordResponseDtoWithDetails MedicalRecordToMedicalRecordResponseDtoWithDetails(
+        MedicalRecord entity);
+    public partial void Map(MedicalRecordResponseDto request, MedicalRecord entity);
+    public partial IQueryable<MedicalRecordResponseDto> Map(IQueryable<MedicalRecord> entity);
+
+    // appointment
+    public partial AppointmentResponseDto Map(Appointment entity);
 }

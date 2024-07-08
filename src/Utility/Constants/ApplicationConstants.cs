@@ -55,15 +55,14 @@ namespace Utility.Constants
         public const string NAME_REQUIRED = "Ten khong duoc de trong.";
         public const string USERCODE_REQUIRED = "Ma nguoi dung khong duoc de trong.";
         public const string PASSWORD_REQUIRED = "Mat khau khong duoc de trong.";
-        public const string PASSSWORD_LENGTH = "Mat khau phai co it nhat 8 ky tu.";
+        public const string PASSSWORD_LENGTH = "Mat khau phai co it nhat 5 ky tu.";
         public const string CONFIRM_PASSWORD_REQUIRED = "Xac nhan mat khau khong duoc de trong.";
         public const string EMAIL_REQUIRED = "Email khong duoc de trong.";
         public const string PHONENUMBER_REQUIRED = "So dien thoai khong duoc de trong.";
         public const string PHONENUMBER_INVALID = "So dien thoai khong hop le.";
         public const string PHONENUMBER_LENGTH = "So dien thoai phai co chinh xac 10 so.";
-        public const string PHONGBANID_REQUIRED = "Phong ban khong duoc de trong.";
-        public const string NHAMAYIDS_REQUIRED = "Nha may khong duoc de trong.";
         public const string ROLES_REQUIRED = "Role khong duoc de trong.";
+        public const string USER_NOT_ALLOWED = "Ban khong co quyen truy cap vao muc nay";
 
     }
 
@@ -81,7 +80,6 @@ namespace Utility.Constants
         public const string ADD_ROLE_SUCCESS = "Them role thanh cong!";
         public const string UPDATE_ROLE_SUCCESS = "Cap nhat role thanh cong!";
         public const string DELETE_ROLE_SUCCESS = "Xoa role thanh cong!";
-
     }
 
     // Response message constants for entities: not found, existed, update success, delete success
@@ -109,6 +107,7 @@ namespace Utility.Constants
         public const string DELETE_PET_SUCCESS = "Xóa thú cưng thành công";
         public const string OWNER_NOT_FOUND = "Không tìm thấy chủ thú cưng";
         public const string NOT_YOUR_PET = "Thú cưng không phải là của bạn";
+        public const string PETID_REQUIRED = "Id thu cung khong duoc de trong";
     }
 
     public class ResponseMessageConstantsService
@@ -151,6 +150,9 @@ namespace Utility.Constants
         public const string ADD_APPOINTMENT_SUCCESS = "Thêm lịch hẹn thành công";
         public const string UPDATE_APPOINTMENT_SUCCESS = "Cập nhật lịch hẹn thành công";
         public const string DELETE_APPOINTMENT_SUCCESS = "Xóa lịch hẹn thành công";
+        public const string APPOINTMENT_ID_REQUIRED = "Id lich hen khong duoc de trong";
+        public const string APPOINTMENT_PET_NOT_FOUND = "Khong tim thay thong tin thú cưng trong lich hen";
+        public const string APPOINTMENT_COMPLETED = "Lich hen da hoan thanh";
     }
 
     public class ResponseMessageConstantsMedicalRecord
@@ -160,6 +162,11 @@ namespace Utility.Constants
         public const string ADD_MEDICAL_RECORD_SUCCESS = "Them ho so benh an thanh cong";
         public const string UPDATE_MEDICAL_RECORD_SUCCESS = "Cap nhat ho so benh an thanh cong";
         public const string DELETE_MEDICAL_RECORD_SUCCESS = "Xoa ho so benh an thanh cong";
+        public const string MEDICAL_RECORD_VET_NOT_ALLOWED = "Yeu cau bac si duoc hen tao ho so benh an";
+        public const string NEXT_APPOINTMENT_INVALID = "Ngay hen tiep theo khong hop le";
+        public const string ADMISSION_DATE_INVALID = "Ngay nhap vien khong hop le";
+        public const string DISCHARGE_DATE_INVALID = "Ngay xuat vien khong hop le";
+        public const string PET_WEIGHT_INVALID = "Can nang khong hop le";
     }
 
     public class ResponseMessageConstantsHospitalization

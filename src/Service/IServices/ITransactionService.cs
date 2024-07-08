@@ -9,7 +9,10 @@ public interface ITransactionService
     Task<PaginatedList<TransactionResponseDto>> GetAllTransactionsAsync(int pageNumber, int pageSize);
     Task<PaginatedList<TransactionResponseDto>> GetTransactionsByCustomerIdAsync(int customerId, int pageNumber,
         int pageSize);
-    Task<TransactionResponseWithDetailsDto> GetTransactionByIdAsync(int id);
+    Task<TransactionResponseDto> GetTransactionByAppointmentIdAsync(int appointmentId);
+    Task<TransactionResponseDto> GetTransactionByMedicalRecordIdAsync(int medicalRecordId);
+    Task<TransactionResponseWithDetailsDto> GetTransactionByIdAsync(int transactionId);
     Task CreateTransactionAsync(TransactionRequestDto dto, int userId);
-    Task UpdatePaymentByStaffAsync(int id, int userId);
+    Task CreateTransactionForHospitalization(TransactionRequestDto dto, int staffId);
+    Task UpdatePaymentByStaffAsync(int transactionId, int userId);
 }
