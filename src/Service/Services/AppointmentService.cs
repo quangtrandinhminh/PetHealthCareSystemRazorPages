@@ -7,7 +7,9 @@ using BusinessObject.DTO.Transaction;
 using BusinessObject.DTO.User;
 using BusinessObject.DTO.Vet;
 using BusinessObject.Entities;
+using BusinessObject.Entities.Identity;
 using BusinessObject.Mapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
@@ -40,6 +42,9 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
     private readonly IUserService _userService = serviceProvider.GetRequiredService<IUserService>();
     private readonly MapperlyMapper _mapper = serviceProvider.GetRequiredService<MapperlyMapper>();
     private readonly ILogger _logger = Log.Logger;
+
+    private readonly UserManager<UserEntity> _userManager =
+        serviceProvider.GetRequiredService<UserManager<UserEntity>>();
 
     public async Task<List<TimeTableResponseDto>> GetAllTimeFramesForBookingAsync()
     {
@@ -141,7 +146,9 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
             TimeTableId = appointmentBookRequestDto.TimetableId,
             AppointmentDate = date,
             BookingType = AppointmentBookingType.Online,
-            Status = AppointmentStatus.Scheduled
+            Status = AppointmentStatus.Scheduled,
+            CreatedBy = ownerId,
+            LastUpdatedBy = ownerId
         };
 
         await _appointmentRepo.AddAppointmentAsync(appointment);
@@ -175,7 +182,7 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
     {
         _logger.Information("Get all appointments");
 
-        var appointments = await _appointmentRepo.GetAppointmentsAsync();
+        /*var appointments = await _appointmentRepo.GetAppointmentsAsync();
 
         var totalAppointments = appointments.Count();
 
@@ -190,7 +197,19 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         // Fetch related data asynchronously for paginated appointments
         var appointmentDtos = await Task.WhenAll(paginatedAppointments.Select(async e => await ToAppointmentResponseDto(appointments, vets, e)));
 
-        return new PaginatedList<AppointmentResponseDto>(appointmentDtos, totalAppointments, pageNumber, pageSize);
+        return new PaginatedList<AppointmentResponseDto>(appointmentDtos, totalAppointments, pageNumber, pageSize);*/
+
+        var appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null);
+        var response = _mapper.Map(appointments);
+
+        foreach (var item in response)
+        {
+            var vet = await _userManager.FindByIdAsync(item.VetId.ToString());
+            item.Vet = _mapper.UserToUserResponseDto(vet);
+        }
+
+        var paginatedList = await PaginatedList<AppointmentResponseDto>.CreateAsync(response, pageNumber, pageSize);
+        return paginatedList;
     }
 
     public async Task<PaginatedList<AppointmentResponseDto>> GetVetAppointmentsAsync(int vetId, string dateString, int pageNumber, int pageSize)
@@ -205,35 +224,31 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
             throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsCommon.DATE_WRONG_FORMAT);
         }
 
-        IEnumerable<Appointment> appointments;
-
+        IQueryable<Appointment> appointments = new List<Appointment>().AsQueryable();
         if (date != DateOnly.MinValue)
         {
-            appointments = (await _appointmentRepo.GetAppointmentsAsync()).Where(e => e.VetId == vetId && e.AppointmentDate == date);
+            appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null && a.VetId == vetId && a.AppointmentDate == date);
         }
         else
         {
-            appointments = (await _appointmentRepo.GetAppointmentsAsync()).Where(e => e.VetId == vetId);
+            appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null && a.VetId == vetId);
         }
 
-        var totalAppointments = appointments.Count();
+        var response = _mapper.Map(appointments);
 
-        // Apply pagination
-        var paginatedAppointments = appointments
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
+        foreach (var item in response)
+        {
+            var vet = await _userManager.FindByIdAsync(item.VetId.ToString());
+            item.Vet = _mapper.UserToUserResponseDto(vet);
+        }
 
-        var vets = await _userService.GetVetsAsync();
-
-        // Fetch related data asynchronously for paginated appointments
-        var appointmentDtos = await Task.WhenAll(paginatedAppointments.Select(async e => await ToAppointmentResponseDto(appointments, vets, e)));
-
-        return new PaginatedList<AppointmentResponseDto>(appointmentDtos, totalAppointments, pageNumber, pageSize);
+        var paginatedList = await PaginatedList<AppointmentResponseDto>.CreateAsync(response, pageNumber, pageSize);
+        return paginatedList;
     }
+}
 
     public async Task<PaginatedList<AppointmentResponseDto>> GetUserAppointmentsAsync(int pageNumber, int pageSize,
-        int ownerId, string dateString)
+        int ownerId, string? dateString)
     {
         _logger.Information($"Get all appointments for user {ownerId} on {dateString}");
 
@@ -245,31 +260,26 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
             throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsCommon.DATE_WRONG_FORMAT);
         }
 
-        IEnumerable<Appointment> appointments;
-
+        IQueryable<Appointment> appointments = new List<Appointment>().AsQueryable();
         if (date != DateOnly.MinValue)
         {
-            appointments = (await _appointmentRepo.GetAppointmentsAsync()).Where(e => e.AppointmentPets.ElementAt(0).Pet.OwnerID == ownerId && e.AppointmentDate == date);
+            appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null && a.CreatedBy == ownerId && a.AppointmentDate == date);
         }
         else
         {
-            appointments = (await _appointmentRepo.GetAppointmentsAsync()).Where(e => e.AppointmentPets.ElementAt(0).Pet.OwnerID == ownerId);
+            appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null && a.CreatedBy == ownerId);
         }
 
-        var totalAppointments = appointments.Count();
+        var response = _mapper.Map(appointments);
 
-        // Apply pagination
-        var paginatedAppointments = appointments
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
+        foreach (var item in response)
+        {
+            var vet = await _userManager.FindByIdAsync(item.VetId.ToString());
+            item.Vet = _mapper.UserToUserResponseDto(vet);
+        }
 
-        var vets = await _userService.GetVetsAsync();
-
-        // Fetch related data asynchronously for paginated appointments
-        var appointmentDtos = await Task.WhenAll(paginatedAppointments.Select(async e => await ToAppointmentResponseDto(appointments, vets, e)));
-
-        return new PaginatedList<AppointmentResponseDto>(appointmentDtos, totalAppointments, pageNumber, pageSize);
+        var paginatedList = await PaginatedList<AppointmentResponseDto>.CreateAsync(response, pageNumber, pageSize);
+        return paginatedList;
     }
 
     public async Task<AppointmentResponseDto> GetAppointmentByAppointmentId(int appointmentId)
