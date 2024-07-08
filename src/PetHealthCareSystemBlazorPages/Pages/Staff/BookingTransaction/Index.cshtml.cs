@@ -18,7 +18,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingTransaction
 
         public PaginatedList<TransactionResponseDto> Transactions { get; set; }
 
-        public async Task OnGetAsync(int pageNumber = 1, int pageSize = 10)
+        public async Task OnGetAsync(int pageNumber = 1, int pageSize = 5)
         {
             Transactions = await _transactionService.GetAllTransactionsAsync(pageNumber, pageSize);
         }
