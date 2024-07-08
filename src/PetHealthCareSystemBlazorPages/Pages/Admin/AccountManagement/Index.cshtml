@@ -2,7 +2,7 @@
 @model PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Account Management";
 }
 <style>
     .container {
@@ -107,15 +107,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.UserEntity[0].BirthDate)
             </th>
-            @* <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].CreatedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].LastUpdatedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].ConcurrencyStamp)
-            </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.UserEntity[0].UserName)
             </th>
@@ -123,29 +114,8 @@
                 @Html.DisplayNameFor(model => model.UserEntity[0].Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].NormalizedEmail)
-            </th>
-           @*  <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].EmailConfirmed)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].PasswordHash)
-            </th> *@
-            <th>
                 @Html.DisplayNameFor(model => model.UserEntity[0].PhoneNumber)
             </th>
-            @* <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].TwoFactorEnabled)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].LockoutEnd)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].LockoutEnabled)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].AccessFailedCount)
-            </th> *@
             <th></th>
         </tr>
     </thead>
@@ -161,15 +131,6 @@
             <td>
                 @Html.DisplayFor(modelItem => item.BirthDate)
             </td>
-            @* <td>
-                @Html.DisplayFor(modelItem => item.CreatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastUpdatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ConcurrencyStamp)
-            </td> *@
             <td>
                 @Html.DisplayFor(modelItem => item.UserName)
             </td>
@@ -177,29 +138,8 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.NormalizedEmail)
-            </td>
-            @* <td>
-                @Html.DisplayFor(modelItem => item.EmailConfirmed)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PasswordHash)
-            </td> *@
-            <td>
                 @Html.DisplayFor(modelItem => item.PhoneNumber)
             </td>
-            @* <td>
-                @Html.DisplayFor(modelItem => item.TwoFactorEnabled)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LockoutEnd)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LockoutEnabled)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccessFailedCount)
-            </td> *@
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |

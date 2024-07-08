@@ -1,6 +1,7 @@
 ﻿using BusinessObject.DTO.MedicalItem;
 using System.Globalization;
 using BusinessObject.DTO.Appointment;
+using BusinessObject.DTO.Hospitalization;
 using BusinessObject.DTO.MedicalRecord;
 using BusinessObject.DTO.Pet;
 using BusinessObject.DTO.Service;
@@ -106,4 +107,9 @@ public partial class MapperlyMapper
 
     // appointment
     public partial AppointmentResponseDto Map(Appointment entity);
+    public partial IQueryable<AppointmentResponseDto> Map(IQueryable<Appointment> entities);
+
+    // hospitalization
+    public partial HospitalizationResponseDto Map(Hospitalization entity);
+    public partial IQueryable<HospitalizationResponseDto> Map(IQueryable<Hospitalization> entity);
 }

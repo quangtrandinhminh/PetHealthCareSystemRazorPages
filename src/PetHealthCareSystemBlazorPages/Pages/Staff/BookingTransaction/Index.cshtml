@@ -111,16 +111,10 @@
                     Payment Method
                 </th>
                 <th>
-                    Payment Id
-                </th>
-                <th>
                     Payment Staff Name
                 </th>
                 <th>
                     Customer Name
-                </th>
-                <th>
-                    Created By Name
                 </th>
                 <th>
                     Last Updated By Name
@@ -156,9 +150,6 @@
                         @Html.DisplayFor(modelItem => item.CustomerName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.CreatedByName)
-                    </td>
-                    <td>
                         @Html.DisplayFor(modelItem => item.LastUpdatedByName)
                     </td>
                     <td>
@@ -171,7 +162,7 @@
                         @Html.DisplayFor(modelItem => item.Status)
                     </td>
                     <td>
-                        <a style="color: black" asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a style="color: black" asp-page="./Edit" asp-route-id="@item.Id">Update payment</a> |
                         <a style="color: black" asp-page="./Details" asp-route-id="@item.Id">Details</a>
                     </td>
                 </tr>
