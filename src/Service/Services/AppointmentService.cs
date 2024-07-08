@@ -245,7 +245,6 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         var paginatedList = await PaginatedList<AppointmentResponseDto>.CreateAsync(response, pageNumber, pageSize);
         return paginatedList;
     }
-}
 
     public async Task<PaginatedList<AppointmentResponseDto>> GetUserAppointmentsAsync(int pageNumber, int pageSize,
         int ownerId, string? dateString)
