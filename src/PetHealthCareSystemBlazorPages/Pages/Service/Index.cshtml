@@ -4,7 +4,7 @@
 
 @{
     var role = HttpContext.Session.GetString("Role");
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Services";
 }
 <style>
     body {
@@ -87,7 +87,7 @@
             }
 
 </style>
-<h1>Index</h1>
+<h1>@ViewData["Title"]</h1>
 @if (role == null)
 {
     

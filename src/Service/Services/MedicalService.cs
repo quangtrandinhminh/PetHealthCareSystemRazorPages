@@ -250,8 +250,8 @@ public class MedicalService(IServiceProvider serviceProvider) : IMedicalService
         var medicalRecord = _mapper.Map(dto);
         medicalRecord.PetId = pet.Id;
         medicalRecord.VetId = vetId;
-        medicalRecord.CreatedBy = vetId;
-        medicalRecord.LastUpdatedBy = vetId;
+        medicalRecord.CreatedBy = medicalRecord.LastUpdatedBy = vetId;
+        medicalRecord.CreatedTime = medicalRecord.LastUpdatedTime = medicalRecord.Date = CoreHelper.SystemTimeNow;
 
         // if medical item is not null, check if it exists
         if (dto.MedicalItems != null)

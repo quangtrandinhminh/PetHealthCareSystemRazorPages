@@ -8,9 +8,9 @@ namespace Repository.Repositories;
 
 public class AppointmentRepository : BaseRepository<Appointment>, IAppointmentRepository
 {
-    public async Task AddAppointmentAsync(Appointment appointment)
+    public async Task<Appointment> AddAppointmentAsync(Appointment appointment)
     {
-        await AppointmentDao.AddAppointmentAsync(appointment);
+        return await AppointmentDao.AddAppointmentAsync(appointment);
     }
 
     public async Task<List<Appointment>> GetAppointmentsAsync()

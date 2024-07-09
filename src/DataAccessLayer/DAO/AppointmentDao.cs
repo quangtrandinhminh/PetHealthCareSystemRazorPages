@@ -29,11 +29,11 @@ public class AppointmentDao : BaseDao<Appointment>
         return await dbSet.AsQueryable().AsNoTracking().Include(e => e.Services).Include(e => e.AppointmentPets).ThenInclude(e => e.Pet).ToListAsync();
     }
 
-    public static async Task AddAppointmentAsync(Appointment appointment)
+    public static async Task<Appointment> AddAppointmentAsync(Appointment appointment)
     {
         try
         {
-            using var db = new AppDbContext();
+            await using var db = new AppDbContext();
 
             // Ensure the tags exist and avoid duplicates
             foreach (var service in appointment.Services.ToList())
@@ -49,8 +49,10 @@ public class AppointmentDao : BaseDao<Appointment>
                 }
             }
 
-            await db.Appointments.AddAsync(appointment);
+            var addedAppointment = await db.Appointments.AddAsync(appointment);
             await db.SaveChangesAsync();
+
+            return addedAppointment.Entity;
         }
         catch (Exception ex)
         {
