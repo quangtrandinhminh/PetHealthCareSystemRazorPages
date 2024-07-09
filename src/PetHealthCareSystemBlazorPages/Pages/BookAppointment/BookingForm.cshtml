@@ -8,18 +8,21 @@
 <style>
     /* Additional CSS styles */
     .select-list {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+        max-width: 100%;
         overflow-x: auto;
         border: 1px solid #ccc;
-        max-width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
     }
 
     .select-item {
-        min-width: 200px;
         cursor: pointer;
         padding: 10px;
-        border-right: 1px solid #ddd;
-        flex-shrink: 0;
+        border: 1px solid #ddd;
+        text-align: center;
     }
 
         .select-item.selected-item {
