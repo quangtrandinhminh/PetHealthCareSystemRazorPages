@@ -22,10 +22,10 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .page-container h1, .page-container h4 {
-        text-align: center;
-        color: #444;
-    }
+        .page-container h1, .page-container h4 {
+            text-align: center;
+            color: #444;
+        }
 
     dl.row {
         display: flex;
@@ -62,20 +62,64 @@
         transition: color 0.3s ease;
     }
 
-    a:hover {
-        text-decoration: underline;
-        color: #0056b3;
-    }
+        a:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
 
     .action-links {
         text-align: center;
         margin-top: 20px;
     }
 
-    .action-links a {
-        margin: 0 10px;
+        .action-links a {
+            margin: 0 10px;
+        }
+
+    .medical-records-table {
+        width: 100%;
+        margin-top: 30px;
+        border-collapse: collapse;
     }
 
+        .medical-records-table th, .medical-records-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .medical-records-table th {
+            background-color: #f2f2f2;
+        }
+
+        .medical-records-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+        .pagination a {
+            color: #007bff;
+            text-decoration: none;
+            padding: 8px 16px;
+            margin: 0 4px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+            .pagination a:hover {
+                background-color: #ddd;
+            }
+
+            .pagination a.disabled {
+                color: #bbb;
+                pointer-events: none;
+                border-color: #bbb;
+            }
 </style>
 
 <div class="page-container">
@@ -122,6 +166,56 @@
             </dd>
         </dl>
     </div>
+
+    <h4>Medical Records</h4>
+    <hr />
+    @if(Model.MedicalRecords.TotalCount > 0)
+    {
+    <table class="medical-records-table">
+        <thead>
+            <tr>
+                <th>Pet Name</th>
+                <th>Vet Name</th>
+                <th>Appointment Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in Model.MedicalRecords.Items)
+            {
+                <tr>
+                    <td>@record.PetName</td>
+                    <td>@record.VetName</td>
+                    <td>@record.Date.ToString("yyyy-MM-dd")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        @if (Model.MedicalRecords.HasPreviousPage)
+        {
+            <a asp-page="Details" asp-route-id="@Model.Pet.Id" asp-route-pageNumber="@(Model.MedicalRecords.PageNumber - 1)">Previous</a>
+        }
+        else
+        {
+            <a class="disabled">Previous</a>
+        }
+
+        @if (Model.MedicalRecords.HasNextPage)
+        {
+            <a asp-page="Details" asp-route-id="@Model.Pet.Id" asp-route-pageNumber="@(Model.MedicalRecords.PageNumber + 1)">Next</a>
+        }
+        else
+        {
+            <a class="disabled">Next</a>
+        }
+        </div>
+    }
+    else
+    {
+        <div>There is nothing to show</div>
+    }
+
     <div class="action-links">
         <a asp-page="./Edit" asp-route-id="@Model.Pet.Id">Edit</a> |
         <a asp-page="./Index">Back to List</a>
