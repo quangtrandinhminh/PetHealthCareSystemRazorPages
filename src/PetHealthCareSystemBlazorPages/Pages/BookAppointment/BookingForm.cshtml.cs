@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Service.IServices;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Utility.Enum;
@@ -67,25 +68,20 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             }
         }
 
-        public async Task<IActionResult> OnPost(string petIdList, string serviceIdList, string appointmentDate, int timeTableId, int vetId)
+        public async Task<IActionResult> OnPost(string petId, string serviceIds, string appointmentDate, int timeTableId, int vetId)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    await OnGetAsync();
-            //    return Page();
-            //}
 
             AppointmentBookRequest = new AppointmentBookRequestDto
             {
-                PetIdList = ConvertStringToIntList(petIdList),
-                ServiceIdList = ConvertStringToIntList(serviceIdList),
+                PetIdList = ConvertStringToIntList(petId),
+                ServiceIdList = ConvertStringToIntList(serviceIds),
                 AppointmentDate = appointmentDate,
                 TimetableId = timeTableId,
                 VetId = vetId
             };
 
-            var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
-            AppointmentResponseDto appointmentResponse = await _appointmentService.BookOnlineAppointmentAsync(AppointmentBookRequest, userId);
+            var userId = int.Parse(HttpContext.Session.GetString("UserId"));
+            var appointmentResponse = await _appointmentService.BookOnlineAppointmentAsync(AppointmentBookRequest, userId);
             HttpContext.Session.SetString("appointment", JsonSerializer.Serialize(appointmentResponse));
             return RedirectToPage("./TransactionForm");
         }
@@ -106,7 +102,7 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             }
         }
 
-        public static List<int> ConvertStringToIntList(string input)
+        private List<int> ConvertStringToIntList(string input)
         {
             return input.Split(',')
                         .Select(int.Parse)
