@@ -66,7 +66,7 @@
             }
 </style>
 
-<div class="appointment-detail-container">
+<div class="appointment-detail-container" id="appointmentDetailContainer">
     <div class="appointment-detail-header">
         <h1>Appointment Details</h1>
     </div>
@@ -76,15 +76,15 @@
         <div class="appointment-detail-content">
             <div>
                 <span>Date:</span>
-                <span>@Model.AppointmentResponseDto.AppointmentDate</span>
+                <span>@Model.AppointmentResponseDto.AppointmentDate.ToString("MM/dd/yyyy")</span>
             </div>
             <div>
                 <span>Start Time:</span>
-                <span>@Model.AppointmentResponseDto.TimeTable.StartTime</span>
+                <span>@Model.AppointmentResponseDto.TimeTable.StartTime.ToString("hh:mm tt")</span>
             </div>
             <div>
                 <span>End Time:</span>
-                <span>@Model.AppointmentResponseDto.TimeTable.EndTime</span>
+                <span>@Model.AppointmentResponseDto.TimeTable.EndTime.ToString("hh:mm tt")</span>
             </div>
             <div>
                 <span>Type:</span>
@@ -117,3 +117,18 @@
         <p>Appointment not found.</p>
     }
 </div>
+
+<script>
+    // JavaScript for fade-in animation
+    document.addEventListener("DOMContentLoaded", function () {
+        const appointmentDetailContainer = document.getElementById("appointmentDetailContainer");
+        if (appointmentDetailContainer) {
+            appointmentDetailContainer.style.opacity = 0;
+            appointmentDetailContainer.style.transition = "opacity 0.5s ease-in-out";
+
+            setTimeout(function () {
+                appointmentDetailContainer.style.opacity = 1;
+            }, 100);
+        }
+    });
+</script>
