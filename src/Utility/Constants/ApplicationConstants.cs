@@ -84,18 +84,22 @@ namespace Utility.Constants
 
     // Response message constants for entities: not found, existed, update success, delete success
 
-    public class ResponseMessageConstantsVet
+    public class ResponseMessageConstantsUser
     {
         public const string VET_NOT_FOUND = "Không tìm thấy bác sĩ";
-        public const string VET_EXISTED = "Bác sĩ đã tồn tại";
-        public const string ADD_VET_SUCCESS = "Thêm bác sĩ thành công";
-        public const string UPDATE_VET_SUCCESS = "Cập nhật bác sĩ thành công";
-        public const string DELETE_VET_SUCCESS = "Xóa bác sĩ thành công";
+        public const string STAFF_NOT_FOUND = "Không tìm thấy nhân viên";
+        public const string USER_NOT_FOUND = "Không tìm thấy người dùng";
+        public const string USER_EXISTED = "Người dùng đã tồn tại";
+        public const string ADD_USER_SUCCESS = "Thêm người dùng thành công";
+        public const string UPDATE_USER_SUCCESS = "Cập nhật người dùng thành công";
+        public const string DELETE_USER_SUCCESS = "Xóa người dùng thành công";
+        public const string ADMIN_NOT_FOUND = "Không tìm thấy quản trị viên";
+        public const string CUSTOMER_NOT_FOUND = "Không tìm thấy khách hàng";
     }
 
     public class ResponseMessageConstantsTimetable
     {
-        public const string NOT_FOUND = "Không tìm thấy khung giờ";
+        public const string TIMETABLE_NOT_FOUND = "Không tìm thấy khung giờ";
     }
 
     public class ResponseMessageConstantsPet
@@ -172,5 +176,13 @@ namespace Utility.Constants
     public class ResponseMessageConstantsHospitalization
     {
         public const string HOSPITALIZATION_NOT_FOUND = "Khong tim thay ho so luu chuong";
+        public const string MEDICAL_RECORD_NOT_ADMITTED = "Ho so benh an khong co luu chuong";
+        public const string MEDICAL_RECORD_ALREADY_DISCHARGED = "Ho so benh an da xuat chuong";
+        public const string ADD_HOSPITALIZATION_SUCCESS = "Them ho so luu chuong thanh cong";
+    }
+
+    public class ResponseMessageConstantsCage
+    {
+        public const string CAGE_NOT_FOUND = "Khong tim thay chuong nuoi";
     }
 }

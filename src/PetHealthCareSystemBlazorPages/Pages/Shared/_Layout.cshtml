@@ -112,7 +112,33 @@
                                         }
                                         else if (role.Contains(UserRole.Admin.ToString()))
                                         {
-                                            <li><a asp-page="Staff/StaffDashboard">Dashboard</a></li>
+                                            <li><a asp-page="@ADMIN_PAGE">Dashboard</a></li>
+                                            <li>
+                                                <a class="nav-link text-dark">Welcome, @name</a>
+                                                <ul class="submenu">
+
+                                                    <li>
+                                                        <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        }
+                                        else if (role.Contains(UserRole.Staff.ToString()))
+                                        {
+                                            <li><a asp-page="@STAFF_PAGE">Dashboard</a></li>
+                                            <li>
+                                                <a class="nav-link text-dark">Welcome, @name</a>
+                                                <ul class="submenu">
+
+                                                    <li>
+                                                        <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        }
+                                        else if (role.Contains(UserRole.Vet.ToString()))
+                                        {
+                                            <li><a asp-page="@VET_PAGE">Dashboard</a></li>
                                             <li>
                                                 <a class="nav-link text-dark">Welcome, @name</a>
                                                 <ul class="submenu">
@@ -150,9 +176,9 @@
             <main role="main" class="pb-3">
                 @RenderBody()
             </main>
-        </div> 
+        </div>
     })
-   
+
     <footer>
         <!-- Footer Start-->
         <div class="footer-area footer-padding position-relative">

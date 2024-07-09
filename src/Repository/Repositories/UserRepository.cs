@@ -36,5 +36,9 @@ namespace Repository.Repositories
         {
             return (await UserDao.GetSingleAsync(e => e.Id == userId)).FullName;
         }
+
+        public IQueryable<UserEntity> GetAllWithCondition(Expression<Func<UserEntity, bool>> predicate = null,
+            params Expression<Func<UserEntity, object>>[] includeProperties)
+            => UserDao.GetAllWithCondition(predicate, includeProperties);
     }
 }

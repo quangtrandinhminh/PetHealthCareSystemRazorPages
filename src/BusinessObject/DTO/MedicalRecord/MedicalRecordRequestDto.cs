@@ -12,7 +12,6 @@ public class MedicalRecordRequestDto
     [Required(ErrorMessage = ResponseMessageConstantsPet.PETID_REQUIRED)]
     public int PetId { get; set; }
     public string? RecordDetails { get; set; }
-    public DateTimeOffset Date { get; set; }
     public string? Diagnosis { get; set; }
     public string? Treatment { get; set; }
     public string? Note { get; set; }

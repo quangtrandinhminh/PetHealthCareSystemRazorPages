@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Service.IServices;
+using Utility.Enum;
 using Utility.Exceptions;
 
 namespace PetHealthCareSystemRazorPages.Pages.Staff.Appointment
@@ -36,7 +37,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.Appointment
             try
             {
                 ViewData["TimetableId"] = new SelectList(await _appointmentService.GetAllTimeFramesForBookingAsync(), "Id", "Id");
-                var datetime = new AppointmentDateTimeQueryDto { Date = DateOnly.FromDateTime(DateTime.Now).ToString(), TimetableId = AppointmentBookRequestDto.TimetableId};
+                var datetime = new DateTimeQueryDto { Date = DateOnly.FromDateTime(DateTime.Now).ToString(), TimetableId = AppointmentBookRequestDto.TimeTableId};
                 ViewData["VetId"] = new SelectList(await _appointmentService.GetFreeWithTimeFrameAndDateAsync(datetime));
 
                 var services = await _serviceService.GetAllServiceAsync();
@@ -61,8 +62,8 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.Appointment
             {
                 try
                 {
-                    ViewData["TimetableId"] = new SelectList(await _appointmentService.GetAllTimeFramesForBookingAsync(), "Id", "Id", AppointmentBookRequestDto.TimetableId);
-                    var datetime = new AppointmentDateTimeQueryDto { Date = DateOnly.FromDateTime(DateTime.Now).ToString(), TimetableId = AppointmentBookRequestDto.TimetableId };
+                    ViewData["TimetableId"] = new SelectList(await _appointmentService.GetAllTimeFramesForBookingAsync(), "Id", "Id", AppointmentBookRequestDto.TimeTableId);
+                    var datetime = new DateTimeQueryDto { Date = DateOnly.FromDateTime(DateTime.Now).ToString(), TimetableId = AppointmentBookRequestDto.TimeTableId };
 
                     ViewData["VetId"] = new SelectList(await _appointmentService.GetFreeWithTimeFrameAndDateAsync(datetime));
 
@@ -85,7 +86,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.Appointment
             try
             {
                 var userId = int.Parse(HttpContext.Session.GetString("UserId"));
-                await _appointmentService.BookOnlineAppointmentAsync(AppointmentBookRequestDto, userId);
+                await _appointmentService.BookAppointmentAsync(AppointmentBookRequestDto, userId);
                 return RedirectToPage("./BookingManagement");
             }
             catch (AppException ex)

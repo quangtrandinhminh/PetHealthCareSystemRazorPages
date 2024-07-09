@@ -1,14 +1,13 @@
 ﻿using BusinessObject.DTO.User;
 using BusinessObject.DTO.Vet;
+using Utility.Enum;
 
 namespace Service.IServices;
 
 public interface IUserService
 {
     Task CreateVetAsync(VetRequestDto dto);
-    Task<IList<UserResponseDto>> GetVetsAsync();
-    Task<IList<UserResponseDto>> GetStaffAsync();
-    Task<IList<UserResponseDto>> GetCustomersAsync();
+    Task<IList<UserResponseDto>> GetAllUsersByRoleAsync(UserRole role);
     Task CreateUserAsync(UserCreateRequestDto dto);
     Task UpdateUserAsync(UserUpdateRequestDto dto);
     Task<UserResponseDto> GetByIdAsync(int id);

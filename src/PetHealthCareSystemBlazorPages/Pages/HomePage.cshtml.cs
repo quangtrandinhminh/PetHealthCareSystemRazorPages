@@ -9,6 +9,7 @@ using BusinessObject.Entities;
 using DataAccessLayer;
 using Service.IServices;
 using BusinessObject.DTO.User;
+using Utility.Enum;
 using Utility.Exceptions;
 
 namespace PetHealthCareSystemRazorPages.Pages
@@ -28,7 +29,7 @@ namespace PetHealthCareSystemRazorPages.Pages
         {
             try
             {
-                List = await _userService.GetVetsAsync();
+                List = await _userService.GetAllUsersByRoleAsync(UserRole.Vet);
             }
             catch (AppException ex) 
             {

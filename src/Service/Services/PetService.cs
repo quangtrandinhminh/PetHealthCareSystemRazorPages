@@ -20,7 +20,7 @@ public class PetService(IServiceProvider serviceProvider) : IPetService
     private readonly IPetRepository _petRepo = serviceProvider.GetRequiredService<IPetRepository>();
     private readonly UserManager<UserEntity> _userManager = serviceProvider.GetRequiredService<UserManager<UserEntity>>();
 
-    public async Task<List<PetResponseDto>> GetAllPetsForCustomerAsync(int id)
+    public async Task<List<PetResponseDto?>> GetAllPetsForCustomerAsync(int id)
     {
         _logger.Information("Get all pet for customer");
 

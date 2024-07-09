@@ -20,6 +20,24 @@ namespace DataAccessLayer.DAO
         private static UserManager<UserEntity> _userManager;
         private static SignInManager<UserEntity> _signinManager;
 
+        public static IQueryable<UserEntity> GetAllWithCondition(Expression<Func<UserEntity, bool>> predicate = null,
+            params Expression<Func<UserEntity, object>>[] includeProperties)
+        {
+            var context = new AppDbContext();
+            var dbSet = context.Set<UserEntity>();
+            IQueryable<UserEntity> queryable = dbSet.AsNoTracking();
+            includeProperties = includeProperties?.Distinct().ToArray();
+            if (includeProperties?.Any() ?? false)
+            {
+                Expression<Func<UserEntity, object>>[] array = includeProperties;
+                foreach (Expression<Func<UserEntity, object>> navigationPropertyPath in array)
+                {
+                    queryable = queryable.Include(navigationPropertyPath);
+                }
+            }
+
+            return predicate == null ? queryable : queryable.Where(predicate);
+        }
 
         public static async Task<IdentityResult> CreateAsync(UserEntity user)
         {

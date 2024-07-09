@@ -76,12 +76,12 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
                 PetIdList = ConvertStringToIntList(petId),
                 ServiceIdList = ConvertStringToIntList(serviceIds),
                 AppointmentDate = appointmentDate,
-                TimetableId = timeTableId,
+                TimeTableId = timeTableId,
                 VetId = vetId
             };
 
             var userId = int.Parse(HttpContext.Session.GetString("UserId"));
-            var appointmentResponse = await _appointmentService.BookOnlineAppointmentAsync(AppointmentBookRequest, userId);
+            var appointmentResponse = await _appointmentService.BookAppointmentAsync(AppointmentBookRequest, userId);
             HttpContext.Session.SetString("appointment", JsonSerializer.Serialize(appointmentResponse));
             return RedirectToPage("./TransactionForm");
         }
@@ -91,7 +91,7 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             try
             {
                 var appointmentDate = DateOnly.Parse(date).ToString();
-                var datetime = new AppointmentDateTimeQueryDto { Date = appointmentDate, TimetableId = timeTableId };
+                var datetime = new DateTimeQueryDto { Date = appointmentDate, TimetableId = timeTableId };
                 var vetList = await _appointmentService.GetFreeWithTimeFrameAndDateAsync(datetime);
                 return new JsonResult(vetList);
             }

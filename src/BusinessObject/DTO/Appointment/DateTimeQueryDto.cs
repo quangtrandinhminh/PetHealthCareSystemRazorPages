@@ -1,6 +1,6 @@
 ﻿namespace BusinessObject.DTO.Appointment;
 
-public class AppointmentDateTimeQueryDto
+public class DateTimeQueryDto
 {
     public string Date { get; set; }
     public int TimetableId { get; set; }
