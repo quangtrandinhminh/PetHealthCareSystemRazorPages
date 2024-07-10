@@ -70,6 +70,7 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
 
         public async Task<IActionResult> OnPost(string petId, string serviceIds, string appointmentDate, int timeTableId, int vetId)
         {
+            var userId = int.Parse(HttpContext.Session.GetString("UserId"));
 
             AppointmentBookRequest = new AppointmentBookRequestDto
             {
@@ -77,10 +78,10 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
                 ServiceIdList = ConvertStringToIntList(serviceIds),
                 AppointmentDate = appointmentDate,
                 TimeTableId = timeTableId,
-                VetId = vetId
+                VetId = vetId,
+                CustomerId = userId
             };
 
-            var userId = int.Parse(HttpContext.Session.GetString("UserId"));
             var appointmentResponse = await _appointmentService.BookAppointmentAsync(AppointmentBookRequest, userId);
             HttpContext.Session.SetString("appointment", JsonSerializer.Serialize(appointmentResponse));
             return RedirectToPage("./TransactionForm");
