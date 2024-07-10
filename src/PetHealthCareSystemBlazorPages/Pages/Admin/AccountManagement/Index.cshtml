@@ -99,25 +99,25 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Users[0].FullName)
+                FullName
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Users[0].Address)
+                Address
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Users[0].BirthDate)
+               BirthDate
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Users[0].UserName)
+                UserName
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Users[0].Email)
+               Email
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var user in Model.Users)
+        @foreach (var user in Model.Users.Items)
         {
             <tr>
                 <td>
