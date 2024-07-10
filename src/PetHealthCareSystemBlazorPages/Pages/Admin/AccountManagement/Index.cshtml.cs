@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using BusinessObject.DTO.User;
 using Service.IServices;
+using Microsoft.AspNetCore.Mvc;
+using Repository.Extensions;
 using Utility.Enum;
 
 namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
@@ -14,11 +16,23 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
             _userService = userService;
         }
 
-        public IList<UserResponseDto> Users { get; set; } = default!;
+        [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 5;
 
-        public async Task OnGetAsync()
+        public PaginatedList<UserResponseDto> Users { get; set; } = default!;
+
+        public async Task<IActionResult> OnGetAsync(int? pageNumber)
         {
-            Users = await _userService.GetAllUsersByRoleAsync(UserRole.Vet);
+            var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
+            var role = HttpContext.Session.GetString("Role");
+
+            if (role == null || !role.Contains(UserRole.Admin.ToString()))
+            {
+                return RedirectToPage("/Login");
+            }
+
+            Users = await _userService.GetAllUsers(pageNumber ?? 1, PageSize);
+            return Page();
         }
     }
 }
