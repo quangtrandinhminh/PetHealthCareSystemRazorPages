@@ -1,5 +1,6 @@
 ﻿using BusinessObject.DTO.User;
 using BusinessObject.DTO.Vet;
+using Repository.Extensions;
 using Utility.Enum;
 
 namespace Service.IServices;
@@ -13,4 +14,5 @@ public interface IUserService
     Task<UserResponseDto> GetByIdAsync(int id);
     Task DeleteUserAsync(int id);
     Task<UserResponseDto> GetVetByIdAsync(int id);
+    Task<PaginatedList<UserResponseDto>> GetAllUsers(int pageNumber, int pageSize);
 }

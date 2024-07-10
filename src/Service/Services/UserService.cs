@@ -10,6 +10,7 @@ using Repository.Interfaces;
 using Serilog;
 using Service.IServices;
 using System.Text.RegularExpressions;
+using Repository.Extensions;
 using Utility.Constants;
 using Utility.Enum;
 using Utility.Exceptions;
@@ -40,6 +41,14 @@ public class UserService(IServiceProvider serviceProvider) : IUserService
             default:
                 throw new AppException(ResponseCodeConstants.INVALID_INPUT, ResponseMessageIdentity.ROLE_INVALID, StatusCodes.Status400BadRequest);
         }
+    }
+
+    public async Task<PaginatedList<UserResponseDto>> GetAllUsers(int pageNumber, int pageSize)
+    {
+        var users = _userManager.Users.AsNoTracking();
+        var response = _mapper.Map(users);
+        var paginatedList = await PaginatedList<UserResponseDto>.CreateAsync(response, pageNumber, pageSize);
+        return paginatedList;
     }
 
     private async Task<IList<UserResponseDto>> GetAdminsAsync()

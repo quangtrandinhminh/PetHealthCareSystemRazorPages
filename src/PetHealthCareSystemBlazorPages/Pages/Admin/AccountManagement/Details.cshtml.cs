@@ -30,7 +30,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
             {
                 User = await _userService.GetVetByIdAsync(id.Value);
             }
-            catch (AppException ex) when (ex.ResponseCode == ResponseCodeConstants.NOT_FOUND)
+            catch (AppException ex) when (ex.Code == ResponseCodeConstants.NOT_FOUND)
             {
                 return NotFound(ex.Message);
             }

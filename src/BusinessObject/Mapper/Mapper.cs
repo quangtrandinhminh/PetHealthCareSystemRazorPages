@@ -32,6 +32,7 @@ public partial class MapperlyMapper
     public partial LoginResponseDto UserToLoginResponseDto(UserEntity entity);
     public partial UserResponseDto UserToUserResponseDto(UserEntity entity);
     public partial IList<UserResponseDto> Map(IList<UserEntity> entity);
+    public partial IQueryable<UserResponseDto> Map(IQueryable<UserEntity> entity);
     public partial void Map(RegisterDto request, UserEntity entity);
 
     // pet 
