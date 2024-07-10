@@ -72,6 +72,9 @@ namespace DataAccessLayer.Migrations
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("DeletedBy")
                         .HasColumnType("int");
 
@@ -492,14 +495,15 @@ namespace DataAccessLayer.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "056e2655-7018-45db-9d36-75ab227bb58e",
-                            CreatedTime = new DateTimeOffset(new DateTime(2024, 7, 4, 0, 37, 15, 254, DateTimeKind.Unspecified).AddTicks(2221), new TimeSpan(0, 7, 0, 0, 0)),
+                            ConcurrencyStamp = "7ec8a0c5-9eed-44e9-8c5f-7a5bf5ecaab3",
+                            CreatedTime = new DateTimeOffset(new DateTime(2024, 7, 9, 22, 6, 32, 758, DateTimeKind.Unspecified).AddTicks(7252), new TimeSpan(0, 7, 0, 0, 0)),
                             Email = "admin@email.com",
                             EmailConfirmed = false,
-                            LastUpdatedTime = new DateTimeOffset(new DateTime(2024, 7, 4, 0, 37, 15, 254, DateTimeKind.Unspecified).AddTicks(2221), new TimeSpan(0, 7, 0, 0, 0)),
+                            FullName = "Admin User",
+                            LastUpdatedTime = new DateTimeOffset(new DateTime(2024, 7, 9, 22, 6, 32, 758, DateTimeKind.Unspecified).AddTicks(7252), new TimeSpan(0, 7, 0, 0, 0)),
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "$2a$11$59lx1a4XFTBddZ.ioBVtlOlYTEuKLyn2YX5z1MYCBrhYErMILTkYa",
+                            PasswordHash = "$2a$11$ETqUuQQ3h409fMU77XErKO.n3Db3/opxDMuTC6gXr3x0o8x4oYUrC",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "admin"
@@ -508,14 +512,15 @@ namespace DataAccessLayer.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "409852bb-0c12-4204-831d-d0fd308f22dc",
-                            CreatedTime = new DateTimeOffset(new DateTime(2024, 7, 4, 0, 37, 15, 377, DateTimeKind.Unspecified).AddTicks(5982), new TimeSpan(0, 7, 0, 0, 0)),
+                            ConcurrencyStamp = "2948b1c8-5da5-4b2a-98ae-70ed3109c8ac",
+                            CreatedTime = new DateTimeOffset(new DateTime(2024, 7, 9, 22, 6, 32, 896, DateTimeKind.Unspecified).AddTicks(1436), new TimeSpan(0, 7, 0, 0, 0)),
                             Email = "staff@email.com",
                             EmailConfirmed = false,
-                            LastUpdatedTime = new DateTimeOffset(new DateTime(2024, 7, 4, 0, 37, 15, 377, DateTimeKind.Unspecified).AddTicks(5982), new TimeSpan(0, 7, 0, 0, 0)),
+                            FullName = "Staff User",
+                            LastUpdatedTime = new DateTimeOffset(new DateTime(2024, 7, 9, 22, 6, 32, 896, DateTimeKind.Unspecified).AddTicks(1436), new TimeSpan(0, 7, 0, 0, 0)),
                             LockoutEnabled = false,
                             NormalizedUserName = "staff",
-                            PasswordHash = "$2a$11$kEEgjrAn2Dh1BRyEwsZCC.TAWiUujaj877A.JtXQpIagLMjH9Ncaq",
+                            PasswordHash = "$2a$11$aeB6vHEZdKrWd65rAZgOv.V.Xl4ruBQQZraEmSRHl9vHEP6k0n.bC",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "staff"
@@ -526,18 +531,18 @@ namespace DataAccessLayer.Migrations
                             AccessFailedCount = 0,
                             Address = "123 Main St",
                             BirthDate = new DateTimeOffset(new DateTime(1985, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ConcurrencyStamp = "20834890-97d2-462f-8538-d1778c9e3cfe",
-                            CreatedTime = new DateTimeOffset(new DateTime(2024, 7, 4, 0, 37, 15, 502, DateTimeKind.Unspecified).AddTicks(9267), new TimeSpan(0, 7, 0, 0, 0)),
+                            ConcurrencyStamp = "95a94c66-a888-4361-9714-f0128d10cc70",
+                            CreatedTime = new DateTimeOffset(new DateTime(2024, 7, 9, 22, 6, 33, 23, DateTimeKind.Unspecified).AddTicks(2155), new TimeSpan(0, 7, 0, 0, 0)),
                             Email = "johndoe@example.com",
                             EmailConfirmed = false,
                             FullName = "John Doe",
-                            LastUpdatedTime = new DateTimeOffset(new DateTime(2024, 7, 4, 0, 37, 15, 502, DateTimeKind.Unspecified).AddTicks(9267), new TimeSpan(0, 7, 0, 0, 0)),
+                            LastUpdatedTime = new DateTimeOffset(new DateTime(2024, 7, 9, 22, 6, 33, 23, DateTimeKind.Unspecified).AddTicks(2155), new TimeSpan(0, 7, 0, 0, 0)),
                             LockoutEnabled = false,
                             NormalizedUserName = "JOHNDOE",
-                            PasswordHash = "$2a$11$cwhfbTfZ7p0heN4OR8GYGOxPtIWRJXRyjFQrBLRdAAEF5GriGmM7.",
+                            PasswordHash = "$2a$11$QORHwkLgUyK7.JCHA3wQYuTQy0hT1xAy2rq8RDZobUdVUb69D9yoa",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
-                            UserName = "johndoe"
+                            UserName = "vet1"
                         },
                         new
                         {
@@ -545,18 +550,18 @@ namespace DataAccessLayer.Migrations
                             AccessFailedCount = 0,
                             Address = "456 Elm St",
                             BirthDate = new DateTimeOffset(new DateTime(1990, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ConcurrencyStamp = "d8ef201b-a991-4847-9747-366f68ddaaa9",
-                            CreatedTime = new DateTimeOffset(new DateTime(2024, 7, 4, 0, 37, 15, 625, DateTimeKind.Unspecified).AddTicks(5652), new TimeSpan(0, 7, 0, 0, 0)),
+                            ConcurrencyStamp = "049b34b1-b416-47b6-9036-e5973d72a6e4",
+                            CreatedTime = new DateTimeOffset(new DateTime(2024, 7, 9, 22, 6, 33, 155, DateTimeKind.Unspecified).AddTicks(1884), new TimeSpan(0, 7, 0, 0, 0)),
                             Email = "janesmith@example.com",
                             EmailConfirmed = false,
                             FullName = "Jane Smith",
-                            LastUpdatedTime = new DateTimeOffset(new DateTime(2024, 7, 4, 0, 37, 15, 625, DateTimeKind.Unspecified).AddTicks(5652), new TimeSpan(0, 7, 0, 0, 0)),
+                            LastUpdatedTime = new DateTimeOffset(new DateTime(2024, 7, 9, 22, 6, 33, 155, DateTimeKind.Unspecified).AddTicks(1884), new TimeSpan(0, 7, 0, 0, 0)),
                             LockoutEnabled = false,
                             NormalizedUserName = "JANESMITH",
-                            PasswordHash = "$2a$11$6WfcObnhr6fqy2iuo13AaemiTjQoNQtOo16K5gCV16axI0rgvGBC.",
+                            PasswordHash = "$2a$11$KE5zxdELvIEAu7pkWWBCae.Yb1kfx6gfrlphH2PGoqtZEvJuJDkQW",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
-                            UserName = "janesmith"
+                            UserName = "vet2"
                         },
                         new
                         {
@@ -564,33 +569,34 @@ namespace DataAccessLayer.Migrations
                             AccessFailedCount = 0,
                             Address = "789 Pine St",
                             BirthDate = new DateTimeOffset(new DateTime(1978, 3, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            ConcurrencyStamp = "061da4fd-4eac-47a9-8f54-0dc6f3860c7a",
-                            CreatedTime = new DateTimeOffset(new DateTime(2024, 7, 4, 0, 37, 15, 750, DateTimeKind.Unspecified).AddTicks(3213), new TimeSpan(0, 7, 0, 0, 0)),
+                            ConcurrencyStamp = "94b4c1fc-2e0b-40e9-aeb6-2829a0560192",
+                            CreatedTime = new DateTimeOffset(new DateTime(2024, 7, 9, 22, 6, 33, 275, DateTimeKind.Unspecified).AddTicks(6617), new TimeSpan(0, 7, 0, 0, 0)),
                             Email = "alicejohnson@example.com",
                             EmailConfirmed = false,
                             FullName = "Alice Johnson",
-                            LastUpdatedTime = new DateTimeOffset(new DateTime(2024, 7, 4, 0, 37, 15, 750, DateTimeKind.Unspecified).AddTicks(3213), new TimeSpan(0, 7, 0, 0, 0)),
+                            LastUpdatedTime = new DateTimeOffset(new DateTime(2024, 7, 9, 22, 6, 33, 275, DateTimeKind.Unspecified).AddTicks(6617), new TimeSpan(0, 7, 0, 0, 0)),
                             LockoutEnabled = false,
                             NormalizedUserName = "ALICEJOHNSON",
-                            PasswordHash = "$2a$11$Kaqn5kFlSnnp1vDPlzlPEegV1Sa7QYYmJrYC70C8H/30dEm56sMRy",
+                            PasswordHash = "$2a$11$.PlowQTFb1gkya5PNVLKK.nST844T77ulxj8ith0gGsuJA0T7EYnu",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
-                            UserName = "alicejohnson"
+                            UserName = "vet3"
                         },
                         new
                         {
                             Id = 6,
                             AccessFailedCount = 0,
                             Address = "123 Main St",
-                            ConcurrencyStamp = "95c56c4a-abe2-4c16-b10c-c8738ad2ca80",
-                            CreatedTime = new DateTimeOffset(new DateTime(2024, 7, 4, 0, 37, 15, 868, DateTimeKind.Unspecified).AddTicks(9919), new TimeSpan(0, 7, 0, 0, 0)),
-                            Email = "cus1@example.com",
+                            ConcurrencyStamp = "a01b8fdb-38b2-478f-95d0-894df3fab286",
+                            CreatedTime = new DateTimeOffset(new DateTime(2024, 7, 9, 22, 6, 33, 413, DateTimeKind.Unspecified).AddTicks(4160), new TimeSpan(0, 7, 0, 0, 0)),
+                            Email = "quangtdmse171391@example.com",
                             EmailConfirmed = false,
-                            FullName = "Cus One",
-                            LastUpdatedTime = new DateTimeOffset(new DateTime(2024, 7, 4, 0, 37, 15, 868, DateTimeKind.Unspecified).AddTicks(9919), new TimeSpan(0, 7, 0, 0, 0)),
+                            FullName = "Tran Dinh Minh Quang",
+                            LastUpdatedTime = new DateTimeOffset(new DateTime(2024, 7, 9, 22, 6, 33, 413, DateTimeKind.Unspecified).AddTicks(4160), new TimeSpan(0, 7, 0, 0, 0)),
                             LockoutEnabled = false,
                             NormalizedUserName = "CUS1",
-                            PasswordHash = "$2a$11$bPORu/zfsM65McLc2k9XOuBw.3K0dKl0PRCf3A2n.N4VIgL70zbJS",
+                            PasswordHash = "$2a$11$R1HO1LLbKkmiVz9eIGLTzO0reoq30D9rI1wqRStNe9Ue4BlqckElu",
+                            PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "cus1"
@@ -867,11 +873,11 @@ namespace DataAccessLayer.Migrations
                     b.Property<DateTimeOffset>("LastUpdatedTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<TimeOnly>("StartTime")
                         .HasColumnType("time");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

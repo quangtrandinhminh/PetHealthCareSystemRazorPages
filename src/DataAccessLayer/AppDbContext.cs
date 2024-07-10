@@ -101,6 +101,7 @@ public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
         {
             Id = 1,
             UserName = "admin",
+            FullName = "Admin User",
             NormalizedUserName = "ADMIN",
             Email = "admin@email.com",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("12345678"),
@@ -112,6 +113,7 @@ public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
         {
             Id = 2,
             UserName = "staff",
+            FullName = "Staff User",
             NormalizedUserName = "staff",
             Email = "staff@email.com",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("12345678"),
@@ -123,7 +125,7 @@ public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
         {
             Id = 3,
             FullName = "John Doe",
-            UserName = "johndoe",
+            UserName = "vet1",
             NormalizedUserName = "JOHNDOE",
             Address = "123 Main St",
             Email = "johndoe@example.com",
@@ -137,7 +139,7 @@ public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
         {
             Id = 4,
             FullName = "Jane Smith",
-            UserName = "janesmith",
+            UserName = "vet2",
             NormalizedUserName = "JANESMITH",
             Address = "456 Elm St",
             Email = "janesmith@example.com",
@@ -151,7 +153,7 @@ public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
         {
             Id = 5,
             FullName = "Alice Johnson",
-            UserName = "alicejohnson",
+            UserName = "vet3",
             NormalizedUserName = "ALICEJOHNSON",
             Address = "789 Pine St",
             Email = "alicejohnson@example.com",
@@ -164,12 +166,13 @@ public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
         var cus1 = new UserEntity
         {
             Id = 6,
-            FullName = "Cus One",
+            FullName = "Tran Dinh Minh Quang",
             UserName = "cus1",
+            PhoneNumber = "0123456789",
             NormalizedUserName = "CUS1",
             Address = "123 Main St",
-            Email = "cus1@example.com",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("12345"),
+            Email = "quangtdmse171391@example.com",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("12345678"),
             SecurityStamp = Guid.NewGuid().ToString(),
         };
         modelBuilder.Entity<UserEntity>().HasData(cus1);

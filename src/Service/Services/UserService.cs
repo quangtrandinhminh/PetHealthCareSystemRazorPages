@@ -25,20 +25,58 @@ public class UserService(IServiceProvider serviceProvider) : IUserService
     private readonly ILogger _logger = Log.Logger;
     private readonly SignInManager<UserEntity> _signInManager = serviceProvider.GetRequiredService<SignInManager<UserEntity>>();
 
-    public async Task<IList<UserResponseDto>> GetVetsAsync()
+    public async Task<IList<UserResponseDto>> GetAllUsersByRoleAsync(UserRole role)
     {
-        var vets = await _userManager.GetUsersInRoleAsync(UserRole.Vet.ToString());
-        if (vets == null || vets.Count == 0)
+        switch (role)
         {
-            throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsVet.VET_NOT_FOUND, StatusCodes.Status404NotFound);
+            case UserRole.Admin:
+                return await GetAdminsAsync();
+            case UserRole.Staff:
+                return await GetStaffAsync();
+            case UserRole.Vet:
+                return await GetVetsAsync();
+            case UserRole.Customer:
+                return await GetCustomersAsync();
+            default:
+                throw new AppException(ResponseCodeConstants.INVALID_INPUT, ResponseMessageIdentity.ROLE_INVALID, StatusCodes.Status400BadRequest);
         }
-        var response = _mapper.Map(vets);
-        // get role of each vet
+    }
+
+    private async Task<IList<UserResponseDto>> GetAdminsAsync()
+    {
+        var admins = await _userManager.GetUsersInRoleAsync(UserRole.Admin.ToString());
+
+        if (admins == null || admins.Count == 0)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsUser.ADMIN_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
+
+        var response = _mapper.Map(admins);
+
         foreach (var vet in response)
         {
+            vet.Role = UserRole.Admin.ToString();
+        }
 
+        return response;
+    }
+
+    private async Task<IList<UserResponseDto>> GetVetsAsync()
+    {
+        var vets = await _userManager.GetUsersInRoleAsync(UserRole.Vet.ToString());
+
+        if (vets == null || vets.Count == 0)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsUser.VET_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
+
+        var response = _mapper.Map(vets);
+
+        foreach (var vet in response)
+        {
             vet.Role = UserRole.Vet.ToString();
         }
+
         return response;
     }
 
@@ -48,7 +86,7 @@ public class UserService(IServiceProvider serviceProvider) : IUserService
 
         if (vets == null || vets.Count == 0)
         {
-            throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsVet.VET_NOT_FOUND, StatusCodes.Status404NotFound);
+            throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsUser.VET_NOT_FOUND, StatusCodes.Status404NotFound);
         }
 
         var response = _mapper.Map(vets);
@@ -62,20 +100,48 @@ public class UserService(IServiceProvider serviceProvider) : IUserService
 
         if (vetResponse == null)
         {
-            throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsVet.VET_NOT_FOUND, StatusCodes.Status404NotFound);
+            throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsUser.VET_NOT_FOUND, StatusCodes.Status404NotFound);
         }
 
         return vetResponse;
     }
 
-    public Task<IList<UserResponseDto>> GetStaffAsync()
+    private async Task<IList<UserResponseDto>> GetStaffAsync()
     {
-        throw new NotImplementedException();
+        var staffs = await _userManager.GetUsersInRoleAsync(UserRole.Staff.ToString());
+
+        if (staffs == null || staffs.Count == 0)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsUser.STAFF_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
+
+        var response = _mapper.Map(staffs);
+
+        foreach (var vet in response)
+        {
+            vet.Role = UserRole.Staff.ToString();
+        }
+
+        return response;
     }
 
-    public Task<IList<UserResponseDto>> GetCustomersAsync()
+    public async Task<IList<UserResponseDto>> GetCustomersAsync()
     {
-        throw new NotImplementedException();
+        var customers = await _userManager.GetUsersInRoleAsync(UserRole.Customer.ToString());
+
+        if (customers == null || customers.Count == 0)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsUser.CUSTOMER_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
+
+        var response = _mapper.Map(customers);
+
+        foreach (var vet in response)
+        {
+            vet.Role = UserRole.Customer.ToString();
+        }
+
+        return response;
     }
 
     public Task CreateUserAsync(UserCreateRequestDto dto)

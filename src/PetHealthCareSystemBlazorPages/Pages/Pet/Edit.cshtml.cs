@@ -11,6 +11,7 @@ using DataAccessLayer;
 using BusinessObject.DTO.Pet;
 using Service.IServices;
 using System.Collections.Generic;
+using Utility.Enum;
 
 namespace PetHealthCareSystemRazorPages.Pages.Pet
 {
@@ -41,18 +42,28 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
+
+
+            var role = HttpContext.Session.GetString("Role");
+
+            if (role == null || !role.Contains(UserRole.Customer.ToString()))
+            {
+                Response.Redirect("/Login");
+            }
+
             if (id == null)
             {
-                return NotFound();
+                Response.Redirect("/Login");
             }
 
             var petId = id.GetValueOrDefault();
 
             // Load Pet details using PetService
-            var petResponse = await _petService.GetPetForCustomerAsync(2002, petId);
+            var petResponse = await _petService.GetPetForCustomerAsync(userId, petId);
             if (petResponse == null)
             {
-                return NotFound();
+                Response.Redirect("/Login");
             }
 
             // Map properties from PetResponseDto to PetUpdateRequestDto (Pet)
@@ -78,10 +89,20 @@ namespace PetHealthCareSystemRazorPages.Pages.Pet
                 return Page();
             }
 
+            var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
+
+
+            var role = HttpContext.Session.GetString("Role");
+
+            if (role == null || !role.Contains(UserRole.Customer.ToString()))
+            {
+                Response.Redirect("/Login");
+            }
+
             try
             {
                 // Update the existing Pet entity using PetUpdateRequestDto (Pet)
-                await _petService.UpdatePetAsync(Pet, 2002);
+                await _petService.UpdatePetAsync(Pet,userId);
             }
             catch (Exception)
             {

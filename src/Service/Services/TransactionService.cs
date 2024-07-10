@@ -46,9 +46,9 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
         }
 
         var response = _mapper.Map(transactions);
-        var reponsePages = await PaginatedList<TransactionResponseDto>.CreateAsync(response, pageNumber, pageSize);
+        var responsePages = await PaginatedList<TransactionResponseDto>.CreateAsync(response, pageNumber, pageSize);
         // for each response in reponse page set customer name
-        foreach (var transaction in reponsePages.Items)
+        foreach (var transaction in responsePages.Items)
         {
             var customer = await _userRepository.GetSingleAsync(u => u.Id == transaction.CustomerId);
             var createBy = await _userRepository.GetSingleAsync(u => u.Id == transaction.CreatedBy);
@@ -58,7 +58,7 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
             transaction.LastUpdatedByName = updateBy?.FullName ?? string.Empty;
         }
 
-        return reponsePages;
+        return responsePages;
     }
 
     public async Task<PaginatedList<TransactionResponseDto>> GetTransactionsByCustomerIdAsync(int customerId, int pageNumber, int pageSize)
@@ -361,10 +361,10 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
         await _transactionRepository.AddAsync(transaction);
     }
 
-    public async Task UpdatePaymentByStaffAsync(int transactionId, int userId)
+    public async Task UpdatePaymentByStaffAsync(int transactionId, int updatedById)
     {
-        _logger.Information($"Update payment status for Transaction {transactionId} by Staff {userId}");
-        var userEntity = await _userManager.FindByIdAsync(userId.ToString());
+        _logger.Information($"Update payment status for Transaction {transactionId} by Staff {updatedById}");
+        var userEntity = await _userManager.FindByIdAsync(updatedById.ToString());
         if (userEntity == null)
         {
             throw new AppException(ResponseCodeConstants.NOT_FOUND,
@@ -385,10 +385,12 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
                                               StatusCodes.Status400BadRequest);
         }
 
-        transaction.PaymentDate = CoreHelper.SystemTimeNow;
+        transaction.PaymentDate = DateTime.Now;
         transaction.PaymentStaffId = userEntity.Id;
         transaction.PaymentStaffName = userEntity.FullName;
         transaction.Status = TransactionStatus.Paid;
+        transaction.LastUpdatedBy = userEntity.Id;
+        transaction.LastUpdatedTime = CoreHelper.SystemTimeNow;
 
         await _transactionRepository.UpdateAsync(transaction);
     }

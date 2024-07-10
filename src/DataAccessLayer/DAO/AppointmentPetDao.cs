@@ -8,7 +8,7 @@ public class AppointmentPetDao
 {
     public static async Task AddAsync(AppointmentPet entity)
     {
-        using var context = new AppDbContext();
+        await using var context = new AppDbContext();
         var dbSet = context.Set<AppointmentPet>();
         await dbSet.AddAsync(entity);
         await context.SaveChangesAsync();

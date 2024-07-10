@@ -1,11 +1,6 @@
 ﻿@page
 @model PetHealthCareSystemRazorPages.Pages.Pet.IndexModel
 
-@{
-    ViewData["Title"] = "Index";
-    
-}
-
 <style>
     body {
         font-family: 'Arial', sans-serif;
@@ -18,12 +13,15 @@
         font-size: 3em;
         color: #444;
         font-weight: bold;
+        margin-top: 20px;
+        animation: slideInUp 1s ease forwards;
     }
 
     .create-btn-container {
         display: flex;
-        justify-content: center;
+        justify-content: flex-end; /* Align items to the right */
         margin-bottom: 20px;
+        animation: fadeIn 1s ease forwards;
     }
 
     .create-btn {
@@ -39,7 +37,7 @@
     }
 
     .create-btn:hover {
-            background-color: red;
+        background-color: red;
         box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
     }
 
@@ -49,9 +47,11 @@
         border-collapse: collapse;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         background-color: white;
+        animation: slideInLeft 1s ease forwards;
     }
 
-    .table th, .table td {
+    .table th,
+    .table td {
         border: 1px solid #ddd;
         padding: 12px;
         text-align: center;
@@ -87,69 +87,69 @@
 </style>
 
 <div class="page-container">
-<h1 class="page-title">Your Pets</h1>
+    <h1 class="page-title">Your Pets</h1>
 
-<div class="create-btn-container">
-    <a asp-page="Create" class="create-btn">
-        Create
-    </a>
-</div>
+    <div class="create-btn-container">
+        <a asp-page="Create" class="create-btn">
+            Create
+        </a>
+    </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Pet[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pet[0].Species)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pet[0].Breed)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pet[0].DateOfBirth)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pet[0].IsNeutered)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pet[0].Gender)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Pet)
-        {
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Species)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Breed)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateOfBirth)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsNeutered)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Gender)
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pet[0].Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pet[0].Species)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pet[0].Breed)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pet[0].DateOfBirth)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pet[0].IsNeutered)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pet[0].Gender)
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Pet)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Species)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Breed)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateOfBirth)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsNeutered)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Gender)
+                    </td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
     @section Scripts {
         @{
             await Html.RenderPartialAsync("_ValidationScriptsPartial");

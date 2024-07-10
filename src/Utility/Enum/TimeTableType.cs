@@ -2,6 +2,6 @@
 
 public enum TimeTableType
 {
-    Book,
-    Check
+    Appointment = 1,
+    Hospitalization
 }

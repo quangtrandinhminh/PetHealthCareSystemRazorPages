@@ -10,10 +10,14 @@ namespace Service.IServices;
 public interface IAppointmentService
 {
     Task<List<TimeTableResponseDto>> GetAllTimeFramesForBookingAsync();
-    Task<List<UserResponseDto>> GetFreeWithTimeFrameAndDateAsync(AppointmentDateTimeQueryDto qo);
-    Task<AppointmentResponseDto> BookOnlineAppointmentAsync(AppointmentBookRequestDto appointmentBookRequestDto, int ownerId);
+    Task<List<UserResponseDto>> GetFreeWithTimeFrameAndDateAsync(DateTimeQueryDto qo);
+    Task<AppointmentResponseDto> GetAppointmentByAppointmentId(int appointmentId);
     Task<PaginatedList<AppointmentResponseDto>> GetAllAppointmentsAsync(int pageNumber, int pageSize);
     Task<PaginatedList<AppointmentResponseDto>> GetVetAppointmentsAsync(int vetId, string date, int pageNumber, int pageSize);
     Task<PaginatedList<AppointmentResponseDto>> GetUserAppointmentsAsync(int pageNumber, int pageSize, int id, string date);
-    Task<AppointmentResponseDto> GetAppointmentByAppointmentId(int appointmentId);
+    Task<PaginatedList<AppointmentResponseDto>> GetAppointmentWithFilter(AppointmentFilterDto filter, int pageNumber,
+        int pageSize);
+    Task<AppointmentResponseDto> BookAppointmentAsync(AppointmentBookRequestDto appointmentBookRequestDto, int customerId);
+    Task<AppointmentResponseDto> UpdateStatusToDone(int appointmentId, int vetId);
+    Task<AppointmentResponseDto> UpdateStatusToCancel(int appointmentId, int updatedById);
 }

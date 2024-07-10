@@ -1,6 +1,7 @@
 ﻿using BusinessObject.DTO.MedicalItem;
 using System.Globalization;
 using BusinessObject.DTO.Appointment;
+using BusinessObject.DTO.Cage;
 using BusinessObject.DTO.MedicalRecord;
 using BusinessObject.DTO.Pet;
 using BusinessObject.DTO.Service;
@@ -12,6 +13,7 @@ using BusinessObject.Entities;
 using BusinessObject.Entities.Identity;
 using Microsoft.EntityFrameworkCore.Query;
 using Riok.Mapperly.Abstractions;
+using BusinessObject.DTO.Hospitalization;
 
 namespace BusinessObject.Mapper;
 
@@ -51,14 +53,7 @@ public partial class MapperlyMapper
         return response;
     }
     // Custom mapping method for IList<Pet> to IList<PetResponseDto> with date formatting
-    public IList<PetResponseDto> Map(IList<Pet> entities)
-    {
-        return entities.Select(Map).ToList();
-    }
-    public List<PetResponseDto?> Map(List<Pet?> entities)
-    {
-        return entities.Select(Map).ToList();
-    }
+    public partial List<PetResponseDto?> Map(List<Pet> entities);
     public partial Pet Map(PetUpdateRequestDto request);
     public partial void Map(PetRequestDto request, Pet entity);
 
@@ -76,7 +71,7 @@ public partial class MapperlyMapper
     // timetable
     //public partial TimeTable UserToLoginResponseDto(TimeTableRequestDto request);
     public partial TimeTableResponseDto Map(TimeTable entity);
-    public partial IList<TimeTableResponseDto> Map(IList<TimeTable> entity);
+    public partial IQueryable<TimeTableResponseDto> Map(IQueryable<TimeTable> entity);
 
     // medicalItem
     public partial MedicalItem Map(MedicalResponseDto request);
@@ -106,4 +101,20 @@ public partial class MapperlyMapper
 
     // appointment
     public partial AppointmentResponseDto Map(Appointment entity);
+    public partial IQueryable<AppointmentResponseDto> Map(IQueryable<Appointment> entities);
+    public partial Appointment Map(AppointmentBookRequestDto request);
+
+    // hospitalization
+    public partial HospitalizationResponseDto Map(Hospitalization entity);
+    public partial IQueryable<HospitalizationResponseDto> Map(IQueryable<Hospitalization> entity);
+
+    public partial HospitalizationResponseDtoWithDetails HospitalizationToHospitalizationResponseDtoWithDetails(
+               Hospitalization entity);
+
+    public partial Hospitalization Map(HospitalizationRequestDto request);
+
+
+    // cage
+    public partial CageResponseDto Map(Cage entity);
+    public partial IQueryable<CageResponseDto> Map(IQueryable<Cage> entity);
 }

@@ -1,0 +1,134 @@
+﻿@page "{id:int}"
+@model PetHealthCareSystemRazorPages.Pages.Customer.AppointmentManagement.DetailModel
+
+@{
+    ViewData["Title"] = "Appointment Details";
+}
+
+<style>
+    .appointment-detail-container {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        max-width: 800px;
+        margin: auto;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        background-color: #fff;
+    }
+
+    .appointment-detail-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+        .appointment-detail-header h1 {
+            margin: 0;
+        }
+
+    .appointment-detail-content {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+        .appointment-detail-content div {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+            .appointment-detail-content div:last-child {
+                border-bottom: none;
+            }
+
+        .appointment-detail-content span {
+            font-weight: bold;
+        }
+
+    .appointment-detail-actions {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+        .appointment-detail-actions a {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin: 0 5px;
+        }
+
+            .appointment-detail-actions a:hover {
+                background-color: #0056b3;
+            }
+</style>
+
+<div class="appointment-detail-container" id="appointmentDetailContainer">
+    <div class="appointment-detail-header">
+        <h1>Appointment Details</h1>
+    </div>
+
+    @if (Model.AppointmentResponseDto != null)
+    {
+        <div class="appointment-detail-content">
+            <div>
+                <span>Date:</span>
+                <span>@Model.AppointmentResponseDto.AppointmentDate.ToString("MM/dd/yyyy")</span>
+            </div>
+            <div>
+                <span>Start Time:</span>
+                <span>@Model.AppointmentResponseDto.TimeTable.StartTime.ToString("hh:mm tt")</span>
+            </div>
+            <div>
+                <span>End Time:</span>
+                <span>@Model.AppointmentResponseDto.TimeTable.EndTime.ToString("hh:mm tt")</span>
+            </div>
+            <div>
+                <span>Type:</span>
+                <span>@Model.AppointmentResponseDto.BookingType</span>
+            </div>
+            <div>
+                <span>Rating:</span>
+                <span>@Model.AppointmentResponseDto.Rating</span>
+            </div>
+            <div>
+                <span>Feedback:</span>
+                <span>@Model.AppointmentResponseDto.Feedback</span>
+            </div>
+            <div>
+                <span>Veterinarian:</span>
+                <span>@Model.AppointmentResponseDto.Vet.FullName</span>
+            </div>
+            <div>
+                <span>Status:</span>
+                <span>@Model.AppointmentResponseDto.Status</span>
+            </div>
+        </div>
+
+        <div class="appointment-detail-actions">
+            <a asp-page="./AppointmentList">Back to List</a>
+        </div>
+    }
+    else
+    {
+        <p>Appointment not found.</p>
+    }
+</div>
+
+<script>
+    // JavaScript for fade-in animation
+    document.addEventListener("DOMContentLoaded", function () {
+        const appointmentDetailContainer = document.getElementById("appointmentDetailContainer");
+        if (appointmentDetailContainer) {
+            appointmentDetailContainer.style.opacity = 0;
+            appointmentDetailContainer.style.transition = "opacity 0.5s ease-in-out";
+
+            setTimeout(function () {
+                appointmentDetailContainer.style.opacity = 1;
+            }, 100);
+        }
+    });
+</script>

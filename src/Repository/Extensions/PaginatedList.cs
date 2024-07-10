@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository.Extensions
 {
@@ -13,6 +14,17 @@ namespace Repository.Extensions
         }
         public PaginatedList(IReadOnlyCollection<T> items, int count, int pageNumber, int pageSize)
         {
+            // check range of pageNumber, pageSize
+            if (pageNumber < 1)
+            {
+                throw new ValidationException("Page number must be greater than 0");
+            }
+
+            if (pageSize < 1)
+            {
+                throw new ValidationException("Page size must be greater than 0");
+            }
+
             PageNumber = pageNumber;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             TotalCount = count;
@@ -25,6 +37,7 @@ namespace Repository.Extensions
 
         public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
         {
+            ValidatePageNumberAndPageSize(pageNumber, pageSize);
             var count = await source.CountAsync();
             var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
 
@@ -32,10 +45,24 @@ namespace Repository.Extensions
         }
         public static PaginatedList<T> Create(List<T> source, int pageNumber, int pageSize)
         {
+            ValidatePageNumberAndPageSize(pageNumber, pageSize);
             var totalCount = source.Count;
             var items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
             return new PaginatedList<T>(items, totalCount, pageNumber, pageSize);
+        }
+
+        private static void ValidatePageNumberAndPageSize(int pageNumber, int pageSize)
+        {
+            if (pageNumber < 1)
+            {
+                throw new ValidationException("Page number must be greater than 0");
+            }
+
+            if (pageSize < 1)
+            {
+                throw new ValidationException("Page size must be greater than 0");
+            }
         }
     }
 }

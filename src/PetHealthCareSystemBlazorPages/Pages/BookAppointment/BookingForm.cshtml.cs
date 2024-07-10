@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Service.IServices;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Utility.Enum;
@@ -67,25 +68,21 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             }
         }
 
-        public async Task<IActionResult> OnPost(string petIdList, string serviceIdList, string appointmentDate, int timeTableId, int vetId)
+        public async Task<IActionResult> OnPost(string petId, string serviceIds, string appointmentDate, int timeTableId, int vetId)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    await OnGetAsync();
-            //    return Page();
-            //}
+            var userId = int.Parse(HttpContext.Session.GetString("UserId"));
 
             AppointmentBookRequest = new AppointmentBookRequestDto
             {
-                PetIdList = ConvertStringToIntList(petIdList),
-                ServiceIdList = ConvertStringToIntList(serviceIdList),
+                PetIdList = ConvertStringToIntList(petId),
+                ServiceIdList = ConvertStringToIntList(serviceIds),
                 AppointmentDate = appointmentDate,
-                TimetableId = timeTableId,
-                VetId = vetId
+                TimeTableId = timeTableId,
+                VetId = vetId,
+                CustomerId = userId
             };
 
-            var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
-            AppointmentResponseDto appointmentResponse = await _appointmentService.BookOnlineAppointmentAsync(AppointmentBookRequest, userId);
+            var appointmentResponse = await _appointmentService.BookAppointmentAsync(AppointmentBookRequest, userId);
             HttpContext.Session.SetString("appointment", JsonSerializer.Serialize(appointmentResponse));
             return RedirectToPage("./TransactionForm");
         }
@@ -95,7 +92,7 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             try
             {
                 var appointmentDate = DateOnly.Parse(date).ToString();
-                var datetime = new AppointmentDateTimeQueryDto { Date = appointmentDate, TimetableId = timeTableId };
+                var datetime = new DateTimeQueryDto { Date = appointmentDate, TimetableId = timeTableId };
                 var vetList = await _appointmentService.GetFreeWithTimeFrameAndDateAsync(datetime);
                 return new JsonResult(vetList);
             }
@@ -106,7 +103,7 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             }
         }
 
-        public static List<int> ConvertStringToIntList(string input)
+        private List<int> ConvertStringToIntList(string input)
         {
             return input.Split(',')
                         .Select(int.Parse)

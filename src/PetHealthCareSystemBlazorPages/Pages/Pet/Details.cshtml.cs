@@ -9,33 +9,51 @@ using BusinessObject.Entities;
 using DataAccessLayer;
 using BusinessObject.DTO.Pet;
 using Service.IServices;
+using Utility.Enum;
+using BusinessObject.DTO.MedicalRecord;
+using Repository.Extensions;
 
 namespace PetHealthCareSystemRazorPages.Pages.Pet
 {
     public class DetailsModel : PageModel
     {
         private readonly IPetService _petService;
+        private readonly IMedicalService _medicalService;
 
-        public DetailsModel(IPetService petService)
+        public DetailsModel(IPetService petService, IMedicalService medicalService)
         {
             _petService = petService;
+            _medicalService = medicalService;
         }
 
         public PetResponseDto Pet { get; set; } = default!;
+        public PaginatedList<MedicalRecordResponseDto> MedicalRecords { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null)
+            var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
+
+
+            var role = HttpContext.Session.GetString("Role");
+
+            if (role == null || !role.Contains(UserRole.Customer.ToString()))
             {
-                return NotFound();
+                Response.Redirect("/Login");
             }
 
-            Pet = await _petService.GetPetForCustomerAsync(2002, id.GetValueOrDefault());
+            if (id == null)
+            {
+                Response.Redirect("/Login");
+            }
+
+            Pet = await _petService.GetPetForCustomerAsync(userId, id.GetValueOrDefault());
             if (Pet == null)
             {
-                return NotFound();
+                Response.Redirect("/Login");
             }
-            
+
+            MedicalRecords = await _medicalService.GetAllMedicalRecordByPetId(id.GetValueOrDefault(), 1, 5);
+
             return Page();
         }
     }

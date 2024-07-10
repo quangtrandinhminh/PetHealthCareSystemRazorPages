@@ -17,6 +17,9 @@ public class AppointmentResponseDto
     public string BookingType { get; set; }
     public short? Rating { get; set; }
     public string? Feedback { get; set; }
+    public int VetId { get; set; }
+    public int CustomerId { get; set; }
+    public UserResponseDto Customer { get; set; }
     public UserResponseDto Vet { get; set; }
     public List<PetResponseDto?> Pets { get; set; }
     public List<ServiceResponseDto?> Services { get; set; }

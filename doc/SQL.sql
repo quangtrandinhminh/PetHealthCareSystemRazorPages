@@ -34,7 +34,7 @@ INSERT INTO [dbo].[Cage] ([Capacity], [Material], [Room], [Address], [Descriptio
 VALUES 
     (4, 'Metal', 101, '123 Pet St', 'Large metal cage for dogs', NULL, 1, 1, NULL, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 1),
     (2, 'Plastic', 102, '123 Pet St', 'Small plastic cage for cats', NULL, 1, 1, NULL, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 1),
-    (3, 'Wood', 103, '123 Pet St', 'Medium wooden cage for rabbits', NULL, 1, 1, NULL, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 1),
+    (3, 'Metal', 103, '123 Pet St', 'Medium metal cage for rabbits', NULL, 1, 1, NULL, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 1),
     (5, 'Metal', 104, '123 Pet St', 'Extra large metal cage for large dogs', NULL, 1, 1, NULL, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 1),
     (1, 'Plastic', 105, '123 Pet St', 'Small plastic cage for hamsters', NULL, 1, 1, NULL, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 1),
     (3, 'Metal', 106, '123 Pet St', 'Medium metal cage for birds', NULL, 1, 1, NULL, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 1),
@@ -51,11 +51,11 @@ DECLARE @StartTime TIME = '08:00:00';
 DECLARE @EndTime TIME = '12:00:00';
 DECLARE @Interval INT = 30; -- interval in minutes
 
--- Insert Book intervals for 08:00 to 12:00
+-- Insert Appointment intervals for 08:00 to 12:00
 WHILE @StartTime < @EndTime
 BEGIN
-    INSERT INTO [dbo].[TimeTable] ([Note], [CreatedTime], [LastUpdatedTime], [StartTime], [EndTime])
-    VALUES ('Book', SYSDATETIMEOFFSET(),  SYSDATETIMEOFFSET(), @StartTime, DATEADD(MINUTE, @Interval, @StartTime));
+    INSERT INTO [dbo].[TimeTable] ([Type], [CreatedTime], [LastUpdatedTime], [StartTime], [EndTime])
+    VALUES (1, SYSDATETIMEOFFSET(),  SYSDATETIMEOFFSET(), @StartTime, DATEADD(MINUTE, @Interval, @StartTime));
     
     SET @StartTime = DATEADD(MINUTE, @Interval, @StartTime);
 END
@@ -64,11 +64,11 @@ END
 SET @StartTime = '13:00:00';
 SET @EndTime = '17:00:00';
 
--- Insert Book intervals for 13:00 to 17:00
+-- Insert Appointment intervals for 13:00 to 17:00
 WHILE @StartTime < @EndTime
 BEGIN
-    INSERT INTO [dbo].[TimeTable] ([Note], [CreatedTime], [LastUpdatedTime], [StartTime], [EndTime])
-    VALUES ('Book', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), @StartTime, DATEADD(MINUTE, @Interval, @StartTime));
+    INSERT INTO [dbo].[TimeTable] ([Type], [CreatedTime], [LastUpdatedTime], [StartTime], [EndTime])
+    VALUES (1, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), @StartTime, DATEADD(MINUTE, @Interval, @StartTime));
     
     SET @StartTime = DATEADD(MINUTE, @Interval, @StartTime);
 END
@@ -88,8 +88,8 @@ FETCH NEXT FROM CheckCursor INTO @CheckStartTime, @CheckEndTime;
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    INSERT INTO [dbo].[TimeTable] ([Note], [CreatedTime], [LastUpdatedTime], [StartTime], [EndTime])
-    VALUES ('Check', SYSDATETIMEOFFSET(),  SYSDATETIMEOFFSET(), @CheckStartTime, @CheckEndTime);
+    INSERT INTO [dbo].[TimeTable] ([Type], [CreatedTime], [LastUpdatedTime], [StartTime], [EndTime])
+    VALUES (2, SYSDATETIMEOFFSET(),  SYSDATETIMEOFFSET(), @CheckStartTime, @CheckEndTime);
     
     FETCH NEXT FROM CheckCursor INTO @CheckStartTime, @CheckEndTime;
 END;
@@ -175,3 +175,88 @@ VALUES
     (1, 1, N'Bravecto Chews',50000, 5, 250000),
     (2, 2, N'Heartgard Plus',45000, 3, 135000);
 
+INSERT INTO Configurations (ConfigKey, Value, CreatedTime, LastUpdatedTime)
+VALUES 
+    (N'HospitalizationPrice', '100000', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET()),
+    (N'RefundPercentage', '0.7', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+
+-- INSERT INTO Users (FullName, UserName, Email, EmailConfirmed, PasswordHash, NormalizedUserName, ConcurrencyStamp, CreatedTime, LastUpdatedTime, PhoneNumber, PhoneNumberConfirmed, TwoFactorEnabled, LockoutEnabled, AccessFailedCount)
+-- VALUES
+-- 	(N'System Admin', N'petsystemadmin', N'PetSystemAdmin@email.com', 0, N'$2a$11$wrSjvVjywF3E9WLIfzTLveB5AvKxNHfIWN3QZLWlg6Dw6LybZ65fW', N'PETSYSADMIN', N'bc87b618-69da-46d1-900b-713028dac9f9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), N'0122334455', 0, 0, 0, 1),
+-- 	(N'System Staff', N'systemstaff', N'staff@email.com', 0, N'$2a$11$wrSjvVjywF3E9WLIfzTLveB5AvKxNHfIWN3QZLWlg6Dw6LybZ65fW', N'SYSTEMSTAFF', N'bc87b618-69da-46d1-900b-713028dac9f9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), N'0122334465', 0, 0, 0, 1),
+-- 	(N'Dr. Duy Anh', N'duyanhvet', N'duyanhvet@email.com', 0, N'$2a$11$wrSjvVjywF3E9WLIfzTLveB5AvKxNHfIWN3QZLWlg6Dw6LybZ65fW', N'DUYANHVET', N'bc87b618-69da-46d1-900b-713028dac9f9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), N'0122334466', 0, 0, 0, 1),
+-- 	(N'Dr. Phúc', N'phucvet', N'phucvet@email.com', 0, N'$2a$11$wrSjvVjywF3E9WLIfzTLveB5AvKxNHfIWN3QZLWlg6Dw6LybZ65fW', N'PHUCVET', N'bc87b618-69da-46d1-900b-713028dac9f9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), N'0122334467', 0, 0, 0, 1),
+-- 	(N'Dr. Luân', N'luanvet', N'luanvet@email.com', 0, N'$2a$11$wrSjvVjywF3E9WLIfzTLveB5AvKxNHfIWN3QZLWlg6Dw6LybZ65fW', N'LUANVET', N'bc87b618-69da-46d1-900b-713028dac9f9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), N'0122334468', 0, 0, 0, 1),
+-- 	(N'Dr. Phong', N'phongvet', N'phongvet@email.com', 0, N'$2a$11$wrSjvVjywF3E9WLIfzTLveB5AvKxNHfIWN3QZLWlg6Dw6LybZ65fW', N'PHONGVET', N'bc87b618-69da-46d1-900b-713028dac9f9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), N'0122334469', 0, 0, 0, 1),
+-- 	(N'Dr. Quang', N'quangvet', N'quangvet@email.com', 0, N'$2a$11$wrSjvVjywF3E9WLIfzTLveB5AvKxNHfIWN3QZLWlg6Dw6LybZ65fW', N'QUANGVET', N'bc87b618-69da-46d1-900b-713028dac9f9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), N'0122334470', 0, 0, 0, 1),
+-- 	(N'Dr. Nam', N'namvet', N'namvet@email.com', 0, N'$2a$11$wrSjvVjywF3E9WLIfzTLveB5AvKxNHfIWN3QZLWlg6Dw6LybZ65fW', N'NAMVET', N'bc87b618-69da-46d1-900b-713028dac9f9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), N'0122334471', 0, 0, 0, 1),
+-- 	(N'Duy Anh', N'duyanh', N'duyanh@email.com', 0, N'$2a$11$wrSjvVjywF3E9WLIfzTLveB5AvKxNHfIWN3QZLWlg6Dw6LybZ65fW', N'DUYANH', N'bc87b618-69da-46d1-900b-713028dac9f9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), N'0122334472', 0, 0, 0, 1),
+-- 	(N'Việt Phúc', N'vietphuc', N'vietphuc@email.com', 0, N'$2a$11$wrSjvVjywF3E9WLIfzTLveB5AvKxNHfIWN3QZLWlg6Dw6LybZ65fW', N'VIETPHUC', N'bc87b618-69da-46d1-900b-713028dac9f9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), N'0122334473', 0, 0, 0, 1),
+-- 	(N'Trọng Luân', N'trongluan', N'trongluan@email.com', 0, N'$2a$11$wrSjvVjywF3E9WLIfzTLveB5AvKxNHfIWN3QZLWlg6Dw6LybZ65fW', N'TRONGLUAN', N'bc87b618-69da-46d1-900b-713028dac9f9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), N'0122334474', 0, 0, 0, 1),
+-- 	(N'Thanh Phong', N'thanhphong', N'thanhphong@email.com', 0, N'$2a$11$wrSjvVjywF3E9WLIfzTLveB5AvKxNHfIWN3QZLWlg6Dw6LybZ65fW', N'THANHPHONG', N'bc87b618-69da-46d1-900b-713028dac9f9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), N'0122334475', 0, 0, 0, 1),
+-- 	(N'Minh Quang', N'minhquang', N'minhquang@email.com', 0, N'$2a$11$wrSjvVjywF3E9WLIfzTLveB5AvKxNHfIWN3QZLWlg6Dw6LybZ65fW', N'MINHQUANG', N'bc87b618-69da-46d1-900b-713028dac9f9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), N'0122334476', 0, 0, 0, 1),
+-- 	(N'Nhật Nam', N'nhatnam', N'nhatnam@email.com', 0, N'$2a$11$wrSjvVjywF3E9WLIfzTLveB5AvKxNHfIWN3QZLWlg6Dw6LybZ65fW', N'NHATNAM', N'bc87b618-69da-46d1-900b-713028dac9f9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), N'0122334477', 0, 0, 0, 1);
+-- GO
+
+-- INSERT INTO UserRoles (UserId, RoleId, Discriminator)
+-- VALUES
+-- 	(7, 1, N'UserRoleEntity'),
+-- 	(8, 2, N'UserRoleEntity'),
+-- 	(9, 3, N'UserRoleEntity'),
+-- 	(10, 3, N'UserRoleEntity'),
+-- 	(11, 3, N'UserRoleEntity'),
+-- 	(12, 3, N'UserRoleEntity'),
+-- 	(13, 3, N'UserRoleEntity'),
+-- 	(14, 3, N'UserRoleEntity'),
+-- 	(15, 4, N'UserRoleEntity'),
+-- 	(16, 4, N'UserRoleEntity'),
+-- 	(17, 4, N'UserRoleEntity'),
+-- 	(18, 4, N'UserRoleEntity'),
+-- 	(19, 4, N'UserRoleEntity'),
+-- 	(20, 4, N'UserRoleEntity');
+-- GO
+
+-- INSERT INTO Pet (Name, Species, Breed, Gender, DateOfBirth, OwnerID, CreatedTime, LastUpdatedTime, IsNeutered)
+-- VALUES
+-- 	(N'Duy Anh', N'Chó', N'Chó cỏ', N'Đực', SYSDATETIMEOFFSET(), 15, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Minh Quang', N'Chó', N'Corgy', N'Đực', SYSDATETIMEOFFSET(), 15, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Thanh Phong', N'Chó', N'Husky', N'Đực', SYSDATETIMEOFFSET(), 15, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Việt Phúc', N'Mèo', N'Vàng lắm lông', N'Đực', SYSDATETIMEOFFSET(), 15, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Trọng Luân', N'Mèo', N'Tabi', N'Đực', SYSDATETIMEOFFSET(), 15, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Nam', N'Mèo', N'Mun', N'Đực', SYSDATETIMEOFFSET(), 15, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+
+-- 	(N'Duy Anh', N'Chó', N'Chó cỏ', N'Đực', SYSDATETIMEOFFSET(), 16, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Minh Quang', N'Chó', N'Corgy', N'Đực', SYSDATETIMEOFFSET(), 16, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Thanh Phong', N'Chó', N'Husky', N'Đực', SYSDATETIMEOFFSET(), 16, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Việt Phúc', N'Mèo', N'Vàng lắm lông', N'Đực', SYSDATETIMEOFFSET(), 16, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Trọng Luân', N'Mèo', N'Tabi', N'Đực', SYSDATETIMEOFFSET(), 16, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Nam', N'Mèo', N'Mun', N'Đực', SYSDATETIMEOFFSET(), 16, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+
+-- 	(N'Duy Anh', N'Chó', N'Chó cỏ', N'Đực', SYSDATETIMEOFFSET(), 17, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Minh Quang', N'Chó', N'Corgy', N'Đực', SYSDATETIMEOFFSET(), 17, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Thanh Phong', N'Chó', N'Husky', N'Đực', SYSDATETIMEOFFSET(), 17, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Việt Phúc', N'Mèo', N'Vàng lắm lông', N'Đực', SYSDATETIMEOFFSET(), 17, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Trọng Luân', N'Mèo', N'Tabi', N'Đực', SYSDATETIMEOFFSET(), 17, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Nam', N'Mèo', N'Mun', N'Đực', SYSDATETIMEOFFSET(), 17, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+
+-- 	(N'Duy Anh', N'Chó', N'Chó cỏ', N'Đực', SYSDATETIMEOFFSET(), 18, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Minh Quang', N'Chó', N'Corgy', N'Đực', SYSDATETIMEOFFSET(), 18, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Thanh Phong', N'Chó', N'Husky', N'Đực', SYSDATETIMEOFFSET(), 18, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Việt Phúc', N'Mèo', N'Vàng lắm lông', N'Đực', SYSDATETIMEOFFSET(), 18, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Trọng Luân', N'Mèo', N'Tabi', N'Đực', SYSDATETIMEOFFSET(), 18, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Nam', N'Mèo', N'Chó cỏ', N'Đực', SYSDATETIMEOFFSET(), 18, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+
+-- 	(N'Duy Anh', N'Chó', N'Chó cỏ', N'Đực', SYSDATETIMEOFFSET(), 19, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Minh Quang', N'Chó', N'Corgy', N'Đực', SYSDATETIMEOFFSET(), 19, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Thanh Phong', N'Chó', N'Husky', N'Đực', SYSDATETIMEOFFSET(), 19, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Việt Phúc', N'Mèo', N'Vàng lắm lông', N'Đực', SYSDATETIMEOFFSET(), 19, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Trọng Luân', N'Mèo', N'Tabi', N'Đực', SYSDATETIMEOFFSET(), 19, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Nam', N'Mèo', N'Mun', N'Đực', SYSDATETIMEOFFSET(), 19, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+
+-- 	(N'Duy Anh', N'Chó', N'Chó cỏ', N'Đực', SYSDATETIMEOFFSET(), 20, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Minh Quang', N'Chó', N'Corgy', N'Đực', SYSDATETIMEOFFSET(), 20, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Thanh Phong', N'Chó', N'Husky', N'Đực', SYSDATETIMEOFFSET(), 20, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Việt Phúc', N'Mèo', N'Vàng lắm lông', N'Đực', SYSDATETIMEOFFSET(), 20, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Trọng Luân', N'Mèo', N'Tabi', N'Đực', SYSDATETIMEOFFSET(), 20, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1),
+-- 	(N'Nam', N'Mèo', N'Mun', N'Đực', SYSDATETIMEOFFSET(), 20, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), 1);
+-- GO
