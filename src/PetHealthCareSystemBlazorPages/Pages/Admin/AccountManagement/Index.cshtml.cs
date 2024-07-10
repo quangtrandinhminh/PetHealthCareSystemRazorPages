@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using BusinessObject.DTO.User;
 using Service.IServices;
+using Utility.Enum;
 
 namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
 {
@@ -17,7 +18,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
 
         public async Task OnGetAsync()
         {
-            Users = await _userService.GetVetsAsync();
+            Users = await _userService.GetAllUsersByRoleAsync(UserRole.Vet);
         }
     }
 }

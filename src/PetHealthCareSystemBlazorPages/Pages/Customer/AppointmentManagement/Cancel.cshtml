@@ -1,4 +1,17 @@
 ﻿@page
 @model PetHealthCareSystemRazorPages.Pages.Customer.AppointmentManagement.CancelModel
 @{
+    ViewData["Title"] = "Cancel Appointment";
 }
+
+<h1>Confirm Appointment Cancellation</h1>
+
+<div>
+    <p>Are you sure you want to cancel this appointment?</p>
+</div>
+
+<form method="post">
+    <input type="hidden" asp-for="AppointmentId" />
+    <button type="submit" class="btn btn-danger" asp-page-handler="CancelAppointment">Cancel Appointment</button>
+    <a asp-page="./AppointmentList" class="btn btn-secondary">Back</a>
+</form>
