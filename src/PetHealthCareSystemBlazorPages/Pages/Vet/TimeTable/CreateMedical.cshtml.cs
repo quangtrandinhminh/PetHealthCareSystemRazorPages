@@ -15,12 +15,14 @@ using Microsoft.Identity.Client;
 using Repository.Extensions;
 using Service.Services;
 using BusinessObject.DTO.Pet;
+using BusinessObject.DTO.MedicalItem;
+using BusinessObject.DTO.Transaction;
+using System.Collections;
 
 namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
 {
     public class CreateMedicalModel : PageModel
     {
-        private readonly DataAccessLayer.AppDbContext _context;
         private readonly IMedicalService _medical;
         private readonly ITransactionService _transactionService;
         private readonly IAppointmentService _appointment;
@@ -29,10 +31,11 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
         public AppointmentResponseDto AppointmentItem { get; set; }
         [BindProperty]
         public MedicalRecordRequestDto MedicalRecord { get; set; } = default!;
-        public CreateMedicalModel(DataAccessLayer.AppDbContext context, IMedicalService medical, ITransactionService transactionService, IAppointmentService appointment
+        public List<MedicalResponseDto> MedicalItems { get; set; }
+
+        public CreateMedicalModel(IMedicalService medical, ITransactionService transactionService, IAppointmentService appointment
             , IMedicalItemService medicalItem)
         {
-            _context = context;
             _medical = medical;
             _transactionService = transactionService;
             _appointment = appointment;
@@ -53,6 +56,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
                 var check = await _appointment.GetAppointmentByAppointmentId(id);
                 AppointmentItem = check;
                 var medicalItems = await _medicalItem.GetAllMedicalItem();
+                MedicalItems = medicalItems;
                 ViewData["PetId"] = new SelectList(AppointmentItem.Pets, "Id", "Name");
                 ViewData["MedicalItemsId"] = new SelectList(medicalItems, "Id", "Name");
                 MedicalRecord = new MedicalRecordRequestDto()
@@ -74,7 +78,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
         
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(List<int> SelectedMedicalItemsId, List<int> SelectedMedicalItemsQuantity)
         {
             ModelState.Remove("Vet");
             ModelState.Remove("Pets");
@@ -83,6 +87,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
             ModelState.Remove("Services");
             ModelState.Remove("Timetable");
             ModelState.Remove("BookingType");
+            ModelState.Remove("SelectedMedicalItemsQuantity");
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -91,7 +96,19 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
             {
                 var accountId = HttpContext.Session.GetString("UserId");
                 int id = int.Parse(accountId);
-
+                List<TransactionMedicalItemsDto> mergedList = new List<TransactionMedicalItemsDto>();
+                if (SelectedMedicalItemsId != null && SelectedMedicalItemsQuantity != null)
+                {
+                    for (int i = 0; i < SelectedMedicalItemsId.Count; i++)
+                    {
+                        mergedList.Add(new TransactionMedicalItemsDto()
+                        {
+                            MedicalItemId = SelectedMedicalItemsId[i],
+                            Quantity = SelectedMedicalItemsQuantity[i]
+                        });
+                    }
+                }
+                MedicalRecord.MedicalItems = mergedList;
                 await _medical.CreateMedicalRecord(MedicalRecord, id);
 
 
