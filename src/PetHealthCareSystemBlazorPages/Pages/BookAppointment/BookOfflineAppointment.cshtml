@@ -1,0 +1,441 @@
+﻿@page
+@using Utility.Enum
+@model PetHealthCareSystemRazorPages.Pages.BookAppointment.BookOfflineAppointmentModel
+@{
+    ViewData["Title"] = "Book an Appointment";
+}
+
+<style>
+    .select-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+        max-width: 100%;
+        overflow-x: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    .select-item {
+        cursor: pointer;
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: center;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .select-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .select-item.selected-item {
+        background-color: #007bff;
+        color: #fff;
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .time-slots {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+        max-width: 100%;
+        overflow-x: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    .time-slot-item {
+        cursor: pointer;
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: center;
+        transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .time-slot-item:hover {
+        background-color: #f2f2f2;
+    }
+
+    .time-slot-item.selected-item {
+        background-color: #007bff;
+        color: #fff;
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .main-body {
+        margin-top: 100px;
+    }
+
+    .card-header {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+    .form-control {
+        border-color: #ccc;
+        transition: border-color 0.3s;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        transition: color 0.3s;
+    }
+</style>
+
+@if (Model != null)
+{
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                <div class="main-body card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Book an Appointment</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            @if (Model.CustomerList != null && Model.CustomerList.Any())
+                            {
+                                <div class="form-group">
+                                    <label>Select Customer</label>
+                                    <div id="customer-list" class="select-list">
+                                        @foreach (var customer in Model.CustomerList)
+                                        {
+                                            <div class="select-item customer-box" data-id="@customer.Id">
+                                                <span>@customer.FullName</span>
+                                                <span>@customer.Email</span>
+                                            </div>
+                                        }
+                                    </div>
+                                    <span id="customer-error" class="text-danger"></span>
+                                    <input type="hidden" id="selected-customer-id" name="customerId" />
+                                </div>
+                            }
+                            <div class="form-group">
+                                <label>Select Pet</label>
+                                <div id="pet-list" class="select-list">
+                                    <!-- Pets will be loaded dynamically based on customer selection -->
+                                </div>
+                                <input type="hidden" id="selected-pet-id" name="petId" />
+                                <span id="pet-error" class="text-danger"></span>
+                            </div>
+
+                            @if (Model.DisplayedServiceList != null && Model.DisplayedServiceList.Any())
+                            {
+                                <div class="form-group">
+                                    <label>Select Service (Up to 3)</label>
+                                    <div id="service-list" class="select-list">
+                                        @foreach (var service in Model.DisplayedServiceList)
+                                        {
+                                            <div class="select-item" data-id="@service.Id" data-type="service">
+                                                <span>@service.Name</span>
+                                                <span>@service.Price VND</span>
+                                            </div>
+                                        }
+                                    </div>
+                                    <input type="hidden" id="selected-service-ids" name="serviceIds" />
+                                    <span id="service-error" class="text-danger"></span>
+                                </div>
+                            }
+
+                            @if (Model.AppointmentBookRequest != null)
+                            {
+                                <div class="form-group">
+                                    <label asp-for="AppointmentBookRequest.AppointmentDate">Select Date</label>
+                                    <input id="appointment-date" class="form-control" type="date" name="appointmentDate" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Select Timeslot</label>
+                                    <div id="time-slot-list" class="time-slots">
+                                        @foreach (var timeSlot in Model.DisplayedTimeTableList)
+                                        {
+                                            <div class="time-slot-item" data-id="@timeSlot.Id" data-start-time="@timeSlot.StartTime" data-end-time="@timeSlot.EndTime">
+                                                @($"{timeSlot.StartTime:hh\\:mm} - {timeSlot.EndTime:hh\\:mm}")
+                                            </div>
+                                        }
+                                    </div>
+                                    <input type="hidden" id="selected-timetable-id" name="timeTableId" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Select Vet</label>
+                                    <div id="vet-list" class="select-list">
+                                        <!-- The vet list will be populated dynamically -->
+                                    </div>
+                                    <input type="hidden" id="selected-vet-id" name="vetId" />
+                                    <span id="vet-error" class="text-danger"></span>
+                                    <p class="text-muted mt-2">Vets will be listed based on selected date and timeslot.</p>
+                                </div>
+                            }
+
+                            <button type="submit" class="btn btn-primary btn-block">Book Appointment</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const customerListContainer = document.getElementById('customer-list');
+            const petListContainer = document.getElementById('pet-list');
+            const serviceListContainer = document.getElementById('service-list');
+            const timeSlotListContainer = document.getElementById('time-slot-list');
+            const vetListContainer = document.getElementById('vet-list');
+            const selectCustomerIdInput = document.getElementById('selected-customer-id');
+            const selectPetIdInput = document.getElementById('selected-pet-id');
+            const selectedServiceIdsInput = document.getElementById('selected-service-ids');
+            const selectedTimetableIdInput = document.getElementById('selected-timetable-id');
+            const selectedVetIdInput = document.getElementById('selected-vet-id');
+            const appointmentDateInput = document.getElementById('appointment-date');
+            const customerError = document.getElementById('customer-error');
+            const petError = document.getElementById('pet-error');
+            const serviceError = document.getElementById('service-error');
+            const vetError = document.getElementById('vet-error');
+
+            let lastSelectedCustomer = null;
+            let lastSelectedPet = null;
+            let lastSelectedTimeSlot = null;
+            let lastselectedVet = null;
+
+            let appointmentBookRequest = {
+                customerId: null,
+                petId: null,
+                serviceIds: [],
+                timetableId: null,
+                vetId: null,
+                appointmentDate: null
+            };
+
+            customerListContainer.addEventListener('click', function(event) {
+                const selectedCustomer = event.target.closest('.customer-box');
+                if (selectedCustomer) {
+                    const customerId = selectedCustomer.getAttribute('data-id');
+                    clearPreviousSelections('customer');
+                    selectedCustomer.classList.add('selected-item');
+                    lastSelectedCustomer = selectedCustomer;
+                    selectCustomer(customerId);
+                    fetchPets(customerId);
+                }
+            });
+
+            function selectCustomer(customerId) {
+                selectCustomerIdInput.value = customerId;
+                appointmentBookRequest.customerId = customerId;
+                clearSelections(['pet']);
+            }
+
+            async function fetchPets(customerId) {
+                const response = await fetch(`./BookOfflineAppointment?handler=PetByCustomer&customerId=${customerId}`);
+                const pets = await response.json();
+                renderPets(pets);
+            }
+
+            function renderPets(pets) {
+                petListContainer.innerHTML = pets.map(pet => `
+                    <div class="select-item pet-box" data-id="${pet.id}">
+                        <span>${pet.name}</span>
+                    </div>
+                `).join('');
+
+                petListContainer.querySelectorAll('.pet-box').forEach(petBox => {
+                    petBox.addEventListener('click', handlePetSelection);
+                });
+            }
+
+            function handlePetSelection(event) {
+                const selectedPet = event.target.closest('.pet-box');
+                if (selectedPet) {
+                    const petId = selectedPet.getAttribute('data-id');
+                    clearPreviousSelections('pet');
+                    selectedPet.classList.add('selected-item');
+                    lastSelectedPet = selectedPet;
+                    selectPet(petId);
+                }
+            }
+
+            function selectPet(petId) {
+                selectPetIdInput.value = petId;
+                appointmentBookRequest.petId = petId;
+                clearSelections(['vet']);
+            }
+
+            function handleServiceSelection(event) {
+                const selectedService = event.target.closest('.select-item');
+                if (selectedService) {
+                    const serviceId = selectedService.getAttribute('data-id');
+                    if (appointmentBookRequest.serviceIds.includes(serviceId)) {
+                        appointmentBookRequest.serviceIds = appointmentBookRequest.serviceIds.filter(id => id !== serviceId);
+                        selectedService.classList.remove('selected-item');
+                    } else if (appointmentBookRequest.serviceIds.length < 3) {
+                        appointmentBookRequest.serviceIds.push(serviceId);
+                        selectedService.classList.add('selected-item');
+                    }
+                    updateServiceInput();
+                }
+            }
+
+            function updateServiceInput() {
+                selectedServiceIdsInput.value = appointmentBookRequest.serviceIds.join(',');
+            }
+
+            function handleTimeSlotSelection(event) {
+                const selectedTimeSlot = event.target.closest('.time-slot-item');
+                if (selectedTimeSlot) {
+                    const timeSlotId = selectedTimeSlot.getAttribute('data-id');
+                    clearPreviousSelections('time-slot');
+                    selectedTimeSlot.classList.add('selected-item');
+                    lastSelectedTimeSlot = selectedTimeSlot;
+                    selectTimeSlot(timeSlotId);
+                }
+            }
+
+            function selectTimeSlot(timetableId) {
+                selectedTimetableIdInput.value = timetableId;
+                appointmentBookRequest.timetableId = timetableId;
+                fetchVets(timetableId, appointmentDateInput.value);
+            }
+
+            async function fetchVets(timetableId, appointmentDate) {
+                const response = await fetch(`./BookOfflineAppointment?handler=VetByDateAndTime&timetableId=${timetableId}&date=${appointmentDate}`);
+                const vets = await response.json();
+                renderVets(vets);
+            }
+
+            function renderVets(vets) {
+                vetListContainer.innerHTML = vets.map(vet => `
+                    <div class="select-item vet-box" data-id="${vet.id}">
+                        <span>${vet.fullName}</span>
+                    </div>
+                `).join('');
+
+                vetListContainer.querySelectorAll('.vet-box').forEach(vetBox => {
+                    vetBox.addEventListener('click', handleVetSelection);
+                });
+            }
+
+            function handleVetSelection(event) {
+                const selectedVet = event.target.closest('.vet-box');
+                if (selectedVet) {
+                    const vetId = selectedVet.getAttribute('data-id');
+                    clearPreviousSelections('vet-box');
+                    selectedVet.classList.add('selected-item');
+                    lastSelectedVet = selectedVet;
+                    selectVet(vetId);
+                }
+            }
+
+            function selectVet(vetId) {
+                selectedVetIdInput.value = vetId;
+                appointmentBookRequest.vetId = vetId;
+            }
+
+            function clearSelections(types) {
+                types.forEach(type => {
+                    if (type === 'pet') {
+                        petListContainer.innerHTML = '';
+                        selectPetIdInput.value = '';
+                        appointmentBookRequest.petId = null;
+                    } else if (type === 'vet') {
+                        vetListContainer.innerHTML = '';
+                        selectedVetIdInput.value = '';
+                        appointmentBookRequest.vetId = null;
+                    }
+                });
+            }
+
+            serviceListContainer.addEventListener('click', handleServiceSelection);
+            timeSlotListContainer.addEventListener('click', handleTimeSlotSelection);
+            appointmentDateInput.addEventListener('change', () => {
+                clearSelections(['vet']);
+                appointmentBookRequest.appointmentDate = appointmentDateInput.value;
+            });
+
+            function clearPreviousSelections(type) {
+                if (type === 'customer') {
+                    if (lastSelectedCustomer) {
+                        lastSelectedCustomer.classList.remove('selected-item');
+                    }
+                } else if (type === 'pet') {
+                    if (lastSelectedPet) {
+                        lastSelectedPet.classList.remove('selected-item');
+                    }
+                } else if (type === 'time-slot') {
+                    if (lastSelectedTimeSlot) {
+                        lastSelectedTimeSlot.classList.remove('selected-item');
+                    }
+                } else if (type === 'vet') {
+                    if (lastSelectedVet) {
+                        lastSelectedVet.classList.remove('selected-item');
+                    }
+                }
+            }
+
+            const form = document.querySelector('form');
+            form.addEventListener('submit', handleFormSubmit);
+
+            function handleFormSubmit(event) {
+                clearErrorMessages();
+                if (!validateSelections()) {
+                    event.preventDefault();
+                }
+            }
+
+            function validateSelections() {
+                let valid = true;
+
+                if (!appointmentBookRequest.customerId){
+                    customerError.textContent = 'Please select a customer.';
+                    valid = false;
+                }
+
+                if (!appointmentBookRequest.petId) {
+                    petError.textContent = 'Please select a pet.';
+                    valid = false;
+                }
+
+                if (appointmentBookRequest.serviceIds.length === 0) {
+                    serviceError.textContent = 'Please select at least one service.';
+                    valid = false;
+                }
+
+                if (!appointmentBookRequest.vetId) {
+                    vetError.textContent = 'Please select a vet.';
+                    valid = false;
+                }
+
+                return valid;
+            }
+
+            function clearErrorMessages() {
+                customerError.textContent = '';
+                petError.textContent = '';
+                serviceError.textContent = '';
+                vetError.textContent = '';
+            }
+
+        });
+    </script>
+}
