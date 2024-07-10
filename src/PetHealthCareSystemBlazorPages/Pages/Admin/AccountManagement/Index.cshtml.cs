@@ -1,29 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObject.Entities.Identity;
-using DataAccessLayer;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using BusinessObject.DTO.User;
+using Service.IServices;
 
 namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
 {
     public class IndexModel : PageModel
     {
-        private readonly DataAccessLayer.AppDbContext _context;
+        private readonly IUserService _userService;
 
-        public IndexModel(DataAccessLayer.AppDbContext context)
+        public IndexModel(IUserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
 
-        public IList<UserEntity> UserEntity { get;set; } = default!;
+        public IList<UserResponseDto> Users { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
-            UserEntity = await _context.Users.ToListAsync();
+            Users = await _userService.GetVetsAsync();
         }
     }
 }

@@ -2,81 +2,151 @@
 @model PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Account Management";
 }
 
-<h1>Index</h1>
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7;
+        color: #333;
+    }
+
+    .page-title {
+        margin-top: 150px;
+        text-align: center;
+        font-size: 3em;
+        color: #444;
+        font-weight: bold;
+    }
+
+    .create-btn-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .create-btn {
+        border-radius: 5px;
+        color: white;
+        background-color: #0069d9;
+        padding: 10px 20px;
+        text-decoration: none;
+        font-size: 1.2em;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .create-btn:hover {
+            background-color: red;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+    .table {
+        width: 80%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: white;
+    }
+
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .table th {
+            background-color: #0069d9;
+            color: white;
+            font-size: 1.1em;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .table td a {
+            margin: 0 5px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+            .table td a:hover {
+                text-decoration: underline;
+                color: #0056b3;
+            }
+</style>
+
+<h1>Account Management</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
 </p>
-<table class="table">
+<table id="table" class="table" style="width: 100%;">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].FullName)
+                @Html.DisplayNameFor(model => model.Users[0].FullName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].Address)
+                @Html.DisplayNameFor(model => model.Users[0].Address)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].BirthDate)
+                @Html.DisplayNameFor(model => model.Users[0].BirthDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].CreatedBy)
+                @Html.DisplayNameFor(model => model.Users[0].UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].LastUpdatedBy)
+                @Html.DisplayNameFor(model => model.Users[0].Email)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].ConcurrencyStamp)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].PhoneNumber)
-            </th>
-            <th> action </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.UserEntity) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BirthDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastUpdatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ConcurrencyStamp)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                <a style="color: black" asp-page="./Details" asp-route-id="@item.Id">Details</a>
-            </td>
-        </tr>
-}
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => user.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.BirthDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Email)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@user.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@user.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@user.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<script>
+    $(document).ready(function () {
+        let table = new DataTable("#table");
+    });
+</script>
