@@ -19,4 +19,5 @@ public interface IAppointmentService
         int pageSize);
     Task<AppointmentResponseDto> BookAppointmentAsync(AppointmentBookRequestDto appointmentBookRequestDto, int customerId);
     Task<AppointmentResponseDto> UpdateStatusToDone(int appointmentId, int vetId);
+    Task<AppointmentResponseDto> UpdateStatusToCancel(int appointmentId, int updatedById);
 }

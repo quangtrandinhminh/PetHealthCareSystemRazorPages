@@ -1,19 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BusinessObject.DTO.Appointment;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using Service.IServices;
+using System.Threading.Tasks;
+using Utility.Constants;
+using Utility.Exceptions;
 
 namespace PetHealthCareSystemRazorPages.Pages.Staff.Appointment
 {
     public class DetailsModel : PageModel
     {
-        private readonly DataAccessLayer.AppDbContext _context;
+        private readonly IAppointmentService _appointmentService;
 
-        public DetailsModel(DataAccessLayer.AppDbContext context)
+        public DetailsModel(IAppointmentService appointmentService)
         {
-            _context = context;
+            _appointmentService = appointmentService;
         }
 
-        public BusinessObject.Entities.Appointment Appointment { get; set; } = default!;
+        public AppointmentResponseDto Appointment { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -22,15 +26,22 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.Appointment
                 return NotFound();
             }
 
-            var appointment = await _context.Appointments.FirstOrDefaultAsync(m => m.Id == id);
-            if (appointment == null)
+            try
             {
-                return NotFound();
+                Appointment = await _appointmentService.GetAppointmentByAppointmentId(id.Value);
+                if(Appointment == null)
+                {
+                    return NotFound();
+                }
+
+                return Page();
             }
-            else
+            catch (AppException ex)
             {
-                Appointment = appointment;
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
             }
+
             return Page();
         }
     }

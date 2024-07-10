@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model BookingManagement
 
 @{
@@ -9,6 +9,7 @@
         display: flex;
         justify-content: center;
     }
+
     body {
         font-family: 'Arial', sans-serif;
         background-color: #f7f7f7;
@@ -53,7 +54,7 @@
         border-collapse: collapse;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         background-color: white;
-        justify-content:center;
+        justify-content: center;
     }
 
         .table th, .table td {
@@ -90,7 +91,7 @@
             }
 
 </style>
-<div style="width:100%; height:100vh; display:flex; justify-content:center; flex-direction:column ">
+<div style="width:100%; height:100vh; display:flex; justify-content:center; flex-direction:column">
     <h1 style="text-align:center">Booking Management</h1>
 
     <p style="width:140px; border-radius:20px; border:1px solid black; text-align:center">
@@ -99,45 +100,19 @@
     <table class="table">
         <thead>
             <tr>
-                <th>
-                    Id
-                </th>
-                <th>
-                    Appointment Date
-                </th>
-                <th>
-                    Note
-                </th>
-                <th>
-                    Status
-                </th>
-                <th>
-                    Booking Type
-                </th>
-                <th>
-                    Rating
-                </th>
-                <th>
-                    Feedback
-                </th>
-                @*  <th>
-                CreatedTime
-                </th>
-                <th>
-                UpdatedTime
-                </th> *@
-                <th>
-                    VetName
-                </th>
-                <th>
-                    StartTime
-                </th>
-                <th>
-                    EndTime
-                </th>
-                <th>
-                    Action
-                </th>
+                <th>Id</th>
+                <th>Appointment Date</th>
+                <th>Note</th>
+                <th>Status</th>
+                <th>Booking Type</th>
+                <th>Rating</th>
+                <th>Feedback</th>
+                @*  <th>CreatedTime</th>
+                <th>UpdatedTime</th> *@
+                <th>VetName</th>
+                <th>StartTime</th>
+                <th>EndTime</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -155,7 +130,7 @@
                     <td>@Html.DisplayFor(modelItem => item.TimeTable.StartTime)</td>
                     <td>@Html.DisplayFor(modelItem => item.TimeTable.EndTime)</td>
                     <td>
-                        <a style="color:black" asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a style="color:black" asp-page="/Staff/BookingTransaction/Index" asp-route-id="@item.Id">Edit</a> |
                         <a style="color:black" asp-page="./Details" asp-route-id="@item.Id">Details</a>
                     </td>
                 </tr>

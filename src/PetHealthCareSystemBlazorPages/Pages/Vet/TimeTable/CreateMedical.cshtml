@@ -21,9 +21,38 @@
                 <select asp-for="MedicalRecord.PetId" class ="form-control" asp-items="ViewBag.PetId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="MedicalRecord.MedicalItems" class="control-label"></label>
-                <select asp-for="MedicalRecord.MedicalItems" class="form-control" asp-items="ViewBag.MedicalItemsId"></select>
+                <label asp-for="MedicalRecord.MedicalItems" class="control-label">Medical Items:</label>
+                <div >
+                    @foreach (var medicalItem in Model.MedicalItems)
+                    {
+                        <input type="checkbox" name="SelectedMedicalItemsId" value="@medicalItem.Id" />
+                        <label>Item's name</label>
+                        @medicalItem.Name
+                        <label>Item's stock</label>
+                        @medicalItem.Quantity
+                        <label>Using</label>
+                        <input type="number" name="SelectedMedicalItemsQuantity"/>
+                        <br />
+                    }
+                </div>
             </div>
+            @* @if (Model.MedicalItems != null && Model.MedicalItems.Any())
+            {
+            <div class="form-group">
+            <label>Select Pet</label>
+            <div id="pet-list" class="select-list">
+            @foreach (var item in Model.MedicalItems)
+            {
+            <div class="select-item">
+            <input type="checkbox" id="item-@item.Id" name="petId" value="@item.Id">
+            <label for="pet-@item.Id">@item.Name</label>
+            <input type="number" />
+            </div>
+            }
+            </div>
+            <span id="pet-error" class="text-danger"></span>
+            </div>
+            } *@
             @* <div class="form-group">
                 <label asp-for="MedicalRecord.VetId" class="control-label"></label>
                 <input asp-for="MedicalRecord.VetId" class="form-control" />

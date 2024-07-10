@@ -1,15 +1,10 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using BusinessObject.Entities;
 using DataAccessLayer;
 using Service.IServices;
 using Utility.Exceptions;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 
 namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingTransaction
 {
@@ -17,7 +12,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingTransaction
     {
         private readonly ITransactionService _transactionService;
 
-        public EditModel(AppDbContext context, ITransactionService transactionService)
+        public EditModel(ITransactionService transactionService)
         {
             _transactionService = transactionService;
         }
@@ -58,7 +53,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.BookingTransaction
             if (string.IsNullOrEmpty(userIdString))
             {
                 return RedirectToPage("/Login");
-            }
+            }   
             int userId = int.Parse(userIdString);
             try
             {
