@@ -132,17 +132,26 @@
                             </td>
                         </tr>
                     }
-                    @if (Model.Appointment.HasNextPage)
+                    @if (Model.Appointment.PageNumber > 1)
                     {
-                        <form method="post" asp-page-handler="NextPage">
-                            <button style="color:#0069d9" type="submit">Next Page</button>
-                        </form>
-                        
-                    }
+                        <div class="col-2">
+                            <form method="get">
+              
+                                <input type="hidden" name="currentPage" value="@(Model.Appointment.PageNumber-1)" />
+                                <input type="submit" value="Previous" />
+                            </form>
+                        </div>
 
-                    @if (Model.Appointment.HasPreviousPage)
+                    }
+                    @if (Model.Appointment.PageNumber < Model.Appointment.TotalCount)
                     {
-                        <a asp-page="/Appointment" asp-route-page="@Model.Appointment.PageNumber" style="color:#0069d9">Previous Page</a>
+                        <div class="col-2">
+                            <form method="get">
+                        
+                                <input type="hidden" name="currentPage" value="@(Model.Appointment.PageNumber+1)" />
+                                <input type="submit" value="Next" />
+                            </form>
+                        </div>
                     }
                    
                 }
