@@ -1,14 +1,16 @@
-﻿@page
+@page
 @model PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement.IndexModel
 
 @{
     ViewData["Title"] = "Account Management";
 }
+
 <style>
     .container {
         display: flex;
         justify-content: center;
     }
+
     body {
         font-family: 'Arial', sans-serif;
         background-color: #f7f7f7;
@@ -28,7 +30,6 @@
         justify-content: center;
         margin-bottom: 20px;
     }
-
 
     .create-btn {
         border-radius: 5px;
@@ -87,7 +88,6 @@
                 text-decoration: underline;
                 color: #0056b3;
             }
-
 </style>
 
 <h1>Account Management</h1>
@@ -99,54 +99,49 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].FullName)
+                @Html.DisplayNameFor(model => model.Users[0].FullName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].Address)
+                @Html.DisplayNameFor(model => model.Users[0].Address)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].BirthDate)
+                @Html.DisplayNameFor(model => model.Users[0].BirthDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].UserName)
+                @Html.DisplayNameFor(model => model.Users[0].UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserEntity[0].PhoneNumber)
+                @Html.DisplayNameFor(model => model.Users[0].Email)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.UserEntity) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BirthDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => user.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.BirthDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Email)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@user.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@user.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@user.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 

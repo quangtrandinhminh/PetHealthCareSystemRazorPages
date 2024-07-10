@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObject.Entities.Identity;
-using DataAccessLayer;
+using BusinessObject.DTO.User;
+using Service.IServices;
+using Utility.Constants;
+using Utility.Exceptions;
 
 namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
 {
     public class DetailsModel : PageModel
     {
-        private readonly DataAccessLayer.AppDbContext _context;
+        private readonly IUserService _userService;
 
-        public DetailsModel(DataAccessLayer.AppDbContext context)
+        public DetailsModel(IUserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
 
-        public UserEntity UserEntity { get; set; } = default!;
+        public UserResponseDto User { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,15 +26,15 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
                 return NotFound();
             }
 
-            var userentity = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
-            if (userentity == null)
+            try
             {
-                return NotFound();
+                User = await _userService.GetVetByIdAsync(id.Value);
             }
-            else
+            catch (AppException ex) when (ex.ResponseCode == ResponseCodeConstants.NOT_FOUND)
             {
-                UserEntity = userentity;
+                return NotFound(ex.Message);
             }
+
             return Page();
         }
     }
