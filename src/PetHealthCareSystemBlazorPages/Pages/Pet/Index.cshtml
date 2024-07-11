@@ -4,6 +4,11 @@
     ViewData["Title"] = "Your Pets";
 }
 
+@{
+    ViewData["Title"] = "Pets";
+
+}
+
 <style>
     body {
         font-family: 'Arial', sans-serif;
@@ -111,9 +116,6 @@
                     @Html.DisplayNameFor(model => model.Pet[0].Breed)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Pet[0].DateOfBirth)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.Pet[0].IsNeutered)
                 </th>
                 <th>
@@ -134,9 +136,6 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Breed)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DateOfBirth)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.IsNeutered)
