@@ -109,7 +109,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model.Appointment.Items != null)
+                @if (Model.Appointment.Items.Count() != 0 )
                 {
                     
                     foreach (var item in Model.Appointment.Items)

@@ -17,7 +17,8 @@ public class MedicalRecordRequestDto
     public string? Note { get; set; }
     public DateTimeOffset? NextAppointment { get; set; }
 
-    [Range(0, double.MaxValue)]
+    //[Range(0, double.MaxValue)]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Pet weight must be greater than zero.")]
     public decimal PetWeight { get; set; }
     public List<TransactionMedicalItemsDto>? MedicalItems { get; set; }
 
