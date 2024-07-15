@@ -27,6 +27,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
         private readonly ITransactionService _transactionService;
         private readonly IAppointmentService _appointment;
         private readonly IMedicalItemService _medicalItem;
+        private readonly IPetService _pet;
         [BindProperty]
         public AppointmentResponseDto AppointmentItem { get; set; }
         [BindProperty]
@@ -34,12 +35,13 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
         public List<MedicalResponseDto> MedicalItems { get; set; }
 
         public CreateMedicalModel(IMedicalService medical, ITransactionService transactionService, IAppointmentService appointment
-            , IMedicalItemService medicalItem)
+            , IMedicalItemService medicalItem, IPetService pet)
         {
             _medical = medical;
             _transactionService = transactionService;
             _appointment = appointment;
             _medicalItem = medicalItem;
+            _pet = pet;
         }
 
         public async Task<IActionResult> OnGetAsync(int id)
@@ -120,7 +122,20 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
                 }
                 MedicalRecord.MedicalItems = mergedList;
                 await _medical.CreateMedicalRecord(MedicalRecord, id);
-
+                List<int>petList = new List<int>();
+                var appointment = await _appointment.GetAppointmentByAppointmentId(MedicalRecord.AppointmentId);
+                foreach (var item in appointment.Pets)
+                {
+                    var pet = (await _medical.GetAllMedicalRecord(1, 100)).Items.Where(x=>x.PetId == item.Id && x.AppointmentId == MedicalRecord.AppointmentId).FirstOrDefault();
+                    if (pet != null)
+                    {
+                        petList.Add(pet.PetId);
+                    }
+                }
+                if (petList.Count == appointment.Pets.Count)
+                {
+                    await _appointment.UpdateStatusToDone(MedicalRecord.AppointmentId,id);
+                }
 
                 return RedirectToPage("/Vet/TimeTable/Appointment");
             }
