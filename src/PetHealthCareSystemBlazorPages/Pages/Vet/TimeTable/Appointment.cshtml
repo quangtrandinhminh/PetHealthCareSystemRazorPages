@@ -109,7 +109,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model.Appointment.Items != null)
+                @if (Model.Appointment.Items.Count() != 0 )
                 {
                     
                     foreach (var item in Model.Appointment.Items)
@@ -128,7 +128,13 @@
                                 @Html.DisplayFor(modelItem => item.Status)
                             </td>
                             <td>
-                                <a asp-page="./CreateMedical" asp-route-id="@item.Id">MakeRecord</a> |
+                                @if (item.Status.Equals("Completed"))
+                                {
+                                    <a>MakeRecord</a>
+                                }else
+                                {
+                                    <a asp-page="./CreateMedical" asp-route-id="@item.Id">MakeRecord</a>
+                                }
                             </td>
                         </tr>
                     }

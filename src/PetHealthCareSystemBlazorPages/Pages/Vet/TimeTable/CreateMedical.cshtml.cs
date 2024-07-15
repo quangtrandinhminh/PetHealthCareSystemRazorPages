@@ -27,6 +27,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
         private readonly ITransactionService _transactionService;
         private readonly IAppointmentService _appointment;
         private readonly IMedicalItemService _medicalItem;
+        private readonly IPetService _pet;
         [BindProperty]
         public AppointmentResponseDto AppointmentItem { get; set; }
         [BindProperty]
@@ -34,12 +35,13 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
         public List<MedicalResponseDto> MedicalItems { get; set; }
 
         public CreateMedicalModel(IMedicalService medical, ITransactionService transactionService, IAppointmentService appointment
-            , IMedicalItemService medicalItem)
+            , IMedicalItemService medicalItem, IPetService pet)
         {
             _medical = medical;
             _transactionService = transactionService;
             _appointment = appointment;
             _medicalItem = medicalItem;
+            _pet = pet;
         }
 
         public async Task<IActionResult> OnGetAsync(int id)
@@ -75,7 +77,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
             return Page();
         }
 
-        
+
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync(List<int> SelectedMedicalItemsId, List<int> SelectedMedicalItemsQuantity)
@@ -97,10 +99,15 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
                 var accountId = HttpContext.Session.GetString("UserId");
                 int id = int.Parse(accountId);
                 List<TransactionMedicalItemsDto> mergedList = new List<TransactionMedicalItemsDto>();
-                if (SelectedMedicalItemsId != null && SelectedMedicalItemsQuantity != null)
+                if (SelectedMedicalItemsId.Count != 0 && SelectedMedicalItemsQuantity.Count != 0 && SelectedMedicalItemsId.Count == SelectedMedicalItemsQuantity.Count)
                 {
                     for (int i = 0; i < SelectedMedicalItemsId.Count; i++)
                     {
+                        if (SelectedMedicalItemsQuantity[i] == 0)
+                        {
+                            ModelState.AddModelError("MedicalRecord.MedicalItems", "Medical item's quantity must > 0");
+                            return await OnGetAsync(MedicalRecord.AppointmentId);
+                        }
                         mergedList.Add(new TransactionMedicalItemsDto()
                         {
                             MedicalItemId = SelectedMedicalItemsId[i],
@@ -108,16 +115,34 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
                         });
                     }
                 }
+                else if (SelectedMedicalItemsId.Count > 0 && SelectedMedicalItemsId.Count != SelectedMedicalItemsQuantity.Count)
+                {
+                    ModelState.AddModelError("MedicalRecord.MedicalItems","You must input quantity when using medical item");
+                    return await OnGetAsync(MedicalRecord.AppointmentId);
+                }
                 MedicalRecord.MedicalItems = mergedList;
                 await _medical.CreateMedicalRecord(MedicalRecord, id);
-
+                List<int>petList = new List<int>();
+                var appointment = await _appointment.GetAppointmentByAppointmentId(MedicalRecord.AppointmentId);
+                foreach (var item in appointment.Pets)
+                {
+                    var pet = (await _medical.GetAllMedicalRecord(1, 100)).Items.Where(x=>x.PetId == item.Id && x.AppointmentId == MedicalRecord.AppointmentId).FirstOrDefault();
+                    if (pet != null)
+                    {
+                        petList.Add(pet.PetId);
+                    }
+                }
+                if (petList.Count == appointment.Pets.Count)
+                {
+                    await _appointment.UpdateStatusToDone(MedicalRecord.AppointmentId,id);
+                }
 
                 return RedirectToPage("/Vet/TimeTable/Appointment");
             }
             catch (Exception e)
             {
                 ModelState.AddModelError(string.Empty, e.Message);
-                return Page();
+                return await OnGetAsync(MedicalRecord.AppointmentId);
             }
             
         }

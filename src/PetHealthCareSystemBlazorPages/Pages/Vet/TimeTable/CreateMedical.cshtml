@@ -1,4 +1,4 @@
-﻿@page
+﻿@* @page
 @model PetHealthCareSystemRazorPages.Pages.Vet.TimeTable.CreateMedicalModel
 
 @{
@@ -52,12 +52,12 @@
             </div>
             <span id="pet-error" class="text-danger"></span>
             </div>
-            } *@
+            } 
             @* <div class="form-group">
                 <label asp-for="MedicalRecord.VetId" class="control-label"></label>
                 <input asp-for="MedicalRecord.VetId" class="form-control" />
                 <span asp-validation-for="MedicalRecord.VetId" class="text-danger"></span>
-            </div> *@
+            </div> 
             <div class="form-group">
                 <label asp-for="MedicalRecord.RecordDetails" class="control-label"></label>
                 <input asp-for="MedicalRecord.RecordDetails" class="form-control" />
@@ -67,7 +67,7 @@
                 <label asp-for="MedicalRecord.Date" class="control-label"></label>
                 <input asp-for="MedicalRecord.Date" class="form-control" />
                 <span asp-validation-for="MedicalRecord.Date" class="text-danger"></span>
-            </div> *@
+            </div> 
             <div class="form-group">
                 <label asp-for="MedicalRecord.Diagnosis" class="control-label"></label>
                 <input asp-for="MedicalRecord.Diagnosis" class="form-control" />
@@ -87,7 +87,7 @@
                 <label asp-for="MedicalRecord.NextAppointment" class="control-label"></label>
                 <input asp-for="MedicalRecord.NextAppointment" class="form-control" />
                 <span asp-validation-for="MedicalRecord.NextAppointment" class="text-danger"></span>
-            </div> *@
+            </div> 
             <div class="form-group">
                 <label asp-for="MedicalRecord.PetWeight" class="control-label"></label>
                 <input asp-for="MedicalRecord.PetWeight" class="form-control" />
@@ -132,7 +132,7 @@
                 <label asp-for="MedicalRecord.DeletedTime" class="control-label"></label>
                 <input asp-for="MedicalRecord.DeletedTime" class="form-control" />
                 <span asp-validation-for="MedicalRecord.DeletedTime" class="text-danger"></span>
-            </div> *@
+            </div> 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -146,4 +146,106 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+*@
+@page
+@model PetHealthCareSystemRazorPages.Pages.Vet.TimeTable.CreateMedicalModel
+
+@{
+    ViewData["Title"] = "CreateMedical";
+}
+
+<h1>Create Medical Record</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group d-none">
+                <input asp-for="MedicalRecord.AppointmentId" class="form-control" type="hidden" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MedicalRecord.PetId" class="control-label">Pet:</label>
+                <select asp-for="MedicalRecord.PetId" class="form-control" asp-items="ViewBag.PetId"></select>
+                
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MedicalRecord.MedicalItems" class="control-label">Medical Items:</label>
+                <div class="checkbox-list">
+                    @foreach (var medicalItem in Model.MedicalItems)
+                    {
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="SelectedMedicalItemsId" value="@medicalItem.Id" class="medical-item-checkbox">
+                            <label for="@medicalItem.Id">@medicalItem.Name (Stock: @medicalItem.Quantity)</label>
+                            <input type="number" name="SelectedMedicalItemsQuantity" min="0" placeholder="Using" class="medical-item-quantity">
+                        </div>
+                    }
+                </div>
+                <span asp-validation-for="MedicalRecord.MedicalItems" class="text-danger"></span>
+            </div>
+           
+
+            <div class="form-group">
+                <label asp-for="MedicalRecord.RecordDetails" class="control-label">Record Details:</label>
+                <textarea asp-for="MedicalRecord.RecordDetails" class="form-control" ></textarea>
+                <span asp-validation-for="MedicalRecord.RecordDetails" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MedicalRecord.Diagnosis" class="control-label">Diagnosis:</label>
+                <input asp-for="MedicalRecord.Diagnosis" class="form-control"  />
+                <span asp-validation-for="MedicalRecord.Diagnosis" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MedicalRecord.Treatment" class="control-label">Treatment:</label>
+                <input asp-for="MedicalRecord.Treatment" class="form-control"  />
+                <span asp-validation-for="MedicalRecord.Treatment" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MedicalRecord.Note" class="control-label">Note:</label>
+                <textarea asp-for="MedicalRecord.Note" class="form-control" ></textarea>
+                <span asp-validation-for="MedicalRecord.Note" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MedicalRecord.PetWeight" class="control-label">Pet Weight:</label>
+                <input asp-for="MedicalRecord.PetWeight" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="MedicalRecord.PetWeight" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            $(document).ready(function () {
+                $('.medical-item-checkbox').change(function () {
+                    $(this).siblings('.medical-item-quantity').prop('disabled', !$(this).is(':checked'));
+                });
+
+                // Initial state (hide quantity inputs on page load if checkboxes are unchecked)
+                $('.medical-item-checkbox').each(function () {
+                    if (!$(this).is(':checked')) {
+                        $(this).siblings('.medical-item-quantity').prop('disabled', true);
+                    }
+                });
+            });
+        </script>
+    }
 }
