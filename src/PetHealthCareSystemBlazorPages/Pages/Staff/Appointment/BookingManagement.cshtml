@@ -130,7 +130,7 @@
                     <td>@Html.DisplayFor(modelItem => item.TimeTable.StartTime)</td>
                     <td>@Html.DisplayFor(modelItem => item.TimeTable.EndTime)</td>
                     <td>
-                        <a style="color:black" asp-page="/Staff/BookingTransaction/Index" asp-route-id="@item.Id">Edit</a> |
+                        <a style="color:black" asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                         <a style="color:black" asp-page="./Details" asp-route-id="@item.Id">Details</a>
                     </td>
                 </tr>
