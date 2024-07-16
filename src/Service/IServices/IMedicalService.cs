@@ -8,8 +8,8 @@ public interface IMedicalService
 {
     // medical item
     Task<List<MedicalResponseDto>> GetAllMedicalItem();
-    Task CreateMedicalItem(MedicalResponseDto medicalItem);
-    Task UpdateMedicalItem(MedicalResponseDto medicalItem);
+    Task CreateMedicalItem(MedicalItemRequestDto medicalItem, int createdById);
+    Task UpdateMedicalItem(MedicalItemUpdateDto dto, int updatedById);
     Task DeleteMedicalItem(int id, int deleteBy);
 
     // medical record
@@ -17,7 +17,6 @@ public interface IMedicalService
     Task<PaginatedList<MedicalRecordResponseDto>> GetAllMedicalRecordForHospitalization (int pageNumber, int pageSize);
     Task<PaginatedList<MedicalRecordResponseDto>> GetAllMedicalRecordByPetId(int petId, int pageNumber, int pageSize);
     Task<MedicalRecordResponseDtoWithDetails> GetMedicalRecordById(int medicalRecordId);
+    Task<MedicalRecordResponseDtoWithDetails> GetMedicalRecordByPetIdAndAppointmentId(int petId, int appointmentId);
     Task<MedicalRecordResponseDtoWithDetails> CreateMedicalRecord(MedicalRecordRequestDto dto, int vetId);
-    Task UpdateMedicalRecord(MedicalRecordResponseDto dto, int staffId);
-    Task DeleteMedicalRecord(int id, int deleteBy);
 }

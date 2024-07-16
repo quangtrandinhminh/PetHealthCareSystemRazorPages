@@ -15,6 +15,10 @@ public class Appointment : BaseEntity
     public int CustomerId { get; set; }
     public int TimeTableId { get; set; }
     public DateOnly AppointmentDate { get; set; }
+    public DateOnly? CancelDate { get; set; }
+    public string? CheckoutUrl { get; set; }
+    public bool? RefundStatus { get; set; }
+    public bool? OnlinePaymentStatus { get; set; }
     public string? Note { get; set; }
     public AppointmentStatus Status { get; set; }
     public AppointmentBookingType BookingType { get; set; }

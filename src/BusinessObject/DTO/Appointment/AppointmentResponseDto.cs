@@ -11,6 +11,10 @@ namespace BusinessObject.DTO.Appointment;
 public class AppointmentResponseDto
 {
     public int Id { get; set; }
+    public DateOnly? CancelDate { get; set; }
+    public string? CheckoutUrl { get; set; }
+    public bool? RefundStatus { get; set; }
+    public bool? OnlinePaymentStatus { get; set; }
     public TimeTableResponseDto TimeTable { get; set; }
     public DateOnly AppointmentDate { get; set; }
     public string? Note { get; set; }

@@ -20,4 +20,8 @@ public interface IAppointmentService
     Task<AppointmentResponseDto> BookAppointmentAsync(AppointmentBookRequestDto appointmentBookRequestDto, int customerId);
     Task<AppointmentResponseDto> UpdateStatusToDone(int appointmentId, int vetId);
     Task<AppointmentResponseDto> UpdateStatusToCancel(int appointmentId, int updatedById);
+    Task<AppointmentResponseDto> FeedbackAppointmentAsync(AppointmentFeedbackRequestDto dto, int ownerId);
+    Task<AppointmentResponseDto> UpdateOnlinePaymentToTrue(int appointmentId, int updatedById);
+    Task<PaginatedList<AppointmentResponseDto>> GetAllCancelAppointmentsAsync(int pageNumber, int pageSize);
+    Task<AppointmentResponseDto> UpdateRefundStatusToTrue(int appointmentId, int updatedById);
 }

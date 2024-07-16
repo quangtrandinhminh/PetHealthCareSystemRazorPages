@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "BookingTransaction";
+    var i = 1;
 }
 <style>
     .container {
@@ -102,7 +103,7 @@
         <thead>
             <tr>
                 <th>
-                    Id
+                    No.
                 </th>
                 <th>
                     Payment Date
@@ -136,7 +137,7 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Id)
+                        @i @{ i++; }
                     <td>
                             @Html.DisplayFor(modelItem => item.PaymentDate)
                     </td>

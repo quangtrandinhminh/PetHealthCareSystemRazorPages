@@ -26,6 +26,62 @@ public class UserService(IServiceProvider serviceProvider) : IUserService
     private readonly ILogger _logger = Log.Logger;
     private readonly SignInManager<UserEntity> _signInManager = serviceProvider.GetRequiredService<SignInManager<UserEntity>>();
 
+    public async Task<PaginatedList<UserResponseDto>> GetAllUsersAsync(int pageNumber, int pageSize)
+    {
+        var users = _userRepository.GetAllWithCondition(u => u.DeletedTime == null);
+
+        if (users == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsUser.USER_NOT_FOUND
+                , StatusCodes.Status404NotFound);
+        }
+
+        var response = _mapper.Map(users);
+        var paginatedList = await PaginatedList<UserResponseDto>.CreateAsync(response, pageNumber, pageSize);
+        return paginatedList;
+    }
+
+    public async Task<PaginatedList<UserResponseDto>> GetAllUserWithFilter(UserFilterDto filter, int pageNumber,
+        int pageSize)
+    {
+        var users = _userRepository.GetAllWithCondition(u => u.DeletedTime == null);
+
+        if (users == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsUser.USER_NOT_FOUND
+                           , StatusCodes.Status404NotFound);
+        }
+
+        if (!string.IsNullOrEmpty(filter.Name))
+        {
+            users = users.Where(u => u.FullName != null && u.FullName.Contains(filter.Name));
+        }
+
+        if (!string.IsNullOrEmpty(filter.Email))
+        {
+            users = users.Where(u => u.Email != null && u.Email.Contains(filter.Email));
+        }
+
+        if (!string.IsNullOrEmpty(filter.PhoneNumber))
+        {
+            users = users.Where(u => u.PhoneNumber != null && u.PhoneNumber.Contains(filter.PhoneNumber));
+        }
+
+        if (!string.IsNullOrEmpty(filter.Address))
+        {
+            users = users.Where(u => u.Address != null && u.Address.Contains(filter.Address));
+        }
+
+        if (!string.IsNullOrEmpty(filter.Role))
+        {
+            users = users.Where(u => u.UserRoles.Any(ur => ur.Role.Name == filter.Role));
+        }
+
+        var response = _mapper.Map(users);
+        var paginatedList = await PaginatedList<UserResponseDto>.CreateAsync(response, pageNumber, pageSize);
+        return paginatedList;
+    }
+
     public async Task<IList<UserResponseDto>> GetAllUsersByRoleAsync(UserRole role)
     {
         switch (role)
@@ -41,14 +97,6 @@ public class UserService(IServiceProvider serviceProvider) : IUserService
             default:
                 throw new AppException(ResponseCodeConstants.INVALID_INPUT, ResponseMessageIdentity.ROLE_INVALID, StatusCodes.Status400BadRequest);
         }
-    }
-
-    public async Task<PaginatedList<UserResponseDto>> GetAllUsers(int pageNumber, int pageSize)
-    {
-        var users = _userManager.Users.AsNoTracking();
-        var response = _mapper.Map(users);
-        var paginatedList = await PaginatedList<UserResponseDto>.CreateAsync(response, pageNumber, pageSize);
-        return paginatedList;
     }
 
     private async Task<IList<UserResponseDto>> GetAdminsAsync()
@@ -163,9 +211,11 @@ public class UserService(IServiceProvider serviceProvider) : IUserService
         throw new NotImplementedException();
     }
 
-    public Task<UserResponseDto> GetByIdAsync(int id)
+    public async Task<UserResponseDto> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var user = await _userRepository.GetSingleAsync(e => e.Id == id);
+
+        return _mapper.UserToUserResponseDto(user);
     }
 
     public Task DeleteUserAsync(int id)

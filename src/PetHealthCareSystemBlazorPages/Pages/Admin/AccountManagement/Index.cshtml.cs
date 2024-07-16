@@ -31,7 +31,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
                 return RedirectToPage("/Login");
             }
 
-            Users = await _userService.GetAllUsers(pageNumber ?? 1, PageSize);
+            Users = await _userService.GetAllUsersAsync(pageNumber ?? 1, PageSize);
             return Page();
         }
     }

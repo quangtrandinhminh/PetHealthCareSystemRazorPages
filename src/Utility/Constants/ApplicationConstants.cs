@@ -21,16 +21,18 @@ namespace Utility.Constants
         public const string INVALID_INPUT = "Invalid input!";
         public const string UNAUTHORIZED = "Unauthorized!";
         public const string FORBIDDEN = "Forbidden!";
-        public const string EXPIRED = "Expired!"; 
+        public const string EXPIRED = "Expired!";
     }
     public class ResponseMessageConstantsCommon
     {
+        public const string NOT_FOUND = "Không tìm thấy dữ liệu";
         public const string EXISTED = "Already existed!";
         public const string SUCCESS = "Thao tác thành công";
         public const string NO_DATA = "Không có dữ liệu trả về";
         public const string SERVER_ERROR = "Lỗi từ phía server vui lòng liên hệ đội ngũ phát triển";
         public const string DATE_WRONG_FORMAT = "Dữ liệu ngày không đúng định dạng yyyy-mm-dd";
         public const string DATA_NOT_ENOUGH = "Dữ liệu đưa vào không đầy đủ";
+        public const string DATA_INVALID = "Dữ liệu đưa vào không hợp lệ";
     }
 
     public class ResponseMessageIdentity
@@ -95,6 +97,8 @@ namespace Utility.Constants
         public const string DELETE_USER_SUCCESS = "Xóa người dùng thành công";
         public const string ADMIN_NOT_FOUND = "Không tìm thấy quản trị viên";
         public const string CUSTOMER_NOT_FOUND = "Không tìm thấy khách hàng";
+
+        public const string VET_EXISTED = "Bác sĩ đã tồn tại";
     }
 
     public class ResponseMessageConstantsTimetable
@@ -145,18 +149,21 @@ namespace Utility.Constants
         public const string UPDATE_PAYMENT_SUCCESS = "Cap nhat thanh toan thanh cong";
         public const string DELETE_TRANSACTION_SUCCESS = "Xoa giao dich thanh cong";
         public const string TRANSACTION_PAID = "Giao dich da thanh toan";
+        public const string UPDATE_REFUND_SUCCESS = "Hoan tien thanh cong";
     }
 
     public class ResponseMessageConstantsAppointment
     {
         public const string APPOINTMENT_NOT_FOUND = "Không tìm thấy lịch hẹn";
         public const string APPOINTMENT_EXISTED = "Lịch hẹn đã tồn tại";
+        public const string NOT_YOUR_APPOINTMENT = "Lịch hẹn không phải của bạn";
         public const string ADD_APPOINTMENT_SUCCESS = "Thêm lịch hẹn thành công";
         public const string UPDATE_APPOINTMENT_SUCCESS = "Cập nhật lịch hẹn thành công";
         public const string DELETE_APPOINTMENT_SUCCESS = "Xóa lịch hẹn thành công";
         public const string APPOINTMENT_ID_REQUIRED = "Id lich hen khong duoc de trong";
         public const string APPOINTMENT_PET_NOT_FOUND = "Khong tim thay thong tin thú cưng trong lich hen";
         public const string APPOINTMENT_COMPLETED = "Lich hen da hoan thanh";
+        public const string APPOINTMENT_NOT_COMPLETED = "Lịch hẹn chưa hoàn thành";
     }
 
     public class ResponseMessageConstantsMedicalRecord
@@ -168,7 +175,7 @@ namespace Utility.Constants
         public const string DELETE_MEDICAL_RECORD_SUCCESS = "Xoa ho so benh an thanh cong";
         public const string MEDICAL_RECORD_VET_NOT_ALLOWED = "Yeu cau bac si duoc hen tao ho so benh an";
         public const string NEXT_APPOINTMENT_INVALID = "Ngay hen tiep theo khong hop le";
-        public const string ADMISSION_DATE_INVALID = "Ngay nhap vien khong hop le";
+        public const string ADMISSION_DATE_INVALID = "Ngay nhap vien khong hop le. Chua toi thoi gian kham";
         public const string DISCHARGE_DATE_INVALID = "Ngay xuat vien khong hop le";
         public const string PET_WEIGHT_INVALID = "Can nang khong hop le";
     }
@@ -179,10 +186,25 @@ namespace Utility.Constants
         public const string MEDICAL_RECORD_NOT_ADMITTED = "Ho so benh an khong co luu chuong";
         public const string MEDICAL_RECORD_ALREADY_DISCHARGED = "Ho so benh an da xuat chuong";
         public const string ADD_HOSPITALIZATION_SUCCESS = "Them ho so luu chuong thanh cong";
+        public const string UPDATE_HOSPITALIZATION_SUCCESS = "Cap Nhat ho so luu chuong thanh cong";
+        public const string DELETE_HOSPITALIZATION_SUCCESS = "Xoa ho so luu chuong thanh cong";
+
+        public const string MEDICAL_RECORD_NOT_FOUND = "Khong co ho so de tao";
+        public const string DO_NOT_HAVE_TIMETABLE = "Khong lich lam";
     }
 
     public class ResponseMessageConstantsCage
     {
         public const string CAGE_NOT_FOUND = "Khong tim thay chuong nuoi";
+        public const string CAGE_NOT_AVAILABLE = "Chuong nuoi khong con trong";
+    }
+
+    public class ResponseMessageConstantsConfiguration
+    {
+        public const string CONFIGURATION_NOT_FOUND = "Khong tim thay cau hinh";
+        public const string CONFIGURATION_EXISTED = "Cau hinh da ton tai";
+        public const string ADD_CONFIGURATION_SUCCESS = "Them cau hinh thanh cong";
+        public const string UPDATE_CONFIGURATION_SUCCESS = "Cap nhat cau hinh thanh cong";
+        public const string DELETE_CONFIGURATION_SUCCESS = "Xoa cau hinh thanh cong";
     }
 }
