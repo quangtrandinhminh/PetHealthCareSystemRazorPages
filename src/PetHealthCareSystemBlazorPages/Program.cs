@@ -51,17 +51,18 @@ builder.Services.AddScoped<ITimeTableRepository, TimeTableRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAppointmentPetRepository, AppointmentPetRepository>();
+builder.Services.AddScoped<IConfigurationRepository, ConfigurationRepository>();
 
 // Register Services
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IHospitalizationService, HospitalizationService>();
-builder.Services.AddScoped<IMedicalItemService, MedicalItemService>();
 builder.Services.AddScoped<IMedicalService, MedicalService>();
 builder.Services.AddScoped<IPetService, PetService>();
 builder.Services.AddScoped<IService, ServiceService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
 
 // Configure Identity
 builder.Services.AddIdentity<UserEntity, RoleEntity>()

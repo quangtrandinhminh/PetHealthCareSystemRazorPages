@@ -14,8 +14,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Utility.Constants;
 using Utility.Exceptions;
+using Utility.Helpers;
 
 namespace Service.Services
 {
@@ -24,28 +26,95 @@ namespace Service.Services
         private readonly MapperlyMapper _mapper = serviceProvider.GetRequiredService<MapperlyMapper>();
         private readonly IServiceRepository _serviceRepo = serviceProvider.GetRequiredService<IServiceRepository>();
 
-        public async Task CreateServiceAsync(ServiceResponseDto service)
+        private readonly UserManager<UserEntity> _userManager =
+            serviceProvider.GetRequiredService<UserManager<UserEntity>>();
+
+        public async Task CreateServiceAsync(ServiceRequestDto service, int createdById)
         {
-            await _serviceRepo.CreateServiceAsync(_mapper.Map(service));
+            var user =  await _userManager.FindByIdAsync(createdById.ToString());
+            if (user == null)
+            {
+                throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsUser.USER_NOT_FOUND
+                                   , StatusCodes.Status404NotFound);
+            }
+
+            var serviceEntity = _mapper.Map(service);
+            serviceEntity.CreatedBy = createdById;
+            serviceEntity.CreatedTime = serviceEntity.LastUpdatedTime = CoreHelper.SystemTimeNow;
+
+            await _serviceRepo.AddAsync(serviceEntity);
         }
 
-        public Task DeleteServiceAsync(int id, int deleteBy)
+        public async Task DeleteServiceAsync(int serviceId, int deleteBy)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByIdAsync(deleteBy.ToString());
+            if (user == null)
+            {
+                throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsUser.USER_NOT_FOUND
+                                                  , StatusCodes.Status404NotFound);
+            }
+
+            var service = await _serviceRepo.GetSingleAsync(s => s.Id == serviceId);
+            if (service == null)
+            {
+                throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsService.SERVICE_NOT_FOUND
+                                                                 , StatusCodes.Status404NotFound);
+            }
+
+            service.DeletedBy = deleteBy;
+            service.DeletedTime = CoreHelper.SystemTimeNow;
+            await _serviceRepo.UpdateAsync(service);
         }
 
         public async Task<List<ServiceResponseDto>> GetAllServiceAsync()
         {
-            var list = await _serviceRepo.GetAllService();
+            var list = await _serviceRepo.GetAllWithCondition(s => s.DeletedTime == null).ToListAsync();
+            if (list == null)
+            {
+                throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsService.SERVICE_NOT_FOUND
+                                                                                , StatusCodes.Status404NotFound);
+            }
 
             var listDto = _mapper.Map(list);
 
             return listDto.ToList();
         }
 
-        public Task UpdateServiceAsync(ServiceResponseDto service)
+        public async Task<ServiceResponseDto> GetServiceBydId(int serviceId)
         {
-            throw new NotImplementedException();
+            var service = await _serviceRepo.GetSingleAsync(s => s.Id == serviceId);
+            if (service == null)
+            {
+                throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsService.SERVICE_NOT_FOUND
+                                                                                , StatusCodes.Status404NotFound);
+            }
+
+            var response = _mapper.Map(service);
+
+            return response;
+        }
+
+        public async Task UpdateServiceAsync(ServiceUpdateDto service, int updatedById)
+        {
+            var user = await _userManager.FindByIdAsync(updatedById.ToString());
+            if (user == null)
+            {
+                throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsUser.USER_NOT_FOUND
+                                                                 , StatusCodes.Status404NotFound);
+            }
+
+            var serviceEntity = await _serviceRepo.GetSingleAsync(s => s.Id == service.Id);
+            if (serviceEntity == null)
+            {
+                throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsService.SERVICE_NOT_FOUND
+                                                                                               , StatusCodes.Status404NotFound);
+            }
+
+            _mapper.Map(service, serviceEntity);
+            serviceEntity.LastUpdatedBy = updatedById;
+            serviceEntity.LastUpdatedTime = CoreHelper.SystemTimeNow;
+
+            await _serviceRepo.UpdateAsync(serviceEntity);
         }
     }
 }

@@ -37,35 +37,77 @@ public class MedicalService(IServiceProvider serviceProvider) : IMedicalService
     // medical item -----------------------------------------------------------------------------------------------------------------------------------------------------------
     public async Task<List<MedicalResponseDto>> GetAllMedicalItem()
     {
-        var list = await _medicalItemRepository.GetAllMedicalItem();
+        var list = await _medicalItemRepository.GetAllWithCondition(m => m.DeletedTime == null).ToListAsync();
+        if (list == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                               ResponseMessageConstantsMedicalItem.MEDICAL_ITEM_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
 
         var listDto = _mapper.Map(list);
 
         return listDto.ToList();
     }
-    public async Task CreateMedicalItem(MedicalResponseDto medicalItem)
+    public async Task CreateMedicalItem(MedicalItemRequestDto medicalItem, int createdById)
     {
-        await _medicalItemRepository.CreateMedicalItemAsync(_mapper.Map(medicalItem));
+        var user = await _userManager.FindByIdAsync(createdById.ToString());
+        if (user == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                                              ResponseMessageIdentity.INVALID_USER, StatusCodes.Status404NotFound);
+        }
+
+        var medicalItemEntity = _mapper.Map(medicalItem);
+        medicalItemEntity.CreatedBy = medicalItemEntity.LastUpdatedBy = createdById;
+        medicalItemEntity.CreatedTime = medicalItemEntity.LastUpdatedTime = CoreHelper.SystemTimeNow;
+
+        await _medicalItemRepository.AddAsync(medicalItemEntity);
     }
 
-    public Task DeleteMedicalItem(int id, int deleteBy)
+    public async Task DeleteMedicalItem(int id, int deleteBy)
     {
-        throw new NotImplementedException();
+        var user = await _userManager.FindByIdAsync(deleteBy.ToString());
+        if (user == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                               ResponseMessageIdentity.INVALID_USER, StatusCodes.Status404NotFound);
+        }
+
+        var medicalItem = await _medicalItemRepository.GetSingleAsync(m => m.Id == id);
+        if (medicalItem == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                               ResponseMessageConstantsMedicalItem.MEDICAL_ITEM_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
+
+        medicalItem.DeletedBy = deleteBy;
+        medicalItem.DeletedTime = CoreHelper.SystemTimeNow;
+        await _medicalItemRepository.UpdateAsync(medicalItem);
     }
 
-    public Task UpdateMedicalRecord(MedicalRecordResponseDto dto, int staffId)
+    public async Task UpdateMedicalItem(MedicalItemUpdateDto dto, int updatedById)
     {
-        throw new NotImplementedException();
-    }
+        var user = await _userManager.FindByIdAsync(updatedById.ToString());
+        if (user == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                ResponseMessageIdentity.INVALID_USER, StatusCodes.Status404NotFound);
+        }
 
-    public Task DeleteMedicalRecord(int id, int deleteBy)
-    {
-        throw new NotImplementedException();
-    }
+        var medicalItem = await _medicalItemRepository.GetSingleAsync(m => m.Id == dto.Id);
+        if (medicalItem == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                ResponseMessageConstantsMedicalItem.MEDICAL_ITEM_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
 
-    public Task UpdateMedicalItem(MedicalResponseDto medicalItem)
-    {
-        throw new NotImplementedException();
+        medicalItem.Name = dto.Name;
+        medicalItem.Description = dto.Description;
+        medicalItem.Price = dto.Price;
+        medicalItem.LastUpdatedBy = updatedById;
+        medicalItem.LastUpdatedTime = CoreHelper.SystemTimeNow;
+
+        await _medicalItemRepository.UpdateAsync(medicalItem);
     }
 
     // medical record -----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -150,14 +192,23 @@ public class MedicalService(IServiceProvider serviceProvider) : IMedicalService
             throw new AppException(ResponseCodeConstants.NOT_FOUND,
                                ResponseMessageConstantsMedicalRecord.MEDICAL_RECORD_NOT_FOUND, StatusCodes.Status404NotFound);
         }
-        var response = _mapper.MedicalRecordToMedicalRecordResponseDtoWithDetails(medicalRecord);
 
-        var vet = await _userRepository.GetSingleAsync(u => u.Id == response.VetId);
-        var createBy = await _userRepository.GetSingleAsync(u => u.Id == response.CreatedBy);
-        var updateBy = await _userRepository.GetSingleAsync(u => u.Id == response.LastUpdatedBy);
-        response.VetName = vet?.FullName ?? string.Empty;
-        response.CreatedByName = createBy?.FullName ?? string.Empty;
-        response.LastUpdatedByName = updateBy?.FullName ?? string.Empty;
+        var response = await MedicalRecordToMedicalRecordResponseDtoWithDetails(medicalRecord);
+        return response;
+    }
+
+    public async Task<MedicalRecordResponseDtoWithDetails> GetMedicalRecordByPetIdAndAppointmentId(int petId, int appointmentId)
+    {
+        _logger.Information($"Get medical record with {petId} and {appointmentId}");
+        var medicalRecord = await _medicalRecordRepository.GetSingleAsync(mr => mr.AppointmentId == appointmentId && mr.PetId == petId,
+            false, mr => mr.MedicalItems, mr => mr.Pet);
+        if (medicalRecord == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                ResponseMessageConstantsMedicalRecord.MEDICAL_RECORD_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
+
+        var response = await MedicalRecordToMedicalRecordResponseDtoWithDetails(medicalRecord);
 
         return response;
     }
@@ -252,16 +303,18 @@ public class MedicalService(IServiceProvider serviceProvider) : IMedicalService
         medicalRecord.VetId = vetId;
         medicalRecord.CreatedBy = medicalRecord.LastUpdatedBy = vetId;
         medicalRecord.CreatedTime = medicalRecord.LastUpdatedTime = medicalRecord.Date = CoreHelper.SystemTimeNow;
-
-        // if medical item is not null, check if it exists
-        if (dto.MedicalItems != null)
+        medicalRecord.MedicalItems = new List<MedicalItem>();
+        Transaction? transaction = null;
+        if (dto.MedicalItems is { Count: > 0 })
         {
-            medicalRecord.MedicalItems = new List<MedicalItem>();
-            var transaction = new Transaction
+            transaction = new Transaction
             {
                 CustomerId = customerId,
                 CreatedBy = vetId,
                 LastUpdatedBy = vetId,
+                CreatedTime = CoreHelper.SystemTimeNow,
+                LastUpdatedTime = CoreHelper.SystemTimeNow,
+                Status = TransactionStatus.Pending,
                 TransactionDetails = new List<TransactionDetail>()
             };
 
@@ -275,18 +328,36 @@ public class MedicalService(IServiceProvider serviceProvider) : IMedicalService
                     Id = item.MedicalItemId,
                 });
             }
-
-            await _transactionRepository.AddAsync(transaction);
         }
 
         var addedMedicalRecord = await _medicalRecordRepository.AddMedicalRecordAsync(medicalRecord);
-        
 
+        if (transaction != null)
+        {
+            transaction.MedicalRecordId = addedMedicalRecord.Id;
+            await _transactionRepository.AddAsync(transaction);
+        }
         return await GetMedicalRecordById(addedMedicalRecord.Id);
     }
 
-    public Task UpdateMedicalRecord(MedicalRecordRequestDto dto)
+    private async Task<MedicalRecordResponseDtoWithDetails> MedicalRecordToMedicalRecordResponseDtoWithDetails(MedicalRecord medicalRecord)
     {
-        throw new NotImplementedException();
+        var response = _mapper.MedicalRecordToMedicalRecordResponseDtoWithDetails(medicalRecord);
+        var vet = await _userRepository.GetSingleAsync(u => u.Id == response.VetId);
+        var createBy = await _userRepository.GetSingleAsync(u => u.Id == response.CreatedBy);
+        var updateBy = await _userRepository.GetSingleAsync(u => u.Id == response.LastUpdatedBy);
+        response.VetName = vet?.FullName ?? string.Empty;
+        response.CreatedByName = createBy?.FullName ?? string.Empty;
+        response.LastUpdatedByName = updateBy?.FullName ?? string.Empty;
+        if (response.MedicalItems != null)
+        {
+            var transaction = await _transactionRepository.GetSingleAsync(t => t.MedicalRecordId == medicalRecord.Id, false, t => t.TransactionDetails);
+            foreach (var item in response.MedicalItems)
+            {
+                item.Quantity = (int)(transaction.TransactionDetails.FirstOrDefault(td => td.MedicalItemId == item.Id)?.Quantity ?? null)!;
+            }
+        }
+
+        return response;
     }
 }

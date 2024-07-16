@@ -26,7 +26,6 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
         private readonly IMedicalService _medical;
         private readonly ITransactionService _transactionService;
         private readonly IAppointmentService _appointment;
-        private readonly IMedicalItemService _medicalItem;
         private readonly IPetService _pet;
         [BindProperty]
         public AppointmentResponseDto AppointmentItem { get; set; }
@@ -35,12 +34,11 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
         public List<MedicalResponseDto> MedicalItems { get; set; }
 
         public CreateMedicalModel(IMedicalService medical, ITransactionService transactionService, IAppointmentService appointment
-            , IMedicalItemService medicalItem, IPetService pet)
+            , IPetService pet)
         {
             _medical = medical;
             _transactionService = transactionService;
             _appointment = appointment;
-            _medicalItem = medicalItem;
             _pet = pet;
         }
 
@@ -57,7 +55,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
             {
                 var check = await _appointment.GetAppointmentByAppointmentId(id);
                 AppointmentItem = check;
-                var medicalItems = await _medicalItem.GetAllMedicalItem();
+                var medicalItems = await _medical.GetAllMedicalItem();
                 MedicalItems = medicalItems;
                 ViewData["PetId"] = new SelectList(AppointmentItem.Pets, "Id", "Name");
                 ViewData["MedicalItemsId"] = new SelectList(medicalItems, "Id", "Name");
