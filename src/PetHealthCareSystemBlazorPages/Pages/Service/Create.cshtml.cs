@@ -28,7 +28,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Service
         }
 
         [BindProperty]
-        public ServiceResponseDto Service { get; set; } = default!;
+        public ServiceRequestDto Service { get; set; } = default!;
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
@@ -38,7 +38,9 @@ namespace PetHealthCareSystemRazorPages.Pages.Service
                 return Page();
             }
 
-            await _service.CreateServiceAsync(Service);
+            var userid = Int32.Parse(HttpContext.Session.GetString("UserId"));
+
+            await _service.CreateServiceAsync(Service, userid);
 
             return RedirectToPage("./Index");
         }

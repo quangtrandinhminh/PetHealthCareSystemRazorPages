@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Booking Management";
+    var i = 1;
 }
 <style>
     .container {
@@ -100,7 +101,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
+                <th>No.</th>
                 <th>Appointment Date</th>
                 <th>Note</th>
                 <th>Status</th>
@@ -119,7 +120,7 @@
             @foreach (var item in Model.Appointments.Items)
             {
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                    <td>@i @{ i++;}</td>
                     <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
                     <td>@Html.DisplayFor(modelItem => item.Note)</td>
                     <td>@Html.DisplayFor(modelItem => item.Status)</td>
@@ -130,7 +131,7 @@
                     <td>@Html.DisplayFor(modelItem => item.TimeTable.StartTime)</td>
                     <td>@Html.DisplayFor(modelItem => item.TimeTable.EndTime)</td>
                     <td>
-                        <a style="color:black" asp-page="/Staff/BookingTransaction/Index" asp-route-id="@item.Id">Edit</a> |
+                        <a style="color:black" asp-page="./Edit" asp-route-id="@item.Id">Update payment</a> |
                         <a style="color:black" asp-page="./Details" asp-route-id="@item.Id">Details</a>
                     </td>
                 </tr>

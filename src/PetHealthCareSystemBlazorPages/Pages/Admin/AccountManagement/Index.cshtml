@@ -136,9 +136,7 @@
                     @Html.DisplayFor(modelItem => user.Email)
                 </td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@user.Id">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@user.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@user.Id">Delete</a>
+                    <a asp-page="./Details" asp-route-id="@user.Id">Details</a>
                 </td>
             </tr>
         }

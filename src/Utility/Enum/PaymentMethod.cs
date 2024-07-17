@@ -3,8 +3,5 @@
 public enum PaymentMethod
 {
     Cash = 1,
-    CreditCard,
-    DebitCard,
-    BankTransfer,
-    VNPay
+    PayOS
 }

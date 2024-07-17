@@ -54,7 +54,11 @@ public partial class MapperlyMapper
         return response;
     }
     // Custom mapping method for IList<Pet> to IList<PetResponseDto> with date formatting
-    public partial List<PetResponseDto?> Map(List<Pet> entities);
+    public List<PetResponseDto?> Map(List<Pet> entities)
+    {
+        return entities.Select(e => Map(e)).ToList();
+    }
+
     public partial Pet Map(PetUpdateRequestDto request);
     public partial void Map(PetRequestDto request, Pet entity);
 
@@ -75,7 +79,7 @@ public partial class MapperlyMapper
     public partial IQueryable<TimeTableResponseDto> Map(IQueryable<TimeTable> entity);
 
     // medicalItem
-    public partial MedicalItem Map(MedicalResponseDto request);
+    public partial MedicalItem Map(MedicalItemRequestDto request);
     public partial MedicalResponseDto Map(MedicalItem entity);
     public partial IList<MedicalResponseDto> Map(IList<MedicalItem> entity);
     public partial void Map(ServiceRequestDto request, MedicalItem entity);
@@ -99,6 +103,7 @@ public partial class MapperlyMapper
         MedicalRecord entity);
     public partial void Map(MedicalRecordResponseDto request, MedicalRecord entity);
     public partial IQueryable<MedicalRecordResponseDto> Map(IQueryable<MedicalRecord> entity);
+    public partial IList<MedicalRecordResponseDto> Map(IList<MedicalRecord> entity);
 
     // appointment
     public partial AppointmentResponseDto Map(Appointment entity);
@@ -109,6 +114,8 @@ public partial class MapperlyMapper
     public partial HospitalizationResponseDto Map(Hospitalization entity);
     public partial IQueryable<HospitalizationResponseDto> Map(IQueryable<Hospitalization> entity);
 
+    public partial IList<HospitalizationResponseDto> Map(IList<Hospitalization> entity);
+
     public partial HospitalizationResponseDtoWithDetails HospitalizationToHospitalizationResponseDtoWithDetails(
                Hospitalization entity);
 
@@ -118,4 +125,10 @@ public partial class MapperlyMapper
     // cage
     public partial CageResponseDto Map(Cage entity);
     public partial IQueryable<CageResponseDto> Map(IQueryable<Cage> entity);
+    public partial IList<CageResponseDto> Map(IList<Cage> entity);
+    // datetimeoffset to dateonly
+    public DateOnly Map(DateTimeOffset dateTimeOffset)
+    {
+        return DateOnly.FromDateTime(dateTimeOffset.DateTime);
+    }
 }

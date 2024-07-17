@@ -14,6 +14,10 @@ public class MedicalRecordResponseDto
     public int AppointmentId { get; set; }
     public DateTimeOffset Date { get; set; }
     public DateTimeOffset? NextAppointment { get; set; }
+    public decimal PetWeight { get; set; }
+    public string? RecordDetails { get; set; }
+    public string? Diagnosis { get; set; }
+    public string? Treatment { get; set; }
 
     // Hospitalization
     public DateTimeOffset? AdmissionDate { get; set; }

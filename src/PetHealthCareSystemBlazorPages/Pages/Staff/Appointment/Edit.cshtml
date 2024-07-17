@@ -1,0 +1,24 @@
+﻿@page
+@model PetHealthCareSystemRazorPages.Pages.Staff.Appointment.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div class="form-group">
+                <h4>ARE YOU SURE YOU WANT TO CONFIRM PAYMENT FOR THIS TRANSACTION?</h4>
+            </div>
+            <div class="form-group" style="display: flex; flex-direction:column; gap: 20px">
+                <input type="submit" value="YES" style="border-radius:20px; width:200px; height: 40px ">
+                <a asp-page="./Index" style="color: black; text-decoration:underline; margin-left:10px">No, Go Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
