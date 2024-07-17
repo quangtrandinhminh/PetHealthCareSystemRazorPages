@@ -19,6 +19,7 @@
       <PackageReference Include="Serilog.Sinks.Seq" Version="7.0.1" />
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.0" />
       <PackageReference Include="TimeZoneConverter" Version="6.1.0" />
+      <PackageReference Include="VNPayPackage" Version="2.1.0" />
     </ItemGroup>
 
 </Project>
