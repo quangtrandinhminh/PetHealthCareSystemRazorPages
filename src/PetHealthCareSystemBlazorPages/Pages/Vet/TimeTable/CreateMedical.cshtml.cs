@@ -18,6 +18,7 @@ using BusinessObject.DTO.Pet;
 using BusinessObject.DTO.MedicalItem;
 using BusinessObject.DTO.Transaction;
 using System.Collections;
+using PetHealthCareSystemRazorPages.Pages.Vet.MedicalRecord;
 
 namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
 {

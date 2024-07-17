@@ -155,6 +155,7 @@
     ViewData["Title"] = "CreateMedical";
 }
 
+
 <h1>Create Medical Record</h1>
 
 <hr />
@@ -170,7 +171,6 @@
             <div class="form-group">
                 <label asp-for="MedicalRecord.PetId" class="control-label">Pet:</label>
                 <select asp-for="MedicalRecord.PetId" class="form-control" asp-items="ViewBag.PetId"></select>
-                
             </div>
 
             <div class="form-group">
@@ -227,7 +227,7 @@
 </div>
 
 <div>
-    <a asp-page="Index">Back to List</a>
+    <a asp-page="./Appointment" style="color: blue">Back to List</a>
 </div>
 
 @section Scripts {
