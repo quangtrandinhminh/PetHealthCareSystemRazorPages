@@ -3,12 +3,24 @@
 
 @{
     ViewData["Title"] = "Account Management";
+    var i = 1;
 }
 
 <style>
     .container {
         display: flex;
         justify-content: center;
+    }
+
+    a {
+        color: #007bff;
+        text-decoration: underline;
+        transition: color 0.3s ease;
+        font-weight: bold;
+    }
+
+    a:hover {
+       color: #0056b3;
     }
 
     body {
@@ -97,29 +109,35 @@
 </p>
 <table id="table" class="table" style="width: 100%;">
     <thead>
-        <tr>
-            <th>
-                FullName
-            </th>
-            <th>
-                Address
-            </th>
-            <th>
-               BirthDate
-            </th>
-            <th>
-                UserName
-            </th>
-            <th>
-               Email
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            No.
+        </th>
+        <th>
+            FullName
+        </th>
+        <th>
+            Address
+        </th>
+        <th>
+            BirthDate
+        </th>
+        <th>
+            UserName
+        </th>
+        <th>
+            Email
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
         @foreach (var user in Model.Users.Items)
         {
             <tr>
+                <td>
+                    @i @{ i++;}
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => user.FullName)
                 </td>

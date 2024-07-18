@@ -52,10 +52,11 @@ namespace Utility.Config
     public class VnPaySetting
     {
         public static VnPaySetting Instance { get; set; }
-        public string VnPayUrl { get; set; }
-        public string VnPayReturnUrl { get; set; }
-        public string VnPayIPNUrl { get; set; }
-        public string VnPayTmnCode { get; set; }
-        public string VnPayHashSecret { get; set; }
+        public string TmnCode { get; set; }
+        public string HashSecret { get; set; }
+        public string BaseUrl { get; set; }
+        public string Version { get; set; }
+        public string CurrCode { get; set; }
+        public string Locale { get; set; }
     }
 }
