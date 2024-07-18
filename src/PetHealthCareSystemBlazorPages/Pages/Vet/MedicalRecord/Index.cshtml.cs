@@ -25,7 +25,8 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.MedicalRecord
         }
 
         public PaginatedList<MedicalRecordResponseDto> MedicalRecord { get; set; } = default!;
-
+        [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 5;
         public async Task OnGetAsync(int? currentPage)
         {
             var accountId = HttpContext.Session.GetString("UserId"); // Assuming UserId is stored in Session
@@ -38,7 +39,6 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.MedicalRecord
             try
             {
                 int pagenumber;
-                int pagesize = 3;
                 int id = int.Parse(accountId);
                 var date = DateTime.Now.ToString("yyyy-MM-dd");
                 if (currentPage == null)
@@ -49,7 +49,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.MedicalRecord
                 {
                     pagenumber = (int)currentPage;
                 }
-                var medical = await _medical.GetAllMedicalRecord(pagenumber,pagesize);
+                var medical = await _medical.GetAllMedicalRecord(pagenumber, PageSize);
                 MedicalRecord = medical;
             }
             catch (Exception ex)
