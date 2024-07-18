@@ -7,30 +7,26 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObject.Entities;
 using DataAccessLayer;
+using BusinessObject.DTO.MedicalRecord;
+using Repository.Extensions;
 using Service.IServices;
 using BusinessObject.DTO.Appointment;
-using System.Configuration;
-using Repository.Extensions;
-using BusinessObject.DTO.User;
-using Azure;
-using Microsoft.Identity.Client;
+using Service.Services;
 
-namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
+namespace PetHealthCareSystemRazorPages.Pages.Vet.MedicalRecord
 {
-    public class AppointmentModel : PageModel
+    public class IndexModel : PageModel
     {
-        private readonly IAppointmentService _appointmentService;
+        private readonly IMedicalService _medical;
 
-        public AppointmentModel(IAppointmentService appointmentService)
+        public IndexModel(IMedicalService medical)
         {
-            _appointmentService = appointmentService;
+            _medical = medical;
         }
 
-        [BindProperty]
-        public PaginatedList<AppointmentResponseDto> Appointment { get; set; } = default!;
-        [BindProperty(SupportsGet = true)]
-        public int PageSize { get; set; } = 5;
-        public async Task<IActionResult> OnGetAsync(int? currentPage)
+        public PaginatedList<MedicalRecordResponseDto> MedicalRecord { get; set; } = default!;
+
+        public async Task OnGetAsync(int? currentPage)
         {
             var accountId = HttpContext.Session.GetString("UserId"); // Assuming UserId is stored in Session
             var accountRole = HttpContext.Session.GetString("Role");
@@ -41,8 +37,8 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
             }
             try
             {
-
                 int pagenumber;
+                int pagesize = 3;
                 int id = int.Parse(accountId);
                 var date = DateTime.Now.ToString("yyyy-MM-dd");
                 if (currentPage == null)
@@ -53,24 +49,16 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
                 {
                     pagenumber = (int)currentPage;
                 }
-                var appoint = await _appointmentService.GetVetAppointmentsAsync(id, date, pagenumber, PageSize);
-                Appointment = appoint;
-                return Page();
-                
+                var medical = await _medical.GetAllMedicalRecord(pagenumber,pagesize);
+                MedicalRecord = medical;
             }
             catch (Exception ex)
             {
-                Appointment = new PaginatedList<AppointmentResponseDto>();
+                MedicalRecord = new PaginatedList<MedicalRecordResponseDto>();
                 ModelState.AddModelError(string.Empty, ex.Message);
-                return Page();
+                Page();
             }
-            
         }
-        //public async Task OnPostNextPage() // Use OnPost to handle form submission
-        //{
-        //    string check = "next";
-        //    await OnGetAsync(check);
-        //}
         private bool IsVetRole(string accountRole)
         {
             // Example check if "admin" is contained in the roles list

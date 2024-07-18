@@ -1,0 +1,166 @@
+﻿@page
+@model PetHealthCareSystemRazorPages.Pages.Vet.MedicalRecord.PetRecordModel
+
+@{
+    ViewData["Title"] = "PetRecord";
+}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7;
+        color: #333;
+    }
+
+    .page-title {
+        margin-top: 150px;
+        text-align: center;
+        font-size: 3em;
+        color: #444;
+        font-weight: bold;
+    }
+
+    .create-btn-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+
+    .create-btn {
+        border-radius: 5px;
+        color: white;
+        background-color: #0069d9;
+        padding: 10px 20px;
+        text-decoration: none;
+        font-size: 1.2em;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .create-btn:hover {
+            background-color: red;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+    .table {
+        width: 80%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: white;
+    }
+
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .table th {
+            background-color: #0069d9;
+            color: white;
+            font-size: 1.1em;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .table td a {
+            margin: 0 5px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+            .table td a:hover {
+                text-decoration: underline;
+                color: #0056b3;
+            }
+
+</style>
+
+
+<h1>Pet Record for @Model.MedicalRecord.Items.FirstOrDefault().PetName </h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MedicalRecord.Items.FirstOrDefault().Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MedicalRecord.Items.FirstOrDefault().VetName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MedicalRecord.Items.FirstOrDefault().AppointmentId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MedicalRecord.Items.FirstOrDefault().Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MedicalRecord.Items.FirstOrDefault().CreatedByName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MedicalRecord.Items.FirstOrDefault().LastUpdatedByName)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.MedicalRecord.Items)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PetName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VetName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointmentId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedByName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastUpdatedByName)
+                </td>
+                <td>
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
+        }
+        @if (Model.MedicalRecord.PageNumber > 1)
+        {
+            <div class="col-2">
+                <form method="get">
+
+                    <input type="hidden" name="currentPage" value="@(Model.MedicalRecord.PageNumber-1)" />
+                    <input type="submit" value="Previous" />
+                </form>
+            </div>
+
+        }
+        @if (Model.MedicalRecord.PageNumber < Model.MedicalRecord.TotalPages)
+        {
+            <div class="col-2">
+                <form method="get">
+
+                    <input type="hidden" name="currentPage" value="@(Model.MedicalRecord.PageNumber+1)" />
+                    <input type="submit" value="Next" />
+                </form>
+            </div>
+        }
+    </tbody>
+</table>
