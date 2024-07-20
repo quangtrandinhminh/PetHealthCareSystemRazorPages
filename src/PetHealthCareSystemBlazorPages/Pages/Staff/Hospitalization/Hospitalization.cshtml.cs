@@ -33,7 +33,9 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.Hospitalization
         [BindProperty(SupportsGet = true)]
         public int PageSize { get; set; } = 5;
         [BindProperty(SupportsGet = true)]
-        public string? SearchDate { get; set; }
+        public string? SearchDateFrom { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string? SearchDateTo { get; set; }
         public async Task<IActionResult> OnGetAsync(int? currentPage)
         {
             var accountId = HttpContext.Session.GetString("UserId"); // Assuming UserId is stored in Session
@@ -45,8 +47,8 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.Hospitalization
             }
             try
             {
-                var searchDateValue = string.IsNullOrEmpty(SearchDate) ? DateOnly.MinValue : DateOnly.Parse(SearchDate);
-                
+                var searchDateValueFrom = string.IsNullOrEmpty(SearchDateFrom) ? DateOnly.MinValue : DateOnly.Parse(SearchDateFrom);
+                var searchDateValueTo = string.IsNullOrEmpty(SearchDateTo) ? DateOnly.MinValue : DateOnly.Parse(SearchDateTo);
                 int pagenumber;
                 int id = int.Parse(accountId);
                 var date = DateTime.Now.ToString("yyyy-MM-dd");
@@ -60,9 +62,21 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.Hospitalization
                 }
                 var filter = new HospitalizationFilterDto
                 {
-                    Date = searchDateValue.ToString()
+                   
                 };
-                    
+                if (string.IsNullOrEmpty(SearchDateFrom) && string.IsNullOrEmpty(SearchDateTo))
+                {
+                    filter.Date = date;
+                }
+                if (!string.IsNullOrEmpty(SearchDateFrom))
+                {
+                    filter.FromDate = searchDateValueFrom.ToString();
+                }
+                if (!string.IsNullOrEmpty(SearchDateTo))
+                {
+                    filter.ToDate = searchDateValueTo.ToString();
+                }
+
                 var hos = await _hospital.GetAllHospitalizationWithFilters(filter, pagenumber, PageSize);
                 Hospitalize = hos;
                 return Page();
