@@ -3,6 +3,7 @@ using BusinessObject.DTO.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service.IServices;
+using Service.Services;
 
 namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
 {
@@ -18,11 +19,13 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
         [BindProperty]
         public RegisterDto RegisterDto { get; set; } = default!;
 
+        public IList<RoleResponseDto> Roles { get; set; } = new List<RoleResponseDto>();
         [BindProperty]
         public int Role { get; set; }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
+            Roles = await _authService.GetAllRoles();
             return Page();
         }
 
@@ -30,6 +33,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
         {
             if (!ModelState.IsValid)
             {
+                Roles = await _authService.GetAllRoles();
                 return Page();
             }
 
