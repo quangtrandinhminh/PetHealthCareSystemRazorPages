@@ -32,6 +32,8 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
         public HospitalizationFilterDto HospitalizationFilter { get; set;}
         [BindProperty(SupportsGet = true)]
         public int PageSize { get; set; } = 5;
+        [BindProperty(SupportsGet = true)]
+        public string? SearchDate { get; set; }
         public async Task<IActionResult> OnGetAsync(int? currentPage)
         {
             var accountId = HttpContext.Session.GetString("UserId"); // Assuming UserId is stored in Session
@@ -43,11 +45,11 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
             }
             try
             {
-
+                var searchDateValue = string.IsNullOrEmpty(SearchDate) ? DateOnly.MinValue : DateOnly.Parse(SearchDate);
+                
                 int pagenumber;
                 int id = int.Parse(accountId);
                 var date = DateTime.Now.ToString("yyyy-MM-dd");
-
                 if (currentPage == null)
                 {
                     pagenumber = 1;
@@ -58,9 +60,15 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
                 }
                 var filter = new HospitalizationFilterDto
                 {
-                    VetId = id,
-                    Date = date,
+                    VetId = id
                 };
+                if (string.IsNullOrEmpty(SearchDate)){
+                    filter.Date = date;
+                }
+                else
+                {
+                    filter.Date = searchDateValue.ToString();
+                }
                 var hos = await _hospital.GetAllHospitalizationWithFilters(filter, pagenumber, PageSize);
                 Hospitalize = hos;
                 return Page();

@@ -210,6 +210,11 @@
             </select>
             <button type="submit">Apply</button>
         </form>
+        <form method="get" class="search-by-date">
+            <label for="searchDate">Search by Date:</label>
+            <input type="date" id="searchDate" name="searchDate" asp-for="SearchDate" value="@Model.SearchDate" />
+            <button type="submit">Apply</button>
+        </form>
     </div>
     <div class="appointment-list-table-container">
         <table class="appointment-list-table">
@@ -238,6 +243,9 @@
                     </th>
                     <th>
                             @Html.DisplayNameFor(model => model.Hospitalize.Items.FirstOrDefault().Note)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Hospitalize.Items.FirstOrDefault().Date)
                     </th>
                     
                 </tr>
@@ -273,6 +281,9 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.Note)
                             </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Date)
+                            </td>
                         </tr>
                     }
                    
@@ -281,35 +292,34 @@
                 else
                 {
                     <tr>
-                        <td colspan="" class="text-center">No Appointments Found</td>
+                        <td colspan="" class="text-center">No Hospitalization Found</td>
                     </tr>
                 }
             </tbody>
         </table>
-        @if (!Model.Hospitalize.Items.Any())
-        {
-            <p>No appointments found.</p>
-        }
         <div class="appointment-list-pagination">
             Page @(Model.Hospitalize?.PageNumber ?? 0) of @(Model.Hospitalize?.TotalPages ?? 0)
         </div>
         <div class="appointment-list-pagination">
-            @if (Model.Hospitalize.PageNumber > 1)
-            {
-                <a asp-page="/Vet/TimeTable/Hospitalization"
-                   asp-route-currentPage="@(Model.Hospitalize.PageNumber - 1)"
-                   asp-route-pageSize="@(Model.PageSize)">Previous</a>
+            
+
+                @if (Model.Hospitalize.PageNumber > 1)
+                {
+                    <a asp-page="/Vet/TimeTable/Hospitalization"
+                       asp-route-currentPage="@(Model.Hospitalize.PageNumber - 1)"
+                       asp-route-pageSize="@(Model.PageSize)">Previous</a>
 
 
-            }
-            @if (Model.Hospitalize.PageNumber < Model.Hospitalize.TotalPages)
-            {
+                }
+                @if (Model.Hospitalize.PageNumber < Model.Hospitalize.TotalPages)
+                {
 
-                <a asp-page="/Vet/TimeTable/Hospitalization"
-                   asp-route-currentPage="@(Model.Hospitalize.PageNumber + 1)"
-                           asp-route-pageSize="@(Model.PageSize)">Next</a>
+                    <a asp-page="/Vet/TimeTable/Hospitalization"
+                       asp-route-currentPage="@(Model.Hospitalize.PageNumber + 1)"
+                               asp-route-pageSize="@(Model.PageSize)">Next</a>
 
-            }
+                }
+            
         </div>
 
     </div>
