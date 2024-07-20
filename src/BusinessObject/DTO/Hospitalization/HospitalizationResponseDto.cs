@@ -8,6 +8,7 @@ namespace BusinessObject.DTO.Hospitalization;
 
 public class HospitalizationResponseDto
 {
+    public int Id { get; set; }
     public int MedicalRecordId { get; set; }
     public int CageId { get; set; }
     public TimeTableResponseDto TimeTable { get; set; }
