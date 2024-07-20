@@ -28,12 +28,21 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement
 
             try
             {
-                User = await _userService.GetVetByIdAsync(id.Value);
+                User = await _userService.GetByIdAsync(id.Value);
+                if (User == null)
+                {
+                    return NotFound();
+                }
             }
-
             catch (AppException ex) when (ex.Code == ResponseCodeConstants.NOT_FOUND)
             {
                 return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (e.g., using a logging framework)
+                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
+                return Page();
             }
 
             return Page();
