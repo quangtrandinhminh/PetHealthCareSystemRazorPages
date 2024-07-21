@@ -1,8 +1,8 @@
 ﻿@page
-@model PetHealthCareSystemRazorPages.Pages.Admin.AccountManagement.CreateModel
+@model PetHealthCareSystemRazorPages.Pages.Service.EditModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
 }
 <style>
     .appointment-list-container {
@@ -194,69 +194,46 @@
                 transform: translateY(-2px);
             }
 </style>
+
 <div class="appointment-list-container">
     <div class="appointment-list-header">
-        <h1>Create Account</h1>
+        <h1>Edit Service</h1>
     </div>
 
 <div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Service.Id" class="form-control" />
             <div class="form-group">
-                <label asp-for="RegisterDto.FullName" class="control-label"></label>
-                <input asp-for="RegisterDto.FullName" class="form-control" />
-                <span asp-validation-for="RegisterDto.FullName" class="text-danger"></span>
+                <label asp-for="Service.Name" class="control-label"></label>
+                <input asp-for="Service.Name" class="form-control" />
+                <span asp-validation-for="Service.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="RegisterDto.UserName" class="control-label"></label>
-                <input asp-for="RegisterDto.UserName" class="form-control" />
-                <span asp-validation-for="RegisterDto.UserName" class="text-danger"></span>
+                <label asp-for="Service.Description" class="control-label"></label>
+                <input asp-for="Service.Description" class="form-control" />
+                <span asp-validation-for="Service.Description" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="RegisterDto.Email" class="control-label"></label>
-                <input asp-for="RegisterDto.Email" class="form-control" />
-                <span asp-validation-for="RegisterDto.Email" class="text-danger"></span>
+                <label asp-for="Service.Price" class="control-label"></label>
+                <input asp-for="Service.Price" class="form-control" />
+                <span asp-validation-for="Service.Price" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="RegisterDto.PhoneNumber" class="control-label"></label>
-                <input asp-for="RegisterDto.PhoneNumber" class="form-control" />
-                <span asp-validation-for="RegisterDto.PhoneNumber" class="text-danger"></span>
+
+            <div class="form-group" class="appointment-list-actions">
+                <button type="submit" value="Create" class="btn btn-primary" style="background-color:#0069d9">Update</button>
             </div>
-            <div class="form-group">
-                <label asp-for="RegisterDto.Password" class="control-label"></label>
-                <input asp-for="RegisterDto.Password" class="form-control" type="password" />
-                <span asp-validation-for="RegisterDto.Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RegisterDto.ConfirmPassword" class="control-label"></label>
-                <input asp-for="RegisterDto.ConfirmPassword" class="form-control" type="password" />
-                <span asp-validation-for="RegisterDto.ConfirmPassword" class="text-danger"></span>
-            </div>
-                <div class="form-group">
-                    <label asp-for="Role" class="control-label"></label>
-                    <select asp-for="Role" class="form-control">
-                        @foreach (var role in Model.Roles)
-                        {
-                            <option value="@role.Id">@role.Name</option>
-                        }
-                    </select>
-                    <span asp-validation-for="Role" class="text-danger"></span>
-                </div>
-                </br>
-                <div class="form-group" class="appointment-list-actions">
-                    <button type="submit" value="Create" class="btn btn-primary" style="background-color:#0069d9">Create</button>
-                </div>
         </form>
     </div>
 </div>
 
     <div class="appointment-list-actions">
-    <a asp-page="Index">Back to List</a>
+    <a asp-page="./Index">Back to List</a>
 </div>
 </div>
+
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

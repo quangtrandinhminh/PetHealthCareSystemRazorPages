@@ -202,7 +202,7 @@
         <h1>Service</h1>
         @if (role == null)
         {
-
+            <a asp-page="/Login">Booking</a>
         }
         else if (role.Contains(UserRole.Admin.ToString()))
         {
