@@ -1,4 +1,5 @@
 ﻿using BusinessObject.DTO.Appointment;
+using BusinessObject.DTO.Cage;
 using BusinessObject.DTO.Hospitalization;
 using BusinessObject.DTO.MedicalRecord;
 using BusinessObject.DTO.Pet;
@@ -6,9 +7,11 @@ using BusinessObject.DTO.Service;
 using BusinessObject.DTO.TimeTable;
 using BusinessObject.DTO.User;
 using BusinessObject.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 using Service.IServices;
 using Utility.Enum;
 using Utility.Exceptions;
@@ -35,6 +38,8 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.MedicalRecord
 
         [BindProperty]
         public HospitalizationRequestDto Hospitalization { get; set; }
+        public List<CageResponseDto> DisplayedCageList { get; set; }
+        public List<TimeTableResponseDto> DisplayedTimeTableList { get; set; }
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             var accountId = HttpContext.Session.GetString("UserId"); // Assuming UserId is stored in Session
@@ -51,9 +56,10 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.MedicalRecord
             try
             {
                 var check = await _medicalService.GetMedicalRecordById((int)id);
-                var cage = await _hospital.GetAvailableCage();
+                DisplayedCageList = await _hospital.GetAvailableCage();
                 ViewData["TimetableId"] = new SelectList(await _hospital.GetAllTimeFramesForHospitalizationAsync(), "Id", "Id");
-                ViewData["CageId"] = new SelectList(cage, "Id", "Id");
+                DisplayedTimeTableList = await _hospital.GetAllTimeFramesForHospitalizationAsync();
+                //ViewData["CageId"] = new SelectList(cage, "Id", "Id");
                 Hospitalization = new HospitalizationRequestDto()
                 {
                     Date = check.Date.ToString("yyyy-MM-dd"),
@@ -77,7 +83,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.MedicalRecord
             }
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? cageId)
         {
             ModelState.Remove("Hospitalization.Date");
             if (!ModelState.IsValid)
@@ -88,6 +94,42 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.MedicalRecord
             {
                 var accountId = HttpContext.Session.GetString("UserId");
                 int id = int.Parse(accountId);
+
+                if (Hospitalization.Date.IsNullOrEmpty())
+                {
+                    ModelState.AddModelError(string.Empty, "Ban phai chon ngay");
+                    return await OnGetAsync(Hospitalization.MedicalRecordId);
+                }
+                else
+                {
+                    DateTime dateTime = DateTime.ParseExact(Hospitalization.Date, "yyyy-MM-dd", null);
+                    if (dateTime < DateTime.Today) 
+                    {
+                        ModelState.AddModelError(string.Empty, "Ban khong the nhap vien trong qua khu");
+                        return await OnGetAsync(Hospitalization.MedicalRecordId);
+                    }
+                }
+                var check = new DateTimeQueryDto
+                {
+                    Date = Hospitalization.Date,
+                    TimetableId = Hospitalization.TimeTableId,
+                };
+                if (cageId == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Ban phai chon chuong");
+                    return await OnGetAsync(Hospitalization.MedicalRecordId);
+                }
+                else
+                {
+                    Hospitalization.CageId = cageId.Value;
+                }
+                var test = await _hospital.GetFreeWithTimeFrameAndDateAsync(check);
+                if (test.FirstOrDefault(x =>x.Id == Hospitalization.VetId) == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Bac si da co lich trong thoi gian nay");
+                    return await OnGetAsync(Hospitalization.MedicalRecordId);
+                }
+                
                 await _hospital.CreateHospitalization(Hospitalization, id);
                 return RedirectToPage("/Staff/Hospitalization/Hospitalization");
             }

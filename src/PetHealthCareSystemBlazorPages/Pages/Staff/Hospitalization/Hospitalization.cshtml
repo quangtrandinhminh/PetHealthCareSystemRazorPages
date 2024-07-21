@@ -211,8 +211,10 @@
             <button type="submit">Apply</button>
         </form>
         <form method="get" class="search-by-date">
-            <label for="searchDate">Search by Date:</label>
-            <input type="date" id="searchDate" name="searchDate" asp-for="SearchDate" value="@Model.SearchDate" />
+            <label for="searchDateFrom">Search by Date (From):</label>
+            <input type="date" id="searchDateFrom" name="searchDateFrom" asp-for="SearchDateFrom" value="@Model.SearchDateFrom" />
+            <label for="searchDateTo">Search by Date (To):</label>
+            <input type="date" id="searchDateTo" name="searchDateTo" asp-for="SearchDateTo" value="@Model.SearchDateTo" />
             <button type="submit">Apply</button>
         </form>
     </div>
@@ -286,6 +288,7 @@
                                 @Html.DisplayFor(modelItem => item.Date)
                             </td>
                             <td class="appointment-list-actions">
+                                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                                 <a asp-page="./Details" asp-route-id="@item.Id">Delete</a>
                             </td>
                         </tr>

@@ -247,6 +247,7 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Hospitalize.Items.FirstOrDefault().Date)
                     </th>
+                    <th></th>
                     
                 </tr>
             </thead>
@@ -283,6 +284,9 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Date)
+                            </td>
+                            <td class="appointment-list-actions">
+                                <a asp-page="./Details" asp-route-id="@item.Id">Update</a>
                             </td>
                         </tr>
                     }

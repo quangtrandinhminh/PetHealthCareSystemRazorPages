@@ -1,8 +1,8 @@
 ﻿@page
-@model PetHealthCareSystemRazorPages.Pages.Staff.MedicalRecord.IndexModel
+@model PetHealthCareSystemRazorPages.Pages.Vet.TimeTable.DetailsModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Details";
 }
 <style>
     .appointment-list-container {
@@ -194,127 +194,91 @@
                 transform: translateY(-2px);
             }
 </style>
-
 <div class="appointment-list-container">
     <div class="appointment-list-header">
-        <h1>Medical Record</h1>
-
+        <h1>Detail</h1>
     </div>
+    <div>
+    <dl class="row">
+        <!-- Display other transaction details as needed -->
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Hospi.MedicalRecordId)
+        </dt>
+        <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Hospi.MedicalRecordId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Hospi.TimeTable.StartTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Hospi.TimeTable.StartTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Hospi.TimeTable.EndTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Hospi.TimeTable.EndTime)
+        </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Hospi.CageId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Hospi.CageId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Hospi.Date)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Hospi.Date)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Hospi.Treatment)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Hospi.Treatment)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Hospi.Reason)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Hospi.Reason)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Hospi.Diagnosis)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Hospi.Diagnosis)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Hospi.Note)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Hospi.Note)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Hospi.Vet.FullName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Hospi.Vet.FullName)
+            </dd>
+        
+       
+        <!-- Display other transaction properties -->
+    </dl>
+</div >
+    <div class="appointment-list-actions">
+    <form method="post">
+        <input type="hidden" asp-for="Hospi.Id" />
+            <input type="hidden" asp-for="Check" value="discharged" />
+            <button type="submit" class="btn btn-danger" style="background-color:#0069d9">Discharged </button>
+    </form>
 
-    <div class="appointment-list-controls">
-        <form method="get" class="page-size-selector">
-            <label for="pageSize">Items per page:</label>
-            <select id="pageSize" name="pageSize" asp-for="PageSize">
-                <option value="5" selected="@(Model.PageSize == 5)">5</option>
-                <option value="10" selected="@(Model.PageSize == 10)">10</option>
-                <option value="20" selected="@(Model.PageSize == 20)">20</option>
-                <option value="50" selected="@(Model.PageSize == 50)">50</option>
-            </select>
-            <button type="submit">Apply</button>
-        </form>
-    </div>
+    @* <form method="post">
+        <input type="hidden" asp-for="Hospi.Id" />
+        <input type="hidden" asp-for="Check" value="delete" />
+        <button type="submit" class="btn btn-danger" style="background-color:#0069d9">Delete </button>
+    </form> *@
 
-    <div class="appointment-list-table-container">
-        <table class="appointment-list-table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.MedicalRecord.Items.FirstOrDefault().PetName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MedicalRecord.Items.FirstOrDefault().VetName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MedicalRecord.Items.FirstOrDefault().AppointmentId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MedicalRecord.Items.FirstOrDefault().Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MedicalRecord.Items.FirstOrDefault().CreatedByName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MedicalRecord.Items.FirstOrDefault().LastUpdatedByName)
-            </th>
-            
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.MedicalRecord.Items) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PetName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VetName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppointmentId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedByName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastUpdatedByName)
-            </td>
-            <td class="appointment-list-actions">
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> ||
-                @if (item.AdmissionDate != null)
-                {
-                    <a asp-page="./Create" asp-route-id="@item.Id">Create Hospitalization</a>
-                }
-                
-            </td>
-        </tr>
-}
-        @if (Model.MedicalRecord.PageNumber > 1)
-        {
-            <div class="col-2">
-                <form method="get">
-
-                    <input type="hidden" name="currentPage" value="@(Model.MedicalRecord.PageNumber-1)" />
-                    <input type="submit" value="Previous" />
-                </form>
-            </div>
-
-        }
-        @if (Model.MedicalRecord.PageNumber < Model.MedicalRecord.TotalPages)
-        {
-            <div class="col-2">
-                <form method="get">
-
-                    <input type="hidden" name="currentPage" value="@(Model.MedicalRecord.PageNumber+1)" />
-                    <input type="submit" value="Next" />
-                </form>
-            </div>
-        }
-    </tbody>
-</table>
-</div>
-    @if (!Model.MedicalRecord.Items.Any())
-    {
-        <p>No appointments found.</p>
-    }
-
-    <div class="appointment-list-pagination">
-        Page @(Model.MedicalRecord?.PageNumber ?? 0) of @(Model.MedicalRecord?.TotalPages ?? 0)
-    </div>
-    <div class="appointment-list-pagination">
-        @if (Model.MedicalRecord?.HasPreviousPage == true)
-        {
-            <a asp-page="/Customer/AppointmentManagement/AppointmentList"
-               asp-route-pageNumber="@(Model.MedicalRecord.PageNumber - 1)"
-               asp-route-pageSize="@(Model.PageSize)">Previous</a>
-        }
-        @if (Model.MedicalRecord?.HasNextPage == true)
-        {
-            <a asp-page="/Customer/AppointmentManagement/AppointmentList"
-               asp-route-pageNumber="@(Model.MedicalRecord.PageNumber + 1)"
-               asp-route-pageSize="@(Model.PageSize)">Next</a>
-        }
+    <a asp-page="./Hospitalization">Back to List</a>
     </div>
 </div>
