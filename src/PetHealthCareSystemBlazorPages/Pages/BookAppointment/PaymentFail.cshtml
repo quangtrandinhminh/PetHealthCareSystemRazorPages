@@ -1,0 +1,57 @@
+﻿@page
+@model PetHealthCareSystemRazorPages.Pages.BookAppointment.PaymentFailModel
+@{
+    ViewData["Title"] = "Payment Failed";
+}
+
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f8f9fa;
+        text-align: center;
+    }
+
+    .content {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        color: #dc3545;
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-size: 1.1em;
+        color: #6c757d;
+        margin-bottom: 30px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+    }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+</style>
+
+<div class="container">
+    <div class="content">
+        <h1>Payment Failed</h1>
+        <p>We are sorry, but your payment could not be processed at this time. Please try again later or contact our support team for assistance.</p>
+        <button onclick="location.href='/HomePage'">Return to Homepage</button>
+    </div>
+</div>
+

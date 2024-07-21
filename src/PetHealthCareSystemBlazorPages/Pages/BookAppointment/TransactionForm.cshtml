@@ -86,7 +86,7 @@
     <div class="transaction-form-wrapper">
         <h2>Transaction Form</h2>
         <form method="post">
-            <input type="hidden" name="appointmentResponseDtoJson" value="@JsonSerializer.Serialize(Model.AppointmentResponseDto)" />
+            <input type="hidden" name="appointmentResponseDtoJson" value="@JsonSerializer.Serialize(Model.AppointmentBookRequestDto)" />
             <input type="hidden" name="transactionServicesJson" value="@JsonSerializer.Serialize(Model.TransactionServices)" />
 
             <div class="transaction-form-group">
@@ -101,12 +101,12 @@
 
             <div class="transaction-form-group">
                 <label for="appointmentDate">Appointment Date</label>
-                <input type="text" id="appointmentDate" value="@Model.AppointmentResponseDto.AppointmentDate" readonly class="transaction-form-input" />
+                <input type="text" id="appointmentDate" value="@Model.AppointmentBookRequestDto.AppointmentDate" readonly class="transaction-form-input" />
             </div>
 
             <div class="transaction-form-group">
                 <label for="timeTable">Time Table</label>
-                <input type="text" id="timeTable" value="@Model.AppointmentResponseDto.TimeTable.StartTime - @Model.AppointmentResponseDto.TimeTable.EndTime" readonly class="transaction-form-input" />
+                <input type="text" id="timeTable" value="@Model.AppointmentBookRequestDto.TimeTableId - @Model.AppointmentBookRequestDto.TimeTableId" readonly class="transaction-form-input" />
             </div>
 
             <div class="transaction-form-group">
@@ -127,10 +127,10 @@
             <div class="transaction-form-group">
                 <label for="services">Services</label>
                 <ul id="services" class="transaction-form-list">
-                    @foreach (var service in Model.AppointmentResponseDto.Services)
+                    @foreach (var service in Model.AppointmentBookRequestDto.ServiceIdList)
                     {
                         <li class="transaction-form-list-item">
-                            @service.Name - @service.Price VND
+                            @service - @service VND
                         </li>
                     }
                 </ul>
