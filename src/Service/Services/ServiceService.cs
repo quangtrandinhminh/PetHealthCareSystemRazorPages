@@ -84,7 +84,8 @@ namespace Service.Services
 
         public async Task<PaginatedList<ServiceResponseDto>> GetAllServiceAsync(int pageNumber, int pageSize)
         {
-            var list = _serviceRepo.GetAllWithCondition(s => s.DeletedTime == null);
+            var list = _serviceRepo.GetAllWithCondition(s => s.DeletedTime == null)
+                .OrderByDescending(s => s.CreatedTime);
             if (list == null)
             {
                 throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsService.SERVICE_NOT_FOUND

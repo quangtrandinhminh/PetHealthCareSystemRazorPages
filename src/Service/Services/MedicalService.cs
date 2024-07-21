@@ -52,7 +52,8 @@ public class MedicalService(IServiceProvider serviceProvider) : IMedicalService
     public async Task<PaginatedList<MedicalResponseDto>> GetAllMedicalItem(int pageNumber, int pageSize)
     {
         _logger.Information("Get all medical item");
-        var medicalItems = _medicalItemRepository.GetAllWithCondition(m => m.DeletedTime == null).OrderByDescending(m => m.CreatedTime);
+        var medicalItems = _medicalItemRepository.GetAllWithCondition(m => m.DeletedTime == null)
+            .OrderByDescending(m => m.CreatedTime);
         if (medicalItems == null)
         {
             throw new AppException(ResponseCodeConstants.NOT_FOUND,
