@@ -1,8 +1,11 @@
-﻿using BusinessObject.DTO.VNPay;
+﻿using System.Text;
+using BusinessObject.DTO.VNPay;
 using Microsoft.AspNetCore.Http;
 using Service.IServices;
 using Utility.Config;
+using Utility.Enum;
 using Utility.Helpers.VnPay;
+using VNPayPackage.Enums;
 
 namespace Service.Services;
 
@@ -13,22 +16,25 @@ public class VnPayService : IVnPayService
         var tick = DateTime.Now.Ticks.ToString();
         var vnpaySetting = VnPaySetting.Instance;
         var vnpay = new VnPayLibrary();
- 
-        vnpay.AddRequestData("vnp_Version", vnpaySetting.Version);
-        vnpay.AddRequestData("vnp_Command",dto.VnPayCommand);
-        vnpay.AddRequestData("vnp_TmnCode", vnpaySetting.TmnCode);
-        vnpay.AddRequestData("vnp_Amount", (dto.Amount * 100).ToString()); //Số tiền thanh toán. Số tiền không mang các ký tự phân tách thập phân, phần nghìn, ký tự tiền tệ. Để gửi số tiền thanh toán là 100,000 VND (một trăm nghìn VNĐ) thì merchant cần nhân thêm 100 lần (khử phần thập phân), sau đó gửi sang VNPAY là: 10000000
 
-        vnpay.AddRequestData("vnp_CreateDate", dto.CreatedDate.ToString("yyyyMMddHHmmss"));
+        vnpay.AddRequestData("vnp_Version", vnpaySetting.Version);
+        vnpay.AddRequestData("vnp_Command", dto.VnPayCommand);
+        vnpay.AddRequestData("vnp_TmnCode", vnpaySetting.TmnCode);
+        vnpay.AddRequestData("vnp_Amount",
+            (dto.Amount * 100)
+            .ToString()); //Số tiền thanh toán. Số tiền không mang các ký tự phân tách thập phân, phần nghìn, ký tự tiền tệ. Để gửi số tiền thanh toán là 100,000 VND (một trăm nghìn VNĐ) thì merchant cần nhân thêm 100 lần (khử phần thập phân), sau đó gửi sang VNPAY là: 10000000
+
+        vnpay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
         vnpay.AddRequestData("vnp_CurrCode", vnpaySetting.CurrCode);
         vnpay.AddRequestData("vnp_IpAddr", Utility.Helpers.VnPay.Utils.GetIpAddress(context));
         vnpay.AddRequestData("vnp_Locale", vnpaySetting.Locale);
 
-        vnpay.AddRequestData("vnp_OrderInfo", "Thanh toán cho đơn hàng:" + dto.OrderId);
+        vnpay.AddRequestData("vnp_OrderInfo", dto.Description + " " + dto.OrderId);
         vnpay.AddRequestData("vnp_OrderType", "other"); //default value: other
         vnpay.AddRequestData("vnp_ReturnUrl", dto.ReturnUrl);
 
-        vnpay.AddRequestData("vnp_TxnRef", tick); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
+        vnpay.AddRequestData("vnp_TxnRef",
+            tick); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
 
         var paymentUrl = vnpay.CreateRequestUrl(vnpaySetting.BaseUrl, vnpaySetting.HashSecret);
 

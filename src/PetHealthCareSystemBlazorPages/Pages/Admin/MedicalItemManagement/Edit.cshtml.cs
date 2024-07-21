@@ -23,7 +23,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.MedicalItemManagement
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
 
             var medicalItem = await _medicalService.GetAllMedicalItem()
@@ -31,7 +31,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.MedicalItemManagement
 
             if (medicalItem == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
 
             MedicalItem = new MedicalItemUpdateDto

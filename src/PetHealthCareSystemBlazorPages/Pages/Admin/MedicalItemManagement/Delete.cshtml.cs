@@ -23,7 +23,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.MedicalItemManagement
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
 
             var medicalitem = await _medicalService.GetAllMedicalItem()
@@ -31,7 +31,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.MedicalItemManagement
 
             if (medicalitem == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
             MedicalItem = medicalitem;
             return Page();
@@ -41,7 +41,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.MedicalItemManagement
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
 
             var userId = Int32.Parse(HttpContext.Session.GetString("UserId") ?? "0");
