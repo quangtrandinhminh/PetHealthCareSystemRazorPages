@@ -76,6 +76,17 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.Hospitalization
                 {
                     filter.ToDate = searchDateValueTo.ToString();
                 }
+                if (!string.IsNullOrEmpty(SearchDateFrom) && !string.IsNullOrEmpty(SearchDateTo))
+                {
+                    if (searchDateValueFrom > searchDateValueTo)
+                    {
+                        filter.FromDate = searchDateValueTo.ToString();
+                        filter.ToDate = searchDateValueFrom.ToString();
+                        string test = SearchDateFrom;
+                        SearchDateFrom = SearchDateTo;
+                        SearchDateTo = test;
+                    }
+                }
 
                 var hos = await _hospital.GetAllHospitalizationWithFilters(filter, pagenumber, PageSize);
                 Hospitalize = hos;

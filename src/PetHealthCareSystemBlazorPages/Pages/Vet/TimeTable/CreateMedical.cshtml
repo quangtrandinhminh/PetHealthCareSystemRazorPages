@@ -356,15 +356,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group d-none">
                 <input asp-for="MedicalRecord.AppointmentId" class="form-control" type="hidden" />
+                    <input asp-for="MedicalRecord.PetId" class="form-control" type="hidden" />
             </div>
-
+               
             <div class="form-group">
-                <label asp-for="MedicalRecord.PetId" class="control-label">Pet:</label>
-                <select asp-for="MedicalRecord.PetId" class="form-control" asp-items="ViewBag.PetId"></select>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="MedicalRecord.MedicalItems" class="control-label">Medical Items:</label>
+                    <input type="checkbox" id="showMedicalItem"> Medical Items:
+                    <div id="medicalItemContainer" style="display: none;">
                 <div class="checkbox-list">
                     @foreach (var medicalItem in Model.MedicalItems)
                     {
@@ -376,6 +373,7 @@
                     }
                 </div>
                 <span asp-validation-for="MedicalRecord.MedicalItems" class="text-danger"></span>
+                </div>
             </div>
            
 
@@ -409,9 +407,20 @@
                 <span asp-validation-for="MedicalRecord.PetWeight" class="text-danger"></span>
             </div>
                 <div class="form-group">
-                    <label asp-for="MedicalRecord.AdmissionDate" class="control-label"></label>
-                    <input asp-for="MedicalRecord.AdmissionDate" class="form-control" type="date"/>
-                    <span asp-validation-for="MedicalRecord.AdmissionDate" class="text-danger"></span>
+                    <input type="checkbox" id="showAdmissionDate"> Admission Date
+                    <div id="admissionDateContainer" style="display: none;">
+                        <label asp-for="MedicalRecord.AdmissionDate" class="control-label"></label>
+                        <input asp-for="MedicalRecord.AdmissionDate" class="form-control" type="date" />
+                        <span asp-validation-for="MedicalRecord.AdmissionDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="showDischargeDate"> Discharge Date
+                    <div id="dischargeDateContainer" style="display: none;">
+                        <label asp-for="MedicalRecord.DischargeDate" class="control-label"></label>
+                        <input asp-for="MedicalRecord.DischargeDate" class="form-control" type="date" />
+                        <span asp-validation-for="MedicalRecord.DischargeDate" class="text-danger"></span>
+                    </div>
                 </div>
                     <div class="form-group" class="appointment-list-actions">
                 <button type="submit" value="Create" class="btn btn-primary" style="background-color:#0069d9">Create</button>
@@ -428,18 +437,41 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
         <script>
-            $(document).ready(function () {
-                $('.medical-item-checkbox').change(function () {
-                    $(this).siblings('.medical-item-quantity').prop('disabled', !$(this).is(':checked'));
-                });
+                $(document).ready(function () {
+                    $('.medical-item-checkbox').change(function () {
+                        $(this).siblings('.medical-item-quantity').prop('disabled', !$(this).is(':checked'));
+                    });
 
-                // Initial state (hide quantity inputs on page load if checkboxes are unchecked)
-                $('.medical-item-checkbox').each(function () {
-                    if (!$(this).is(':checked')) {
-                        $(this).siblings('.medical-item-quantity').prop('disabled', true);
-                    }
+                    // Initial state (hide quantity inputs on page load if checkboxes are unchecked)
+                    $('.medical-item-checkbox').each(function () {
+                        if (!$(this).is(':checked')) {
+                            $(this).siblings('.medical-item-quantity').prop('disabled', true);
+                        }
+                    });
                 });
-            });
+                $(document).ready(function () {
+                    $('#showAdmissionDate').change(function () {
+                        if (this.checked) {
+                            $('#admissionDateContainer').show();
+                        } else {
+                            $('#admissionDateContainer').hide();
+                        }
+                    });
+                    $('#showDischargeDate').change(function () {
+                        if (this.checked) {
+                            $('#dischargeDateContainer').show();
+                        } else {
+                            $('#dischargeDateContainer').hide();
+                        }
+                    });
+                    $('#showMedicalItem').change(function () {
+                        if (this.checked) {
+                            $('#medicalItemContainer').show();
+                        } else {
+                            $('#medicalItemContainer').hide();
+                        }
+                    });
+                });
         </script>
     }
 }
