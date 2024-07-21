@@ -225,6 +225,7 @@
                 <tr>
                     <th>No.</th>
                     <th onclick="sortTable(0)" data-sort-dir="">Date</th>
+                    <th>Phone Number</th>
                     <th onclick="sortTable(1)" data-sort-dir="">Start Time</th>
                     <th onclick="sortTable(2)" data-sort-dir="">End Time</th>
                     <th onclick="sortTable(3)" data-sort-dir="">Type</th>
@@ -247,6 +248,7 @@
                             }
                         </td>
                         <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Customer.PhoneNumber)</td>
                         <td>@Html.DisplayFor(modelItem => item.TimeTable.StartTime)</td>
                         <td>@Html.DisplayFor(modelItem => item.TimeTable.EndTime)</td>
                         <td>@Html.DisplayFor(modelItem => item.BookingType)</td>

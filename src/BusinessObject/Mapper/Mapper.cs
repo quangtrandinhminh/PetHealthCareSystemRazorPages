@@ -64,9 +64,9 @@ public partial class MapperlyMapper
 
     // service
     public partial Service Map(ServiceRequestDto request);
-    public partial Service Map(ServiceResponseDto request);
     public partial ServiceResponseDto Map(Service entity);
     public partial IList<ServiceResponseDto> Map(IList<Service> entity);
+    public partial IQueryable<ServiceResponseDto> Map(IQueryable<Service> entity);
     public List<ServiceResponseDto?> Map(ICollection<Service?> entities)
     {
         return entities.Select(Map).ToList();
@@ -81,6 +81,7 @@ public partial class MapperlyMapper
     // medicalItem
     public partial MedicalItem Map(MedicalItemRequestDto request);
     public partial MedicalResponseDto Map(MedicalItem entity);
+    public partial IQueryable<MedicalResponseDto> Map(IQueryable<MedicalItem> entity);
     public partial IList<MedicalResponseDto> Map(IList<MedicalItem> entity);
     public partial void Map(ServiceRequestDto request, MedicalItem entity);
 

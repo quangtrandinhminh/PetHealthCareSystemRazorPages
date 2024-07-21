@@ -4,7 +4,7 @@ using Utility.Enum;
 
 namespace BusinessObject.DTO.Transaction;
 
-public class TransactionResponseDto
+public class TransactionResponseDto : BaseEntityResponseDto
 {
     public int Id { get; set; }
     public int CustomerId { get; set; }
@@ -18,10 +18,4 @@ public class TransactionResponseDto
     public string Status { get; set; }
     public string? PaymentMethod { get; set; }
     public DateTimeOffset? RefundDate { get; set; }
-    public int? CreatedBy { get; set; }
-    public string? CreatedByName { get; set; }
-    public DateTimeOffset CreatedTime { get; set; }
-    public int? LastUpdatedBy { get; set; }
-    public string? LastUpdatedByName { get; set; }
-    public DateTimeOffset LastUpdatedTime { get; set; }
 }
