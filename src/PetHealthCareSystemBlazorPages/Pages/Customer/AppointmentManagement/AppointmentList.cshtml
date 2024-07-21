@@ -256,7 +256,11 @@
                     <td>@Html.DisplayFor(modelItem => item.Status)</td>
                     <td class="appointment-list-actions">
                         <a asp-page="./Cancel" asp-route-id="@item.Id">Cancel</a>
-                    </td>
+                            @if (item.Feedback == null && item.Status == "Complete")
+                            {
+                                <a asp-page="./FeedBack" asp-route-id="@item.Id">Feedback</a>
+                            }
+                        </td>
                 </tr>
             }
             </tbody>

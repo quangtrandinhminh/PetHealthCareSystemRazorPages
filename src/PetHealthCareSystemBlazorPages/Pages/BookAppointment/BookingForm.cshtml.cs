@@ -60,7 +60,6 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
                 var userId = int.Parse(HttpContext.Session.GetString("UserId"));
                 DisplayedPetList = await _petService.GetAllPetsForCustomerAsync(userId);
                 DisplayedServiceList = await _service.GetAllServiceAsync();
-                DisplayedTimeTableList = await _appointmentService.GetAllTimeFramesForBookingAsync();
             }
             catch (Exception ex)
             {
@@ -100,6 +99,22 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             {
                 _logger.LogError(ex, "Error fetching vets.");
                 return new JsonResult(new { success = false, message = "Error fetching vets." });
+            }
+        }
+
+        public async Task<JsonResult> OnGetTimeTable(string petId, string date)
+        {
+            try
+            {
+                var temp = ConvertStringToIntList(petId);
+                var appointmentDate = DateOnly.Parse(date);
+                var timeTableList = await _appointmentService.GetAllTimeFramesForBookingAsync(temp[0], appointmentDate);
+                return new JsonResult(timeTableList);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching timetable.");
+                return new JsonResult(new { success = false, message = "Error fetching timetable." });
             }
         }
 

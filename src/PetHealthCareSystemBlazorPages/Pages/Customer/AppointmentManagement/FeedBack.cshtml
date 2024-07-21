@@ -1,0 +1,81 @@
+﻿@page
+@model PetHealthCareSystemRazorPages.Pages.Customer.AppointmentManagement.FeedBackModel
+@{
+    ViewData["Title"] = "Feedback";
+}
+
+<style>
+    .page-container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+    }
+
+        .form-actions button,
+        .form-actions a {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+        }
+
+        .form-actions .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .form-actions .btn-secondary {
+            background-color: #6c757d;
+        }
+</style>
+
+<div class="page-container">
+    <h2>Feedback for Appointment</h2>
+    <form method="post">
+        <input type="hidden" asp-for="AppointmentId" />
+        <div class="form-group">
+            <label asp-for="FeedbackRequest.Rating">Rating (1-5)</label>
+            <input asp-for="FeedbackRequest.Rating" type="number" min="1" max="5" value="5" class="form-control" />
+            <span asp-validation-for="FeedbackRequest.Rating" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="FeedbackRequest.Feedback">Feedback</label>
+            <textarea asp-for="FeedbackRequest.Feedback" rows="4" class="form-control"></textarea>
+            <span asp-validation-for="FeedbackRequest.Feedback" class="text-danger"></span>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" asp-page-handler="FeedbackAppointment">Submit Feedback</button>
+            <a asp-page="./AppointmentList" class="btn btn-secondary">Back</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

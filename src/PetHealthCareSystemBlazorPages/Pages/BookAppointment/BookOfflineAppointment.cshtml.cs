@@ -64,7 +64,6 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             {
                 CustomerList = await _userService.GetAllUsersByRoleAsync(UserRole.Customer);
                 DisplayedServiceList = await _service.GetAllServiceAsync();
-                DisplayedTimeTableList = await _appointmentService.GetAllTimeFramesForBookingAsync();
             }
             catch (Exception ex)
             {
