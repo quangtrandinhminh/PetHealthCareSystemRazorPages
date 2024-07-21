@@ -48,15 +48,70 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
     private readonly MapperlyMapper _mapper = serviceProvider.GetRequiredService<MapperlyMapper>();
     private readonly ILogger _logger = Log.Logger;
 
-    public async Task<List<TimeTableResponseDto>> GetAllTimeFramesForBookingAsync()
+    public async Task<List<TimeTableResponseDto>> GetAllTimeFramesForBookingAsync(int petId, DateOnly date)
     {
-        _logger.Information("Get all time frames for booking");
+        _logger.Information("Get time frame suitable for pet at date: " + date);
 
-        var timetables = _timeTableRepo.GetAllWithCondition(t => t.Type == TimeTableType.Appointment);
-        var response = _mapper.Map(timetables);
+        if (petId <= 0)
+        {
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsCommon.DATE_WRONG_FORMAT);
+        }
 
-        return await response.ToListAsync();
+        // Get all booked appointments for the given pet and date
+        var appointments = _appointmentRepo.GetAllWithCondition(a =>
+            a.DeletedTime == null && // Ensure the appointment is not deleted
+            a.Status == AppointmentStatus.Scheduled &&
+            a.AppointmentDate == date &&
+            a.AppointmentPets.Any(p => p.PetId == petId)) // Check if any pet in the appointment matches the given petId
+            .ToList();
+
+        // Collect all booked time slots
+        List<TimeTableResponseDto> timeTablesExceptions = new List<TimeTableResponseDto>();
+
+        foreach (var appointment in appointments)
+        {
+            TimeTableResponseDto timeTableResponseDto = new TimeTableResponseDto
+            {
+                StartTime = appointment.TimeTable.StartTime,
+                EndTime = appointment.TimeTable.EndTime,
+                Id = appointment.TimeTable.Id
+            };
+
+            timeTablesExceptions.Add(timeTableResponseDto);
+        }
+
+        // Get all available time slots
+        var timetables = _timeTableRepo.GetAllWithCondition(t => t.Type == TimeTableType.Appointment).ToList();
+
+        var availableTimeSlots = timetables
+            .Select(t => new TimeTableResponseDto
+            {
+                StartTime = t.StartTime,
+                EndTime = t.EndTime,
+                Id = t.Id
+            })
+            .ToList();
+
+        // Exclude booked time slots from available time slots
+        var response = availableTimeSlots.Except(timeTablesExceptions, new TimeTableResponseDtoComparer()).ToList();
+
+        return response;
     }
+
+    // Custom comparer for TimeTableResponseDto to use Except method
+    public class TimeTableResponseDtoComparer : IEqualityComparer<TimeTableResponseDto>
+    {
+        public bool Equals(TimeTableResponseDto x, TimeTableResponseDto y)
+        {
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(TimeTableResponseDto obj)
+        {
+            return obj.Id.GetHashCode();
+        }
+    }
+
 
     public async Task<List<UserResponseDto>> GetFreeWithTimeFrameAndDateAsync(DateTimeQueryDto qo)
     {
@@ -131,7 +186,7 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
     {
         _logger.Information("Get all appointments");
 
-        var appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null, a => a.AppointmentPets);
+        var appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null, a => a.AppointmentPets).OrderByDescending(a => a.CreatedTime);
         var response = _mapper.Map(appointments);
         var paginatedList = await PaginatedList<AppointmentResponseDto>.CreateAsync(response, pageNumber, pageSize);
         foreach (var item in paginatedList.Items)
@@ -184,12 +239,12 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         if (date != DateOnly.MinValue)
         {
             appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null && a.VetId == vetId && a.AppointmentDate == date,
-                a => a.AppointmentPets);
+                a => a.AppointmentPets).OrderByDescending(a => a.AppointmentDate);
         }
         else
         {
             appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null && a.VetId == vetId,
-                a => a.AppointmentPets);
+                a => a.AppointmentPets).OrderByDescending(a => a.AppointmentDate);
         }
 
         var response = _mapper.Map(appointments);
@@ -250,7 +305,7 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         else
         {
             appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null && a.CustomerId == ownerId,
-                a => a.AppointmentPets);
+                a => a.AppointmentPets).OrderByDescending(a => a.CreatedTime);
         }
 
         var response = _mapper.Map(appointments);
