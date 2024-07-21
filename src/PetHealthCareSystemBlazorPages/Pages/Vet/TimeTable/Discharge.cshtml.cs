@@ -7,16 +7,18 @@ using Utility.Exceptions;
 using BusinessObject.DTO.Hospitalization;
 using Service.Services;
 using Microsoft.Extensions.Configuration.UserSecrets;
+using BusinessObject.DTO.MedicalRecord;
 
 namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
 {
-    public class DetailsModel : PageModel
+    public class DischargeModel : PageModel
     {
         private readonly IHospitalizationService _hospi;
-
-        public DetailsModel(IHospitalizationService hospitalization)
+        private readonly IMedicalService _medical;
+        public DischargeModel(IHospitalizationService hospitalization, IMedicalService medicalService)
         {
             _hospi = hospitalization;
+            _medical = medicalService;
         }
         [BindProperty(SupportsGet = true)]
         public string? Check { get; set; }
@@ -53,24 +55,30 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
             {
                 return NotFound();
             }
-            var check = Check;
             var accountId = HttpContext.Session.GetString("UserId");
             var userId = int.Parse(accountId);
             var hospi = await _hospi.GetHospitalizationById(id.Value);
-            var update = new HospitalizationUpdateRequestDto
+            var hospiList = await _hospi.GetListHospitalizationByMRId(hospi.MedicalRecordId);
+            foreach (var  hospitalization in hospiList)
             {
-                Id = hospi.Id,
-                Reason = hospi.Reason,
-                Diagnosis = hospi.Diagnosis,
-                IsDischarged = true,
-                Note = hospi.Note,
-                Treatment = hospi.Treatment
-            };
-            if (hospi != null)
-            {
+                var update = new HospitalizationUpdateRequestDto
+                {
+                    Id = hospitalization.Id,
+                    Reason = hospitalization.Reason,
+                    Diagnosis = hospitalization.Diagnosis,
+                    IsDischarged = true,
+                    Note = hospitalization.Note,
+                    Treatment = hospitalization.Treatment
+                };
                 await _hospi.UpdateHospitalization(update, userId);
             }
-
+            
+            var mr = new MedicalRecordRequestDto
+            {
+                Id = hospi.MedicalRecordId,
+                DischargeDate = DateTime.Now,
+            };
+            await _medical.UpdateMedicalRecord(mr, userId);
             return RedirectToPage("./Hospitalization");
         }
         private bool IsVetRole(string accountRole)

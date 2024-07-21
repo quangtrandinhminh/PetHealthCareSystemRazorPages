@@ -263,7 +263,7 @@
             </td>
             <td class="appointment-list-actions">
                 <a asp-page="./Details" asp-route-id="@item.Id">Details</a> ||
-                @if (item.AdmissionDate != null)
+                @if (item.AdmissionDate != null && item.DischargeDate == null)
                 {
                     <a asp-page="./Create" asp-route-id="@item.Id">Create Hospitalization</a>
                 }
