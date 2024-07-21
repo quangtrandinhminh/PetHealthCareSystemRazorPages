@@ -194,10 +194,11 @@
                 transform: translateY(-2px);
             }
 </style>
+
 <div class="appointment-list-container">
     <div class="appointment-list-header">
-<h1>Create Service</h1>
-</div>
+        <h1>Create Service</h1>
+    </div>
 <div class="row">
     <div class="col-md-4">
         <form method="post">
@@ -228,8 +229,9 @@
 
     <div class="appointment-list-actions">
     <a asp-page="Index">Back to List</a>
+    </div>
 </div>
-</div>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

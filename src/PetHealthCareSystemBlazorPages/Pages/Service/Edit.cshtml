@@ -1,10 +1,8 @@
 ﻿@page
-@using Utility.Enum
-@model PetHealthCareSystemRazorPages.Pages.Service.IndexModel
+@model PetHealthCareSystemRazorPages.Pages.Service.EditModel
 
 @{
-    var role = HttpContext.Session.GetString("Role");
-    ViewData["Title"] = "Services";
+    ViewData["Title"] = "Edit";
 }
 <style>
     .appointment-list-container {
@@ -199,85 +197,43 @@
 
 <div class="appointment-list-container">
     <div class="appointment-list-header">
-        <h1>Service</h1>
-        @if (role == null)
-        {
-            <a asp-page="/Login">Booking</a>
-        }
-        else if (role.Contains(UserRole.Admin.ToString()))
-        {
-           
-                <a asp-page="Create" >Create New</a>
-            
-        }
-        else if (role.Contains(UserRole.Customer.ToString()))
-        {
-           
-                <a asp-page="/BookAppointment/BookingForm" >Booking</a>
-            
-        }
+        <h1>Edit Service</h1>
     </div>
-    
-<div class="appointment-list-table-container">
-    <table class="appointment-list-table">
-    <thead>
-    <tr>
-        <th>No.</th>
-        <th>
-            @Html.DisplayNameFor(model => model.Service[0].Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Service[0].Description)
-        </th>
 
-        <th>
-            @Html.DisplayNameFor(model => model.Service[0].Price)
-        </th>
-        @if (role == null)
-        {
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Service.Id" class="form-control" />
+            <div class="form-group">
+                <label asp-for="Service.Name" class="control-label"></label>
+                <input asp-for="Service.Name" class="form-control" />
+                <span asp-validation-for="Service.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Service.Description" class="control-label"></label>
+                <input asp-for="Service.Description" class="form-control" />
+                <span asp-validation-for="Service.Description" class="text-danger"></span>
+            </div>
 
-        }
-        else if (role.Contains(UserRole.Admin.ToString()))
-        {
-            <th></th>
-        }
+            <div class="form-group">
+                <label asp-for="Service.Price" class="control-label"></label>
+                <input asp-for="Service.Price" class="form-control" />
+                <span asp-validation-for="Service.Price" class="text-danger"></span>
+            </div>
 
-    </tr>
-    </thead>
-    <tbody>
-    @{
-        var i = 1;
-    }
-    @foreach (var item in Model.Service)
-    {
-        <tr>
-            <td>@i @{ i++;}</td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
+            <div class="form-group" class="appointment-list-actions">
+                <button type="submit" value="Create" class="btn btn-primary" style="background-color:#0069d9">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            @if (role == null)
-            {
-
-            }
-            else if (role.Contains(UserRole.Admin.ToString()))
-            {
-                            <td class="appointment-list-actions">
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            }
-
-        </tr>
-    }
-    </tbody>
-</table>
+    <div class="appointment-list-actions">
+    <a asp-page="./Index">Back to List</a>
 </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

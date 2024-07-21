@@ -360,56 +360,7 @@
                 transform: translateY(-2px);
             }
 </style>
-<div class="appointment-list-container">
-    <div class="appointment-list-header">
-    <h1 style="text-align:center">Booking Management</h1>
-        <a asp-page="/BookAppointment/BookOfflineAppointment">Create New</a>
-    </div>
 
-    <div class="appointment-list-table-container">
-        <table class="appointment-list-table">
-        <thead>
-            <tr>
-                <th>No.</th>
-                <th>Appointment Date</th>
-                <th>Note</th>
-                <th>Status</th>
-                <th>Booking Type</th>
-                <th>Rating</th>
-                <th>Feedback</th>
-                @*  <th>CreatedTime</th>
-                <th>UpdatedTime</th> *@
-                <th>VetName</th>
-                <th>StartTime</th>
-                <th>EndTime</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Appointments.Items)
-            {
-                <tr>
-                    <td>@i @{ i++;}</td>
-                    <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Note)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Status)</td>
-                    <td>@Html.DisplayFor(modelItem => item.BookingType)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Rating)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Feedback)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Vet.FullName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.TimeTable.StartTime)</td>
-                    <td>@Html.DisplayFor(modelItem => item.TimeTable.EndTime)</td>
-                        <td class="appointment-list-actions">
-                        <a asp-page="./Edit" asp-route-id="@item.Id">Update payment</a> |
-                        <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-</div>
-</div>
 
 <div class="appointment-list-container">
     <div class="appointment-list-header">
