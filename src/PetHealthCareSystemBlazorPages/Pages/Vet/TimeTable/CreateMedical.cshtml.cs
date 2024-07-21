@@ -104,7 +104,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
                     {
                         if (SelectedMedicalItemsQuantity[i] == 0)
                         {
-                            ModelState.AddModelError("MedicalRecord.MedicalItems", "Medical item's quantity must > 0");
+                            ModelState.AddModelError(string.Empty, "Medical item's quantity must > 0");
                             return await OnGetAsync(MedicalRecord.AppointmentId);
                         }
                         mergedList.Add(new TransactionMedicalItemsDto()
@@ -116,10 +116,44 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
                 }
                 else if (SelectedMedicalItemsId.Count > 0 && SelectedMedicalItemsId.Count != SelectedMedicalItemsQuantity.Count)
                 {
-                    ModelState.AddModelError("MedicalRecord.MedicalItems","You must input quantity when using medical item");
+                    ModelState.AddModelError(string.Empty, "You must input quantity when using medical item");
                     return await OnGetAsync(MedicalRecord.AppointmentId);
                 }
                 MedicalRecord.MedicalItems = mergedList;
+                DateTime admission;
+                DateTime discharge;
+                if (MedicalRecord.AdmissionDate.HasValue)
+                {
+                    admission = DateTime.ParseExact(MedicalRecord.AdmissionDate.Value.ToString("yyyy-MM-dd"), "yyyy-MM-dd", null);
+                    if (admission < DateTime.Today)
+                    {
+                        ModelState.AddModelError(string.Empty, "Ban khong the nhap vien trong qua khu");
+                        return await OnGetAsync(MedicalRecord.AppointmentId);
+                    }
+                }
+                if (MedicalRecord.DischargeDate.HasValue)
+                {
+                    discharge = DateTime.ParseExact(MedicalRecord.DischargeDate.Value.ToString("yyyy-MM-dd"), "yyyy-MM-dd", null);
+                    if (discharge < DateTime.Today)
+                    {
+                        ModelState.AddModelError(string.Empty, "Ban khong the nhap vien trong qua khu");
+                        return await OnGetAsync(MedicalRecord.AppointmentId);
+                    }
+                }
+                if (MedicalRecord.DischargeDate.HasValue && MedicalRecord.AdmissionDate.HasValue)
+                {
+                    admission = DateTime.ParseExact(MedicalRecord.AdmissionDate.Value.ToString("yyyy-MM-dd"), "yyyy-MM-dd", null);
+                    discharge = DateTime.ParseExact(MedicalRecord.DischargeDate.Value.ToString("yyyy-MM-dd"), "yyyy-MM-dd", null);
+                    if (discharge >= admission)
+                    {
+                        ModelState.AddModelError(string.Empty, "Ban khong the ra vien truoc khi nhap vien");
+                        return await OnGetAsync(MedicalRecord.AppointmentId);
+                    }
+
+                }
+
+
+
                 await _medical.CreateMedicalRecord(MedicalRecord, id);
                 List<int>petList = new List<int>();
                 var appointment = await _appointment.GetAppointmentByAppointmentId(MedicalRecord.AppointmentId);
