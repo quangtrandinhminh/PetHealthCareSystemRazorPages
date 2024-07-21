@@ -261,6 +261,7 @@ public class HospitalizationService(IServiceProvider serviceProvider) : IHospita
         }
         hospitalization.LastUpdatedBy = vetId;
         hospitalization.LastUpdatedTime = CoreHelper.SystemTimeNow;
+        hospitalization.MedicalRecord.DischargeDate = CoreHelper.SystemTimeNow;
 
         await _hospitalizationRepo.UpdateAsync(hospitalization);
     }
@@ -351,7 +352,7 @@ public class HospitalizationService(IServiceProvider serviceProvider) : IHospita
         HospitalizationRequestDto dto)
     {
         // check date is valid
-        if (!DateOnly.TryParse(dto.Date, out DateOnly date))
+        if (!DateTimeOffset.TryParse(dto.Date, out DateTimeOffset date))
         {
             throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsCommon.DATE_WRONG_FORMAT);
         }
@@ -370,6 +371,11 @@ public class HospitalizationService(IServiceProvider serviceProvider) : IHospita
             throw new AppException(ResponseCodeConstants.FAILED,
                 ResponseMessageConstantsHospitalization.MEDICAL_RECORD_NOT_ADMITTED, StatusCodes.Status400BadRequest);
         }
+        else if (medicalRecord.AdmissionDate != null && medicalRecord.AdmissionDate > date)
+        {
+
+        }
+
         if (medicalRecord.DischargeDate != null)
         {
             throw new AppException(ResponseCodeConstants.FAILED,

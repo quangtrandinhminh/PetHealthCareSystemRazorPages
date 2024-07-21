@@ -1,8 +1,8 @@
 ﻿@page
-@model PetHealthCareSystemRazorPages.Pages.Staff.MedicalRecord.DetailsModel
+@model PetHealthCareSystemRazorPages.Pages.Service.EditModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Edit";
 }
 <style>
     .appointment-list-container {
@@ -194,108 +194,46 @@
                 transform: translateY(-2px);
             }
 </style>
+
 <div class="appointment-list-container">
     <div class="appointment-list-header">
-        <h1>Detail Medical Record</h1>
+        <h1>Edit Service</h1>
     </div>
 
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Service.Id" class="form-control" />
+            <div class="form-group">
+                <label asp-for="Service.Name" class="control-label"></label>
+                <input asp-for="Service.Name" class="form-control" />
+                <span asp-validation-for="Service.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Service.Description" class="control-label"></label>
+                <input asp-for="Service.Description" class="form-control" />
+                <span asp-validation-for="Service.Description" class="text-danger"></span>
+            </div>
 
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.PetName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.PetName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.RecordDetails)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.RecordDetails)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.Diagnosis)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.Diagnosis)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.Treatment)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.Treatment)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.Note)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.Note)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.PetWeight)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.PetWeight)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.MedicalItems)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.MedicalItems)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.AppointmentId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.AppointmentId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.NextAppointment)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.NextAppointment)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.AdmissionDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.AdmissionDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.DischargeDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.DischargeDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.CreatedBy)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.CreatedByName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.LastUpdatedBy)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.LastUpdatedByName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.CreatedTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.CreatedTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord.LastUpdatedTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.LastUpdatedTime)
-        </dd>
-       
-    </dl>
+            <div class="form-group">
+                <label asp-for="Service.Price" class="control-label"></label>
+                <input asp-for="Service.Price" class="form-control" />
+                <span asp-validation-for="Service.Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group" class="appointment-list-actions">
+                <button type="submit" value="Create" class="btn btn-primary" style="background-color:#0069d9">Update</button>
+            </div>
+        </form>
+    </div>
 </div>
-    <div class ="appointment-list-actions">
+
+    <div class="appointment-list-actions">
     <a asp-page="./Index">Back to List</a>
 </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -4,27 +4,29 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using BusinessObject.Entities;
 using DataAccessLayer;
 using Service.IServices;
-using Service.Services;
 using BusinessObject.DTO.Service;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace PetHealthCareSystemRazorPages.Pages.Service
 {
-    public class CreateModel : PageModel
+    public class DeleteModel : PageModel
     {
         private readonly IService _service;
 
-        public CreateModel(IService service)
+        public DeleteModel(IService service)
         {
             _service = service;
         }
 
-        public IActionResult OnGet()
+        [BindProperty]
+        public ServiceResponseDto Service { get; set; } = default!;
+
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
-            
             var accountId = HttpContext.Session.GetString("UserId"); // Assuming UserId is stored in Session
             var accountRole = HttpContext.Session.GetString("Role");
             // Check if accountId is null or empty or if accountRole is not "admin" (assuming "admin" role is stored as such)
@@ -32,29 +34,43 @@ namespace PetHealthCareSystemRazorPages.Pages.Service
             {
                 Response.Redirect("/");
             }
+            if (id == null)
+            {
+                return RedirectToPage("./Index");
+            }
+
+            var service = await _service.GetServiceBydId((int)id);
+
+            if (service == null)
+            {
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                Service = service;
+            }
             return Page();
         }
 
-        [BindProperty]
-        public ServiceRequestDto Service { get; set; } = default!;
-
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return Page();
+                return RedirectToPage("./Index");
             }
+            try
+            {
+                var accountId = HttpContext.Session.GetString("UserId"); // Assuming UserId is stored in Session
+                int accid = int.Parse(accountId);
+                await _service.DeleteServiceAsync(id.Value, accid);
+                return RedirectToPage("./Index");
 
-            var userid = Int32.Parse(HttpContext.Session.GetString("UserId"));
-            var check = await _service.GetAllServiceAsync();
-            if (check.FirstOrDefault(x => x.Name.Equals(Service.Name)) != null) { 
-                ModelState.AddModelError("Service.Name", "ten service da ton tai");
-                return Page();
             }
-            await _service.CreateServiceAsync(Service, userid);
-
-            return RedirectToPage("./Index");
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return RedirectToPage("./Index");
+            }
         }
         private bool IsAdminRole(string accountRole)
         {

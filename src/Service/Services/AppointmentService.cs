@@ -186,7 +186,7 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
     {
         _logger.Information("Get all appointments");
 
-        var appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null, a => a.AppointmentPets);
+        var appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null, a => a.AppointmentPets).OrderByDescending(a => a.CreatedTime);
         var response = _mapper.Map(appointments);
         var paginatedList = await PaginatedList<AppointmentResponseDto>.CreateAsync(response, pageNumber, pageSize);
         foreach (var item in paginatedList.Items)
@@ -239,12 +239,12 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         if (date != DateOnly.MinValue)
         {
             appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null && a.VetId == vetId && a.AppointmentDate == date,
-                a => a.AppointmentPets);
+                a => a.AppointmentPets).OrderByDescending(a => a.AppointmentDate);
         }
         else
         {
             appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null && a.VetId == vetId,
-                a => a.AppointmentPets);
+                a => a.AppointmentPets).OrderByDescending(a => a.AppointmentDate);
         }
 
         var response = _mapper.Map(appointments);
@@ -305,7 +305,7 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         else
         {
             appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null && a.CustomerId == ownerId,
-                a => a.AppointmentPets);
+                a => a.AppointmentPets).OrderByDescending(a => a.CreatedTime);
         }
 
         var response = _mapper.Map(appointments);

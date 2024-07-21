@@ -30,7 +30,13 @@ namespace PetHealthCareSystemRazorPages.Pages.Service
 
         public async Task OnGetAsync()
         {
-            Service = await _service.GetAllServiceAsync();
+            var accountId = HttpContext.Session.GetString("UserId"); // Assuming UserId is stored in Session
+            var accountRole = HttpContext.Session.GetString("Role");
+            // Check if accountId is null or empty or if accountRole is not "admin" (assuming "admin" role is stored as such)
+            if (string.IsNullOrEmpty(accountId) || !IsAdminRole(accountRole))
+            {
+                Response.Redirect("/");
+            }
             try
             {
                 Service = await _service.GetAllServiceAsync();
@@ -40,6 +46,12 @@ namespace PetHealthCareSystemRazorPages.Pages.Service
                 Service = new List<ServiceResponseDto>();
                 ModelState.AddModelError(string.Empty, ex.Message);
             }
+        }
+        private bool IsAdminRole(string accountRole)
+        {
+            // Example check if "admin" is contained in the roles list
+            // Adjust this logic based on how roles are stored in your application
+            return !string.IsNullOrEmpty(accountRole) && accountRole.Split(',').Contains("Admin");
         }
     }
 }

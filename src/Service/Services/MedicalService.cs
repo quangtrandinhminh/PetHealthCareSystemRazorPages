@@ -48,6 +48,41 @@ public class MedicalService(IServiceProvider serviceProvider) : IMedicalService
 
         return listDto.ToList();
     }
+
+    public async Task<PaginatedList<MedicalResponseDto>> GetAllMedicalItem(int pageNumber, int pageSize)
+    {
+        _logger.Information("Get all medical item");
+        var medicalItems = _medicalItemRepository.GetAllWithCondition(m => m.DeletedTime == null)
+            .OrderByDescending(m => m.CreatedTime);
+        if (medicalItems == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                                              ResponseMessageConstantsMedicalItem.MEDICAL_ITEM_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
+        var response = _mapper.Map(medicalItems);
+        var paginatedList = await PaginatedList<MedicalResponseDto>.CreateAsync(response, pageNumber, pageSize);
+        return paginatedList;
+    }
+
+    public async Task<MedicalResponseDto> GetMedicalItemById(int medicalItemId)
+    {
+        _logger.Information($"Get medical item medicalItemId {medicalItemId}");
+        var medicalItem = await _medicalItemRepository.GetSingleAsync(m => m.Id == medicalItemId);
+        if (medicalItem == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                                              ResponseMessageConstantsMedicalItem.MEDICAL_ITEM_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
+
+        var createdBy = await _userRepository.GetSingleAsync(u => u.Id == medicalItem.CreatedBy);
+        var lastUpdatedBy = await _userRepository.GetSingleAsync(u => u.Id == medicalItem.LastUpdatedBy);
+
+        var response = _mapper.Map(medicalItem);
+        response.CreatedByName = createdBy?.FullName ?? string.Empty;
+        response.LastUpdatedByName = lastUpdatedBy?.FullName ?? string.Empty;
+        return response;
+    }
+
     public async Task CreateMedicalItem(MedicalItemRequestDto medicalItem, int createdById)
     {
         var user = await _userManager.FindByIdAsync(createdById.ToString());

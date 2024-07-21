@@ -13,8 +13,10 @@ public class MedicalRecordRequestDto
     [Required(ErrorMessage = ResponseMessageConstantsPet.PETID_REQUIRED)]
     public int PetId { get; set; }
     public string? RecordDetails { get; set; }
-    public string? Diagnosis { get; set; }
-    public string? Treatment { get; set; }
+    [Required(ErrorMessage = "Diagnosis không được để trống")]
+    public string Diagnosis { get; set; }
+    [Required(ErrorMessage = "Treatment không được để trống")]
+    public string Treatment { get; set; }
     public string? Note { get; set; }
     public DateTimeOffset? NextAppointment { get; set; }
 

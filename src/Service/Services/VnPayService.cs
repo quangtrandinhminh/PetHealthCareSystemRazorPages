@@ -35,6 +35,7 @@ public class VnPayService : IVnPayService
         return paymentUrl;
     }
 
+    // returnUrl call this method
     public VnPaymentResponseDto PaymentExecute(IQueryCollection collections)
     {
         var vnpay = new VnPayLibrary();
@@ -71,6 +72,8 @@ public class VnPayService : IVnPayService
             OrderId = vnp_orderId.ToString(),
             TransactionId = vnp_TransactionId.ToString(),
             Token = vnp_SecureHash,
+
+            // success true => 00 , false => != 00
             VnPayResponseCode = vnp_ResponseCode
         };
     }
