@@ -3,6 +3,8 @@ using Service.IServices;
 using BusinessObject.DTO.Appointment;
 using Repository.Extensions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Utility.Enum;
 
 namespace PetHealthCareSystemRazorPages.Pages.Admin.Appointment
 {
@@ -18,10 +20,18 @@ namespace PetHealthCareSystemRazorPages.Pages.Admin.Appointment
         }
 
         public PaginatedList<AppointmentResponseDto> Appointments { get; set; }
-
-        public async Task OnGetAsync(int pageNumber = 1, int pageSize = 10)
+        [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 5;
+        public async Task OnGetAsync(int? pageNumber)
         {
-            Appointments = await _appointmentService.GetAllAppointmentsAsync(pageNumber, pageSize);
+            var userId = Int32.Parse(HttpContext.Session.GetString("UserId"));
+            var role = HttpContext.Session.GetString("Role");
+
+            if (role == null || !role.Contains(UserRole.Admin.ToString()))
+            {
+                RedirectToPage("/Login");
+            }
+            Appointments = await _appointmentService.GetAllAppointmentsAsync(pageNumber ?? 1, PageSize);
         }
     }
 }

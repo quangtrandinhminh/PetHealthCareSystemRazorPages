@@ -6,6 +6,7 @@ namespace BusinessObject.DTO.MedicalRecord;
 
 public class MedicalRecordRequestDto
 {
+    public int Id { get; set; }
     [Required(ErrorMessage = ResponseMessageConstantsAppointment.APPOINTMENT_ID_REQUIRED)]
     public int AppointmentId { get; set; }
 

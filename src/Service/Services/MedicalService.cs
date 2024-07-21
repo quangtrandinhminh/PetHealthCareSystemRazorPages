@@ -111,6 +111,28 @@ public class MedicalService(IServiceProvider serviceProvider) : IMedicalService
     }
 
     // medical record -----------------------------------------------------------------------------------------------------------------------------------------------------------
+    public async Task UpdateMedicalRecord(MedicalRecordRequestDto dto, int updatedById)
+    {
+        var user = await _userManager.FindByIdAsync(updatedById.ToString());
+        if (user == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                ResponseMessageIdentity.INVALID_USER, StatusCodes.Status404NotFound);
+        }
+
+        var medicalRecord = await _medicalRecordRepository.GetSingleAsync(m => m.Id == dto.Id);
+        if (medicalRecord == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                ResponseMessageConstantsMedicalRecord.MEDICAL_RECORD_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
+
+        medicalRecord.DischargeDate = dto.DischargeDate;
+        medicalRecord.LastUpdatedBy = updatedById;
+        medicalRecord.LastUpdatedTime = CoreHelper.SystemTimeNow;
+
+        await _medicalRecordRepository.UpdateAsync(medicalRecord);
+    }
     public async Task<PaginatedList<MedicalRecordResponseDto>> GetAllMedicalRecord(int pageNumber, int pageSize)
     {
         _logger.Information("Get all medical record");

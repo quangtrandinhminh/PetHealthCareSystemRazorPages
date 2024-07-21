@@ -127,6 +127,19 @@ public class HospitalizationService(IServiceProvider serviceProvider) : IHospita
         if (vet != null) response.Vet = _mapper.UserToUserResponseDto(vet);
         return response;
     }
+    public async Task<List<HospitalizationResponseDto>> GetListHospitalizationByMRId(int medicalRecordId)
+    {
+        _logger.Information($"Get hospitalization by medicalrecordId {medicalRecordId}");
+        var hospitalization = _hospitalizationRepo.GetAllWithCondition(h =>
+            h.DeletedTime == null && h.MedicalRecordId == medicalRecordId).OrderByDescending(h => h.CreatedTime);
+        if (hospitalization == null)
+        {
+            throw new AppException(ResponseCodeConstants.NOT_FOUND,
+                               ResponseMessageConstantsHospitalization.HOSPITALIZATION_NOT_FOUND, StatusCodes.Status404NotFound);
+        }
+        var response = _mapper.Map(hospitalization);
+        return await response.ToListAsync();
+    }
 
     public async Task<PaginatedList<HospitalizationResponseDto>> GetAllHospitalizationWithFilters(HospitalizationFilterDto filter, int pageNumber, int pageSize)
     {

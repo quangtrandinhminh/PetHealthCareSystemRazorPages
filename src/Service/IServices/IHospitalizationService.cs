@@ -24,4 +24,5 @@ public interface IHospitalizationService
     Task CreateHospitalization(HospitalizationRequestDto dto ,int staffId);
     Task UpdateHospitalization(HospitalizationUpdateRequestDto dto, int vetId);
     Task DeleteHospitalization(int hospitalizationId, int deleteBy);
+    Task<List<HospitalizationResponseDto>> GetListHospitalizationByMRId(int medicalRecordId);
 }
