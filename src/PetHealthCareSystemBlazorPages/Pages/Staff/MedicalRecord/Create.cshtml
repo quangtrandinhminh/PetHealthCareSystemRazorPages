@@ -205,29 +205,57 @@
         <form method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
                 <input asp-for="Hospitalization.MedicalRecordId" class="form-control" type="hidden" />
-                <input asp-for="Hospitalization.Date" class="form-control" type="hidden" />
                 <input asp-for="Hospitalization.VetId" class="form-control" type="hidden" />
                 <input asp-for="Hospitalization.Diagnosis" class="form-control" type="hidden" />
                 <input asp-for="Hospitalization.Note" class="form-control" type="hidden" />
                 <input asp-for="Hospitalization.Treatment" class="form-control" type="hidden" />
                 <input asp-for="Hospitalization.IsDischarged" class="form-control" type="hidden" />
-            <div class="form-group">
+            @* <div class="form-group">
                 <label asp-for="Hospitalization.CageId" class="control-label"></label>
                 <select asp-for="Hospitalization.CageId" class="form-control" asp-items="ViewBag.CageId"></select>
                 <span asp-validation-for="Hospitalization.CageId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Hospitalization.TimeTableId" class="control-label"></label>
-                <select asp-for="Hospitalization.TimeTableId" class="form-control" asp-items="ViewBag.TimetableId"></select>
-                <span asp-validation-for="Hospitalization.TimeTableId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Hospitalization.Reason" class="control-label"></label>
-                <input asp-for="Hospitalization.Reason" class="form-control"/>
-                <span asp-validation-for="Hospitalization.Reason" class="text-danger"></span>
-            </div>
-
+            </div> *@
+                @if (Model.DisplayedCageList != null && Model.DisplayedCageList.Any())
+                {
+                    <div class="form-group">
+                        <label>Select cage</label>
+                        <div id="pet-list" class="select-list">
+                            @foreach (var cage in Model.DisplayedCageList)
+                            {
+                                <div class="select-item">
+                                    <input type="radio" id="cage-@cage.Id" name="cageId" value="@cage.Id" >
+                                    <label for="pet-@cage.Id">Cage: @cage.Id - Capacity: @cage.Capacity</label>
+                                    
+                                </div>
+                            }
+                        </div>
+                        <span id="pet-error" class="text-danger"></span>
+                    </div>
+                }
+                <div class="form-group">
+                    <label asp-for="Hospitalization.Date" class="control-label"></label>
+                    <input asp-for="Hospitalization.Date" class="form-control" type="date"/>
+                    <span asp-validation-for="Hospitalization.Date" class="text-danger"></span>
+                </div>
            
+                <div class="form-group">
+                    <label asp-for="Hospitalization.Reason" class="control-label"></label>
+                    <input asp-for="Hospitalization.Reason" class="form-control" />
+                    <span asp-validation-for="Hospitalization.Reason" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label>Select Timeslot</label>
+                    <div id="time-slot-list" class="time-slots">
+                        <select asp-for="Hospitalization.TimeTableId" class="form-control">
+                            @foreach (var timeSlot in Model.DisplayedTimeTableList)
+                            {
+                                <option value="@timeSlot.Id">@($"{timeSlot.StartTime:hh\\:mm} - {timeSlot.EndTime:hh\\:mm}")</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <br />
+                <br />
 
             <div class="form-group">
                     <input type="submit" value="Create" class="btn btn-primary" />
