@@ -1,6 +1,6 @@
 ﻿namespace BusinessObject.DTO.Service;
 
-public class ServiceResponseDto
+public class ServiceResponseDto : BaseEntityResponseDto
 { 
     public int Id {  get; set; }
     public string Name { get; set; }

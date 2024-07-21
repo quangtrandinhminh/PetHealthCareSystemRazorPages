@@ -8,6 +8,8 @@ public interface IMedicalService
 {
     // medical item
     Task<List<MedicalResponseDto>> GetAllMedicalItem();
+    Task<PaginatedList<MedicalResponseDto>> GetAllMedicalItem(int pageNumber, int pageSize);
+    Task<MedicalResponseDto> GetMedicalItemById(int medicalItemId);
     Task CreateMedicalItem(MedicalItemRequestDto medicalItem, int createdById);
     Task UpdateMedicalItem(MedicalItemUpdateDto dto, int updatedById);
     Task DeleteMedicalItem(int id, int deleteBy);

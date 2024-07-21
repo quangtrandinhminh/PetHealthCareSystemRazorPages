@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
 using Utility.Constants;
 using Utility.Exceptions;
 using Utility.Helpers;
@@ -25,6 +26,7 @@ namespace Service.Services
     {
         private readonly MapperlyMapper _mapper = serviceProvider.GetRequiredService<MapperlyMapper>();
         private readonly IServiceRepository _serviceRepo = serviceProvider.GetRequiredService<IServiceRepository>();
+        private readonly IUserRepository _userRepository = serviceProvider.GetRequiredService<IUserRepository>();
 
         private readonly UserManager<UserEntity> _userManager =
             serviceProvider.GetRequiredService<UserManager<UserEntity>>();
@@ -80,6 +82,20 @@ namespace Service.Services
             return listDto.ToList();
         }
 
+        public async Task<PaginatedList<ServiceResponseDto>> GetAllServiceAsync(int pageNumber, int pageSize)
+        {
+            var list = _serviceRepo.GetAllWithCondition(s => s.DeletedTime == null);
+            if (list == null)
+            {
+                throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsService.SERVICE_NOT_FOUND
+                                                                                               , StatusCodes.Status404NotFound);
+            }
+
+            var response = _mapper.Map(list);
+            var paginatedList = await PaginatedList<ServiceResponseDto>.CreateAsync(response, pageNumber, pageSize);
+            return paginatedList;
+        }
+
         public async Task<ServiceResponseDto> GetServiceBydId(int serviceId)
         {
             var service = await _serviceRepo.GetSingleAsync(s => s.Id == serviceId);
@@ -89,7 +105,12 @@ namespace Service.Services
                                                                                 , StatusCodes.Status404NotFound);
             }
 
+            var createdBy = await _userRepository.GetSingleAsync(u => u.Id == service.CreatedBy);
+            var lastUpdatedBy = await _userRepository.GetSingleAsync(u => u.Id == service.LastUpdatedBy);
+
             var response = _mapper.Map(service);
+            response.CreatedByName = createdBy?.FullName ?? string.Empty;
+            response.LastUpdatedByName = lastUpdatedBy?.FullName ?? string.Empty;
 
             return response;
         }
