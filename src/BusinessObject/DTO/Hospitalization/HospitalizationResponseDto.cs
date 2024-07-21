@@ -18,5 +18,6 @@ public class HospitalizationResponseDto
     public string? Treatment { get; set; }
     public string? Note { get; set; }
     public int VetId { get; set; }
+    public string HospitalizationDateStatus { get; set; }
     public UserResponseDto Vet { get; set; }
 }
