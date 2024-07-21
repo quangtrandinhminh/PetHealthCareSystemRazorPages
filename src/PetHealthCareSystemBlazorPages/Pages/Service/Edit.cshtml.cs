@@ -67,11 +67,23 @@ namespace PetHealthCareSystemRazorPages.Pages.Service
                     Name = Service.Name,
                     Price = Service.Price
                 };
+                var check = await _service.GetAllServiceAsync();
+                var check2 = await _service.GetServiceBydId(Service.Id);
+                if (check2.Name != Service.Name)
+                {
+                    if (check.FirstOrDefault(x => x.Name.Equals(Service.Name)) != null)
+                    {
+                        ModelState.AddModelError("Service.Name", "ten service da ton tai");
+                        return Page();
+                    }
+                }
+                
                 await _service.UpdateServiceAsync(test, id);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty,ex.Message);
+                return Page();
             }
 
             return RedirectToPage("./Index");

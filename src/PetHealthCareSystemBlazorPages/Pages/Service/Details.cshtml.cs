@@ -7,37 +7,53 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObject.Entities;
 using DataAccessLayer;
+using Service.IServices;
+using BusinessObject.DTO.Service;
 
 namespace PetHealthCareSystemRazorPages.Pages.Service
 {
     public class DetailsModel : PageModel
     {
-        private readonly DataAccessLayer.AppDbContext _context;
+        private readonly IService _service;
 
-        public DetailsModel(DataAccessLayer.AppDbContext context)
+        public DetailsModel(IService service)
         {
-            _context = context;
+            _service = service;
         }
 
-        public BusinessObject.Entities.Service Service { get; set; } = default!;
+        public ServiceResponseDto Service { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
-
-            var service = await _context.Services.FirstOrDefaultAsync(m => m.Id == id);
-            if (service == null)
+            var accountId = HttpContext.Session.GetString("UserId"); // Assuming UserId is stored in Session
+            var accountRole = HttpContext.Session.GetString("Role");
+            // Check if accountId is null or empty or if accountRole is not "admin" (assuming "admin" role is stored as such)
+            if (string.IsNullOrEmpty(accountId) || !IsAdminRole(accountRole))
             {
-                return NotFound();
+                Response.Redirect("/");
             }
-            else
+            try
             {
+                var service = await _service.GetServiceBydId((int)id);
                 Service = service;
+                return Page();
             }
-            return Page();
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty,ex.Message);
+                return RedirectToPage("./Index");
+            }
+            
+        }
+        private bool IsAdminRole(string accountRole)
+        {
+            // Example check if "admin" is contained in the roles list
+            // Adjust this logic based on how roles are stored in your application
+            return !string.IsNullOrEmpty(accountRole) && accountRole.Split(',').Contains("Admin");
         }
     }
 }
