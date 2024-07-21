@@ -1,9 +1,13 @@
 using Azure;
 using BusinessObject.DTO.Appointment;
 using BusinessObject.DTO.Pet;
+using BusinessObject.DTO.Service;
 using BusinessObject.DTO.Transaction;
 using BusinessObject.DTO.User;
+using BusinessObject.DTO.VNPay;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Service.IServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -18,22 +22,26 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
         private readonly IService _service;
         private readonly ITransactionService _transactionService;
         private readonly IUserService _userService;
+        private readonly IVnPayService _vpnPayService;
 
-        public TransactionFormModel(IPetService petService, IAppointmentService appointmentService, IService service, ITransactionService transactionService, IUserService userService)
+        public TransactionFormModel(IPetService petService, IAppointmentService appointmentService, IService service, ITransactionService transactionService, IUserService userService, IVnPayService vpnPayService)
         {
             _petService = petService;
             _appointmentService = appointmentService;
             _service = service;
             _transactionService = transactionService;
             _userService = userService;
+            _vpnPayService = vpnPayService;
         }
 
-        public AppointmentResponseDto AppointmentResponseDto { get; set; }
+        public AppointmentBookRequestDto AppointmentBookRequestDto { get; set; }
         public List<PetResponseDto> SelectedPets { get; set; }
         public UserResponseDto SelectedVet { get; set; }
         public TransactionDropdownDto TransactionDropdownDto { get; set; }
         public List<TransactionServicesDto> TransactionServices { get; set; }
         public decimal Total {  get; set; }
+        public int PaymentMethodInput { get; set; }
+        public int VnPayId { get; set; }
 
         public async Task OnGet()
         {
@@ -47,24 +55,62 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             await InitializeData();
         }
 
-        public async Task OnPost(int paymentMethod, string appointmentResponseDtoJson)
+        public async Task<IActionResult> OnPost(int paymentMethod, string appointmentResponseDtoJson)
         {
-            AppointmentResponseDto = JsonSerializer.Deserialize<AppointmentResponseDto>(appointmentResponseDtoJson);
+            PaymentMethodInput = paymentMethod;
+
+            AppointmentBookRequestDto = JsonSerializer.Deserialize<AppointmentBookRequestDto>(appointmentResponseDtoJson);
             TransactionDropdownDto = _transactionService.GetTransactionDropdownData();
 
             var tempData = HttpContext.Session.GetString("appointment");
 
+            if (AppointmentBookRequestDto == null)
+            {
+                throw new Exception("AppointmentResponseDto is null.");
+            }
+
+            if (paymentMethod.Equals(PaymentMethod.VnPay))
+            {
+                AppointmentBookRequestDto = JsonSerializer.Deserialize<AppointmentBookRequestDto>(tempData);
+
+                var serviceList = new List<ServiceResponseDto>();
+
+                var customer = await _userService.GetByIdAsync(AppointmentBookRequestDto.CustomerId);
+
+                foreach (var serviceId in AppointmentBookRequestDto.ServiceIdList)
+                {
+                    var service = await _service.GetServiceBydId(serviceId);
+                    serviceList.Add(service);
+                }
+
+                Total = PaymentCalculation(1, serviceList);
+
+                var vnPayModel = new VnPaymentRequestDto
+                {
+                    Amount = (double)Total,
+                    CreatedDate = DateTime.Now,
+                    Description = "Appointment Payment",
+                    FullName = customer.FullName,
+                    OrderId = new Random().Next(10000000, 99999999),
+                };
+
+                VnPayId = vnPayModel.OrderId;
+
+                return Redirect(_vpnPayService.CreatePaymentUrl(HttpContext, vnPayModel));
+
+            }
+
             try
             {
-                AppointmentResponseDto = JsonSerializer.Deserialize<AppointmentResponseDto>(tempData);
+                AppointmentBookRequestDto = JsonSerializer.Deserialize<AppointmentBookRequestDto>(tempData);
                 TransactionDropdownDto = _transactionService.GetTransactionDropdownData();
 
-                if (AppointmentResponseDto != null)
+                if (AppointmentBookRequestDto != null)
                 {
-                    SelectedPets = await LoadSelectedPetList(AppointmentResponseDto.Pets.Select(p => p.Id).ToList());
-                    SelectedVet = AppointmentResponseDto.Vet;
-                    var quantity = AppointmentResponseDto.Pets.Count;
-                    TransactionServices = CreateTransactionServices(AppointmentResponseDto.Services.Select(s => s.Id).ToList(), quantity);
+                    SelectedPets = await LoadSelectedPetList(AppointmentBookRequestDto.PetIdList);
+                    SelectedVet = await _userService.GetVetByIdAsync(AppointmentBookRequestDto.VetId);
+                    var quantity = AppointmentBookRequestDto.PetIdList.Count;
+                    TransactionServices = CreateTransactionServices(AppointmentBookRequestDto.ServiceIdList, quantity);
                 }
             }
             catch (Exception ex)
@@ -72,26 +118,33 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
                 throw new Exception(ex.ToString(), ex);
             }
 
-            if (AppointmentResponseDto == null)
-            {
-                throw new Exception("AppointmentResponseDto is null.");
-            }
-
-            TransactionRequestDto transactionRequestDto = new TransactionRequestDto
-            {
-                PaymentMethod = paymentMethod,
-                Services = TransactionServices,
-                PaymentDate = DateTime.Now,
-                AppointmentId = AppointmentResponseDto.Id,
-                Status = 1
-            };
+            
 
             var userId = int.Parse(HttpContext.Session.GetString("UserId"));
 
-            await _transactionService.CreateTransactionAsync(transactionRequestDto, userId);
+            try
+            {
+                var bookAppointment = await _appointmentService.BookAppointmentAsync(AppointmentBookRequestDto, userId);
 
-            Response.Redirect("./SuccessBooking");
-            return;
+                var transactionRequest = new TransactionRequestDto
+                {
+                    AppointmentId = bookAppointment.Id,
+                    PaymentMethod = PaymentMethodInput,
+                    PaymentDate = DateTimeOffset.Now,
+                    Status = 1,
+                    Services = CreateTransactionServices(AppointmentBookRequestDto.ServiceIdList, 1)
+
+                };
+
+                await _transactionService.CreateTransactionAsync(transactionRequest, AppointmentBookRequestDto.CustomerId);
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Fail while save appointment: " + ex.Message;
+            }
+
+            TempData["Message"] = "Payment Success!";
+            return RedirectToAction("PaymentSuccess");
         }
 
         private async Task InitializeData()
@@ -100,18 +153,15 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
 
             try
             {
-                AppointmentResponseDto = JsonSerializer.Deserialize<AppointmentResponseDto>(tempData);
+                AppointmentBookRequestDto = JsonSerializer.Deserialize<AppointmentBookRequestDto>(tempData);
                 TransactionDropdownDto = _transactionService.GetTransactionDropdownData();
 
-                int quantity;
-
-                if (AppointmentResponseDto != null)
+                if (AppointmentBookRequestDto != null)
                 {
-                    SelectedPets = await LoadSelectedPetList(AppointmentResponseDto.Pets.Select(p => p.Id).ToList());
-                    SelectedVet = AppointmentResponseDto.Vet;
-                    quantity = AppointmentResponseDto.Pets.Count;
-                    TransactionServices = CreateTransactionServices(AppointmentResponseDto.Services.Select(s => s.Id).ToList(), quantity);
-                    Total = PaymentCalculation(quantity);
+                    SelectedPets = await LoadSelectedPetList(AppointmentBookRequestDto.PetIdList);
+                    SelectedVet = await _userService.GetVetByIdAsync(AppointmentBookRequestDto.VetId);
+                    var quantity = AppointmentBookRequestDto.PetIdList.Count;
+                    TransactionServices = CreateTransactionServices(AppointmentBookRequestDto.ServiceIdList, quantity);
                 }
             }
             catch (Exception ex)
@@ -141,20 +191,62 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             return transactionServices;
         }
 
-        private decimal PaymentCalculation(int quantity)
+        private static decimal PaymentCalculation(int quantity, List<ServiceResponseDto> serviceList)
         {
             decimal total = 0;
 
-            var tempData = HttpContext.Session.GetString("appointment");
-
-            var appointmentResponse = JsonSerializer.Deserialize<AppointmentResponseDto>(tempData);
-
-            foreach (var service in appointmentResponse.Services)
+            foreach (var service in serviceList)
             {
                 total += service.Price * quantity;
             }
 
             return total;
+        }
+
+        public IActionResult PaymentFail()
+        {
+            return Page();
+        }
+
+        public IActionResult PaymentSuccess()
+        {
+            return RedirectToPage("SuccessBooking");
+        }
+
+        public async Task<IActionResult> PaymentCallBack()
+        {
+            var response = _vpnPayService.PaymentExecute(Request.Query);
+
+            if (response == null || response.VnPayResponseCode != "00")
+            {
+                TempData["Message"] = $"Payment Fail: {response.VnPayResponseCode}";
+                return RedirectToAction("PaymentFail");
+            }
+
+            try
+            {
+                var bookAppointment = await _appointmentService.BookAppointmentAsync(AppointmentBookRequestDto, AppointmentBookRequestDto.CustomerId);
+
+                var transactionRequest = new TransactionRequestDto
+                {
+                    AppointmentId = bookAppointment.Id,
+                    PaymentMethod = PaymentMethodInput,
+                    PaymentDate = DateTimeOffset.Now,
+                    PaymentId = response.OrderId,
+                    Status = 2,
+                    Services = CreateTransactionServices(AppointmentBookRequestDto.ServiceIdList, 1)
+
+                };
+
+                await _transactionService.CreateTransactionAsync(transactionRequest, AppointmentBookRequestDto.CustomerId);
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Fail while save appointment: " + ex.Message;
+            }
+
+            TempData["Message"] = "Payment Success!";
+            return RedirectToAction("PaymentSuccess");
         }
     }
 }

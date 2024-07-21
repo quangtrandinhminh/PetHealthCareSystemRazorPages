@@ -81,8 +81,7 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
                 CustomerId = userId
             };
 
-            var appointmentResponse = await _appointmentService.BookAppointmentAsync(AppointmentBookRequest, userId);
-            HttpContext.Session.SetString("appointment", JsonSerializer.Serialize(appointmentResponse));
+            HttpContext.Session.SetString("appointment", JsonSerializer.Serialize(AppointmentBookRequest));
             return RedirectToPage("./TransactionForm");
         }
 
