@@ -11,7 +11,7 @@ public interface IMedicalService
     Task CreateMedicalItem(MedicalItemRequestDto medicalItem, int createdById);
     Task UpdateMedicalItem(MedicalItemUpdateDto dto, int updatedById);
     Task DeleteMedicalItem(int id, int deleteBy);
-
+    Task UpdateMedicalRecord(MedicalRecordRequestDto dto, int updatedById);
     // medical record
     Task<PaginatedList<MedicalRecordResponseDto>> GetAllMedicalRecord(int pageNumber, int pageSize);
     Task<PaginatedList<MedicalRecordResponseDto>> GetAllMedicalRecordForHospitalization (int pageNumber, int pageSize);
