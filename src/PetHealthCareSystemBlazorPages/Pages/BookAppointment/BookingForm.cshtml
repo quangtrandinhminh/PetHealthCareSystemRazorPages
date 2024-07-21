@@ -160,14 +160,10 @@
                                 <div class="form-group">
                                     <label>Select Timeslot</label>
                                     <div id="time-slot-list" class="time-slots">
-                                        @foreach (var timeSlot in Model.DisplayedTimeTableList)
-                                        {
-                                            <div class="time-slot-item" data-id="@timeSlot.Id" data-start-time="@timeSlot.StartTime" data-end-time="@timeSlot.EndTime">
-                                                @($"{timeSlot.StartTime:hh\\:mm} - {timeSlot.EndTime:hh\\:mm}")
-                                            </div>
-                                        }
+                                        <!-- The timetable list will be populated dynamically -->
                                     </div>
                                     <input type="hidden" id="selected-timetable-id" name="timeTableId" />
+                                    <p class="text-muted mt-2">Timetable will be listed based on selected pet and date.</p>
                                 </div>
 
                                 <div class="form-group">
@@ -215,6 +211,7 @@
             // Set date constraints
             setDateConstraints();
 
+            // Event delegation for pet list
             petList.addEventListener('change', handlePetSelection);
             serviceList.addEventListener('click', handleServiceSelection);
             timeSlotList.addEventListener('click', handleTimeSlotSelection);
@@ -242,6 +239,7 @@
                 const selectedPet = event.target;
                 appointmentBookRequest.petId = selectedPet.value;
                 petError.textContent = '';
+                fetchTimetable();
             }
 
             function handleServiceSelection(event) {
@@ -296,7 +294,30 @@
 
             function handleDateChange() {
                 appointmentBookRequest.appointmentDate = appointmentDateInput.value;
+                fetchTimetable();
                 fetchVets();
+            }
+
+            async function fetchTimetable() {
+                if (appointmentBookRequest.petId && appointmentBookRequest.appointmentDate) {
+                    const response = await fetch(`./BookingForm?handler=TimeTable&petId=${appointmentBookRequest.petId}&date=${appointmentBookRequest.appointmentDate}`);
+                    const timetables = await response.json();
+                    populateTimetableList(timetables);
+                }
+            }
+
+            function populateTimetableList(timetables) {
+                timeSlotList.innerHTML = '';
+                if (timetables && timetables.length > 0) {
+                    timetables.forEach(timetable => {
+                        const timetableItem = document.createElement('div');
+                        timetableItem.classList.add('time-slot-item');
+                        timetableItem.setAttribute('data-id', timetable.id);
+                        timetableItem.setAttribute('data-type', 'timetable');
+                        timetableItem.textContent = `${timetable.startTime} - ${timetable.endTime}`;
+                        timeSlotList.appendChild(timetableItem);
+                    });
+                }
             }
 
             async function fetchVets() {
@@ -357,5 +378,6 @@
                 vetError.textContent = '';
             }
         });
+
     </script>
 }
