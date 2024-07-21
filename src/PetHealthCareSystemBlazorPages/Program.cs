@@ -63,6 +63,7 @@ builder.Services.AddScoped<IService, ServiceService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 // Configure Identity
 builder.Services.AddIdentity<UserEntity, RoleEntity>()

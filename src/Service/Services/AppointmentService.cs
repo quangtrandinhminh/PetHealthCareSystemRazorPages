@@ -68,16 +68,21 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         // Collect all booked time slots
         List<TimeTableResponseDto> timeTablesExceptions = new List<TimeTableResponseDto>();
 
-        foreach (var appointment in appointments)
-        {
-            TimeTableResponseDto timeTableResponseDto = new TimeTableResponseDto
+        if (appointments.Count > 0) {
+            foreach (var appointment in appointments)
             {
-                StartTime = appointment.TimeTable.StartTime,
-                EndTime = appointment.TimeTable.EndTime,
-                Id = appointment.TimeTable.Id
-            };
+                if(appointment.TimeTable != null)
+                {
+                    TimeTableResponseDto timeTableResponseDto = new TimeTableResponseDto
+                    {
+                        StartTime = appointment.TimeTable.StartTime,
+                        EndTime = appointment.TimeTable.EndTime,
+                        Id = appointment.TimeTable.Id
+                    };
 
-            timeTablesExceptions.Add(timeTableResponseDto);
+                    timeTablesExceptions.Add(timeTableResponseDto);
+                }
+            }
         }
 
         // Get all available time slots
