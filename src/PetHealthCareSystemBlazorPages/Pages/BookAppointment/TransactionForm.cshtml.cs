@@ -130,7 +130,7 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             await ProcessBookingAndTransactionAsync();
 
             TempData["Message"] = "Payment Success!";
-            return RedirectToPage("PaymentSuccess");
+            return Redirect("./CashSuccessBooking");
         }
 
         private async Task<string> HandleVnPayPaymentAsync()
