@@ -1,4 +1,5 @@
-﻿using Azure;
+﻿using System.ComponentModel.DataAnnotations;
+using Azure;
 using BusinessObject;
 using BusinessObject.DTO;
 using BusinessObject.DTO.Appointment;
@@ -48,6 +49,8 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
     private readonly IUserService _userService = serviceProvider.GetRequiredService<IUserService>();
     private readonly MapperlyMapper _mapper = serviceProvider.GetRequiredService<MapperlyMapper>();
     private readonly ILogger _logger = Log.Logger;
+    private readonly ITransactionRepository _transactionRepository =
+        serviceProvider.GetRequiredService<ITransactionRepository>();
 
     public async Task<TimeTableResponseDto> GetTimeTableByIdAsync(int timeTableId)
     {
@@ -84,12 +87,12 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         }
 
         // Get all booked appointments for the given pet and date
-        var appointments = _appointmentRepo.GetAllWithCondition(a =>
+        var appointments = await _appointmentRepo.GetAllWithCondition(a =>
             a.DeletedTime == null && // Ensure the appointment is not deleted
             a.Status == AppointmentStatus.Scheduled &&
             a.AppointmentDate == date &&
             a.AppointmentPets.Any(p => p.PetId == petId)) // Check if any pet in the appointment matches the given petId
-            .ToList();
+            .ToListAsync();
 
         // Collect all booked time slots
         List<TimeTableResponseDto> timeTablesExceptions = new List<TimeTableResponseDto>();
@@ -189,6 +192,7 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         }
         var vet = await _userRepository.GetSingleAsync(u => u.Id == appointment.VetId);
         var owner = await _userRepository.GetSingleAsync(u => u.Id == pets[0].OwnerID);
+        var transaction = await _transactionRepository.GetSingleAsync(t => t.AppointmentId == appointmentId);
 
         var response = _mapper.Map(appointment);
         response.Pets = _mapper.Map(pets);
@@ -210,6 +214,11 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
             response.Customer = _mapper.UserToUserResponseDto(owner);
         }
 
+        if (transaction != null)
+        {
+            response.Transaction = _mapper.Map(transaction);
+        }
+
         return response;
     }
 
@@ -220,37 +229,7 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         var appointments = _appointmentRepo.GetAllWithCondition(a => a.DeletedTime == null, a => a.AppointmentPets).OrderByDescending(a => a.CreatedTime);
         var response = _mapper.Map(appointments);
         var paginatedList = await PaginatedList<AppointmentResponseDto>.CreateAsync(response, pageNumber, pageSize);
-        foreach (var item in paginatedList.Items)
-        {
-            var vet = await _userRepository.GetSingleAsync(u => u.Id == item.VetId);
-            if (vet != null)
-            {
-                item.Vet = _mapper.UserToUserResponseDto(vet);
-            }
-
-            var customer = await _userRepository.GetSingleAsync(u => u.Id == item.CustomerId);
-            if (customer != null)
-            {
-                item.Customer = _mapper.UserToUserResponseDto(customer);
-            }
-
-            var appointmentPet = (await appointments.FirstOrDefaultAsync(x => x.Id == item.Id))?.AppointmentPets!;
-            var pets = new List<Pet>();
-            foreach (var apoPet in appointmentPet)
-            {
-                var pet = await _petRepository.GetSingleAsync(p => p.Id == apoPet.PetId);
-
-                pets.Add(pet);
-            }
-            item.Pets = _mapper.Map(pets);
-            foreach (var pet in item.Pets)
-            {
-                if (pet != null) pet.OwnerName = customer?.FullName;
-
-                pet.HasMedicalRecord = await _medicalRecordRepository
-                    .GetSingleAsync(e => e.PetId == pet.Id && e.AppointmentId == item.Id) != null;
-            }
-        }
+        await ToAppointmentResponseDto(appointments, paginatedList.Items);
         return paginatedList;
     }
 
@@ -342,37 +321,7 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         var response = _mapper.Map(appointments);
 
         var paginatedList = await PaginatedList<AppointmentResponseDto>.CreateAsync(response, pageNumber, pageSize);
-        foreach (var item in paginatedList.Items)
-        {
-            var vet = await _userRepository.GetSingleAsync(u => u.Id == item.VetId);
-            if (vet != null)
-            {
-                item.Vet = _mapper.UserToUserResponseDto(vet);
-            }
-
-            var customer = await _userRepository.GetSingleAsync(u => u.Id == item.CustomerId);
-            if (customer != null)
-            {
-                item.Customer = _mapper.UserToUserResponseDto(customer);
-            }
-
-            var appointmentPet = (await appointments.FirstOrDefaultAsync(x => x.Id == item.Id))?.AppointmentPets!;
-            var pets = new List<Pet>();
-            foreach (var apoPet in appointmentPet)
-            {
-                var pet = await _petRepository.GetSingleAsync(p => p.Id == apoPet.PetId);
-
-                pets.Add(pet);
-            }
-            item.Pets = _mapper.Map(pets);
-            foreach (var pet in item.Pets)
-            {
-                if (pet != null) pet.OwnerName = customer?.FullName;
-
-                pet.HasMedicalRecord = await _medicalRecordRepository
-                    .GetSingleAsync(e => e.PetId == pet.Id && e.AppointmentId == item.Id) != null;
-            }
-        }
+        await ToAppointmentResponseDto (appointments, paginatedList.Items);
         return paginatedList;
     }
 
@@ -445,40 +394,8 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         }
 
         var response = _mapper.Map(appointments);
-
-        foreach (var item in response)
-        {
-            var vet = await _userRepository.GetSingleAsync(u => u.Id == item.VetId);
-            if (vet != null)
-            {
-                item.Vet = _mapper.UserToUserResponseDto(vet);
-            }
-
-            var customer = await _userRepository.GetSingleAsync(u => u.Id == item.CustomerId);
-            if (customer != null)
-            {
-                item.Customer = _mapper.UserToUserResponseDto(customer);
-            }
-
-            var appointmentPet = (await appointments.FirstOrDefaultAsync(x => x.Id == item.Id))?.AppointmentPets!;
-            var pets = new List<Pet>();
-            foreach (var apoPet in appointmentPet)
-            {
-                var pet = await _petRepository.GetSingleAsync(p => p.Id == apoPet.PetId);
-
-                pets.Add(pet);
-            }
-            item.Pets = _mapper.Map(pets);
-            foreach (var pet in item.Pets)
-            {
-                if (pet != null) pet.OwnerName = customer?.FullName;
-
-                pet.HasMedicalRecord = await _medicalRecordRepository
-                    .GetSingleAsync(e => e.PetId == pet.Id && e.AppointmentId == item.Id) != null;
-            }
-        }
-
         var paginatedList = await PaginatedList<AppointmentResponseDto>.CreateAsync(response, pageNumber, pageSize);
+        await ToAppointmentResponseDto(appointments, paginatedList.Items);
         return paginatedList;
     }
 
@@ -727,53 +644,77 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
         return await GetAppointmentByAppointmentId(dto.AppointmentId);
     }
 
-    private async Task<AppointmentResponseDto> ToAppointmentResponseDto(IEnumerable<Appointment> appointments,
-        IList<UserResponseDto> vets, Appointment e)
+    private async Task ToAppointmentResponseDto(IQueryable<Appointment> appointments, IReadOnlyCollection<AppointmentResponseDto> appointmentResponses)
     {
-        var vet = vets.FirstOrDefault(ee => ee.Id == e.VetId);
-
-        var pets = e.AppointmentPets.Select(ap => ap.Pet).ToList();
-
-        var ownerName = await _userRepository.GetFullnameAsyncs(pets[0].OwnerID);
-
-        foreach (var pet in pets)
+        foreach (var item in appointmentResponses)
         {
-            pet.Owner = new() { FullName = ownerName };
-        }
-
-        var petsDto = _mapper.Map(pets);
-
-        foreach (var petResponseDto in petsDto)
-        {
-            var mr =
-                await _medicalRecordRepository.GetSingleAsync(e =>
-                    e.AppointmentId == e.Id && e.PetId == petResponseDto.Id);
-
-            bool hasMedicalRecord = mr != null;
-
-            petResponseDto.HasMedicalRecord = hasMedicalRecord;
-        }
-
-        var timeTable = (await _timeTableRepo.FindByConditionAsync(tt => tt.Id == e.TimeTableId)).FirstOrDefault(); // Adjust this line if `TimeTableId` is not the correct property name
-
-        return new AppointmentResponseDto()
-        {
-            Id = e.Id,
-            AppointmentDate = e.AppointmentDate,
-            Note = e.Note,
-            BookingType = e.BookingType.ToString(),
-            Vet = vet,
-            Feedback = e.Feedback,
-            Pets = petsDto,
-            Rating = e.Rating,
-            TimeTable = new TimeTableResponseDto()
+            var vet = await _userRepository.GetSingleAsync(u => u.Id == item.VetId);
+            if (vet != null)
             {
-                Id = timeTable.Id,
-                StartTime = timeTable.StartTime, // Assuming `StartTime` is a property in your `TimeTableResponseDto`
-                EndTime = timeTable.EndTime // Assuming `EndTime` is another property you need
-            },
-            Services = _mapper.Map(e.Services),
-            Status = e.Status.ToString(),
-        };
+                item.Vet = _mapper.UserToUserResponseDto(vet);
+            }
+
+            var customer = await _userRepository.GetSingleAsync(u => u.Id == item.CustomerId);
+            if (customer != null)
+            {
+                item.Customer = _mapper.UserToUserResponseDto(customer);
+            }
+
+            var transaction = await _transactionRepository.GetSingleAsync(t => t.AppointmentId == item.Id);
+            if (transaction != null)
+            {
+                item.Transaction = _mapper.Map(transaction);
+            }
+
+            var appointmentPet = (await appointments.FirstOrDefaultAsync(x => x.Id == item.Id))?.AppointmentPets!;
+            var pets = new List<Pet>();
+            foreach (var apoPet in appointmentPet)
+            {
+                var pet = await _petRepository.GetSingleAsync(p => p.Id == apoPet.PetId);
+
+                pets.Add(pet);
+            }
+            item.Pets = _mapper.Map(pets);
+            foreach (var pet in item.Pets)
+            {
+                if (pet != null) pet.OwnerName = customer?.FullName;
+
+                pet.HasMedicalRecord = await _medicalRecordRepository
+                    .GetSingleAsync(e => e.PetId == pet.Id && e.AppointmentId == item.Id) != null;
+            }
+        }
+
+        /*var vetIds = appointmentResponses.Select(a => a.VetId).Distinct().ToList();
+        var vets = await _userRepository.GetUsersByIdsAsync(vetIds);
+
+        var customerIds = appointmentResponses.Select(a => a.CustomerId).Distinct().ToList();
+        var customers = await _userRepository.GetUsersByIdsAsync(customerIds);
+
+        var appointmentIds = appointmentResponses.Select(a => a.Id).Distinct().ToList();
+        var transactions = await _transactionService.GetTransactionsByAppointmentIdsAsync(appointmentIds);
+        var appointmentPets = await _petRepository.GetPetsByAppointmentIdsAsync(appointmentIds);
+
+        var petIds = appointmentPets.Select(ap => ap.PetId).Distinct().ToList();
+        var pets = await _petRepository.GetPetsByIdsAsync(petIds);
+
+        var medicalRecords = await _medicalRecordRepository.GetMedicalRecordsByPetIdsAndAppointmentIdsAsync(petIds, appointmentIds);
+
+        foreach (var item in appointmentResponses)
+        {
+            item.Vet = vets.SingleOrDefault(v => v.Id == item.VetId);
+            item.Customer = customers.SingleOrDefault(c => c.Id == item.CustomerId);
+            item.Transaction = transactions.SingleOrDefault(t => t.AppointmentId == item.Id);
+
+            var petsForAppointment = appointmentPets.Where(ap => ap.AppointmentId == item.Id)
+                .Select(ap => pets.SingleOrDefault(p => p.Id == ap.PetId))
+                .ToList();
+            item.Pets = _mapper.Map(petsForAppointment);
+
+            foreach (var pet in item.Pets)
+            {
+                if (pet != null) pet.OwnerName = item.Customer?.FullName;
+                pet.HasMedicalRecord = medicalRecords.Any(mr => mr.PetId == pet.Id && mr.AppointmentId == item.Id);
+            }
+        }*/
     }
 }

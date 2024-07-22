@@ -236,6 +236,8 @@
                 <th onclick="sortTable(4)" data-sort-dir="">Rating</th>
                 <th onclick="sortTable(5)" data-sort-dir="">Veterinarian</th>
                 <th onclick="sortTable(6)" data-sort-dir="">Status</th>
+                <th>Payment method</th>
+                <th>Payment status</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -254,6 +256,8 @@
                     <td>@Html.DisplayFor(modelItem => item.Rating)</td>
                     <td>@Html.DisplayFor(modelItem => item.Vet.FullName)</td>
                     <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Transaction.PaymentMethod)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Transaction.Status)</td>
                     <td class="appointment-list-actions">
                         <a asp-page="./Cancel" asp-route-id="@item.Id">Cancel</a>
                             @if (item.Feedback == null && item.Status == "Complete")
