@@ -244,7 +244,7 @@ public class HospitalizationService(IServiceProvider serviceProvider) : IHospita
             throw new AppException(ResponseCodeConstants.NOT_FOUND, ResponseMessageConstantsUser.VET_NOT_FOUND);
         }
 
-        var hospitalization = await _hospitalizationRepo.GetSingleAsync(h => h.Id == dto.Id);
+        var hospitalization = await _hospitalizationRepo.GetSingleAsync(h => h.Id == dto.Id,false,h => h.MedicalRecord);
         if (hospitalization == null)
         {
             throw new AppException(ResponseCodeConstants.NOT_FOUND,
