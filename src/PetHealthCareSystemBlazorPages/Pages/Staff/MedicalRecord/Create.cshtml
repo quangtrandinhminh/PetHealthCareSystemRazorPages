@@ -219,19 +219,21 @@
                 {
                     <div class="form-group">
                         <label>Select cage</label>
-                        <div id="pet-list" class="select-list">
+                        <div>
+                        <select asp-for="Hospitalization.CageId" class="form-control">
+                           
                             @foreach (var cage in Model.DisplayedCageList)
                             {
-                                <div class="select-item">
-                                    <input type="radio" id="cage-@cage.Id" name="cageId" value="@cage.Id" >
-                                    <label for="pet-@cage.Id">Cage: @cage.Id - Capacity: @cage.Capacity</label>
-                                    
-                                </div>
+                                
+                                <option value="@cage.Id">Cage: @cage.Id</option>
                             }
+                        </select>
                         </div>
                         <span id="pet-error" class="text-danger"></span>
                     </div>
                 }
+                </br>
+                </br>
                 <div class="form-group">
                     <label asp-for="Hospitalization.Date" class="control-label"></label>
                     <input asp-for="Hospitalization.Date" class="form-control" type="date"/>

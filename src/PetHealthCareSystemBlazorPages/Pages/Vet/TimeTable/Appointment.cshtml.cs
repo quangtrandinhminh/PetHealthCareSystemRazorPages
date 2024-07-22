@@ -30,6 +30,8 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
         public PaginatedList<AppointmentResponseDto> Appointment { get; set; } = default!;
         [BindProperty(SupportsGet = true)]
         public int PageSize { get; set; } = 5;
+        [BindProperty(SupportsGet = true)]
+        public string? SearchDate { get; set; }
         public async Task<IActionResult> OnGetAsync(int? currentPage)
         {
             var accountId = HttpContext.Session.GetString("UserId"); // Assuming UserId is stored in Session
@@ -41,7 +43,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
             }
             try
             {
-
+                var searchDateValueFrom = string.IsNullOrEmpty(SearchDate) ? DateOnly.MinValue : DateOnly.Parse(SearchDate);
                 int pagenumber;
                 int id = int.Parse(accountId);
                 var date = DateTime.Now.ToString("yyyy-MM-dd");
@@ -53,8 +55,15 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
                 {
                     pagenumber = (int)currentPage;
                 }
-                var appoint = await _appointmentService.GetVetAppointmentsAsync(id, date, pagenumber, PageSize);
-                Appointment = appoint;
+                if (string.IsNullOrEmpty(SearchDate))
+                {
+                    Appointment = await _appointmentService.GetVetAppointmentsAsync(id, date, pagenumber, PageSize);
+                }
+                else
+                {
+                    Appointment = await _appointmentService.GetVetAppointmentsAsync(id, searchDateValueFrom.ToString(), pagenumber, PageSize);
+                }
+                
                 return Page();
                 
             }

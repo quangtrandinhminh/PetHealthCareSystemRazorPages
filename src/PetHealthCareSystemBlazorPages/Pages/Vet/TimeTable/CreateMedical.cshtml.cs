@@ -63,7 +63,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
                 MedicalRecord = new MedicalRecordRequestDto()
                 {
                     AppointmentId = AppointmentItem.Id,
-                    
+                    PetId = AppointmentItem.Pets.First().Id
                 };
             }
             catch (Exception ex)
@@ -88,10 +88,11 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
             ModelState.Remove("Services");
             ModelState.Remove("Timetable");
             ModelState.Remove("BookingType");
+            ModelState.Remove("Transaction");
             ModelState.Remove("SelectedMedicalItemsQuantity");
             if (!ModelState.IsValid)
             {
-                return Page();
+                return await OnGetAsync(MedicalRecord.AppointmentId);
             }
             try
             {
@@ -151,8 +152,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
                     }
 
                 }
-
-
+        
 
                 await _medical.CreateMedicalRecord(MedicalRecord, id);
                 List<int>petList = new List<int>();
