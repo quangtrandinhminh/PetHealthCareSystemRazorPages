@@ -106,7 +106,7 @@
 
             <div class="transaction-form-group">
                 <label for="timeTable">Time Table</label>
-                <input type="text" id="timeTable" value="@Model.AppointmentBookRequestDto.TimeTableId - @Model.AppointmentBookRequestDto.TimeTableId" readonly class="transaction-form-input" />
+                <input type="text" id="timeTable" value="@Model.TimeTableResponseDto.StartTime - @Model.TimeTableResponseDto.EndTime" readonly class="transaction-form-input" />
             </div>
 
             <div class="transaction-form-group">
@@ -127,10 +127,10 @@
             <div class="transaction-form-group">
                 <label for="services">Services</label>
                 <ul id="services" class="transaction-form-list">
-                    @foreach (var service in Model.AppointmentBookRequestDto.ServiceIdList)
+                    @foreach (var service in Model.ServicesList)
                     {
                         <li class="transaction-form-list-item">
-                            @service - @service VND
+                            @service.Name - @service.Price VND
                         </li>
                     }
                 </ul>

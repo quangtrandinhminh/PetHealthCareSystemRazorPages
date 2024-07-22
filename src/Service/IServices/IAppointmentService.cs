@@ -9,6 +9,7 @@ namespace Service.IServices;
 
 public interface IAppointmentService
 {
+    Task<TimeTableResponseDto> GetTimeTableByIdAsync(int timeTableId);
     Task<List<TimeTableResponseDto>> GetAllTimeFramesForBookingAsync(int petId, DateOnly date);
     Task<List<UserResponseDto>> GetFreeWithTimeFrameAndDateAsync(DateTimeQueryDto qo);
     Task<AppointmentResponseDto> GetAppointmentByAppointmentId(int appointmentId);

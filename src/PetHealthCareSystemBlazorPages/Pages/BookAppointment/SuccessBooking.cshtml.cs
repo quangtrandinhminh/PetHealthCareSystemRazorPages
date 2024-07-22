@@ -39,8 +39,7 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
         public List<PetResponseDto> SelectedPets { get; set; }
         public UserResponseDto SelectedVet { get; set; }
         public List<TransactionServicesDto> TransactionServices { get; set; }
-
-        public decimal Total {  get; set; }
+        public decimal Total { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -77,13 +76,13 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             catch (Exception ex)
             {
                 TempData["Message"] = "Failed to initialize data: " + ex.Message;
+                return Page();
             }
 
-            var response = _vpnPayService.PaymentExecute(Request.Query);
-
-            if (response == null || response.VnPayResponseCode != "00")
+            var response = ExecutePayment();
+            if (!response.Item1)
             {
-                TempData["Message"] = $"Payment Fail: {response?.VnPayResponseCode ?? "Unknown error"}";
+                TempData["Message"] = response.Item2;
                 return RedirectToPage("/BookAppointment/PaymentFail");
             }
 
@@ -96,7 +95,7 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
                     AppointmentId = bookAppointment.Id,
                     PaymentMethod = 2,
                     PaymentDate = DateTimeOffset.Now,
-                    PaymentId = response.OrderId,
+                    PaymentId = response.Item3.OrderId,
                     Status = 2,
                     Services = CreateTransactionServices(AppointmentBookRequestDto.ServiceIdList, 1)
                 };
@@ -106,10 +105,23 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             catch (Exception ex)
             {
                 TempData["Message"] = "Failed to save appointment: " + ex.Message;
+                return Page();
             }
 
             TempData["Message"] = "Payment Success!";
             return RedirectToPage("SuccessBooking");
+        }
+
+        private (bool, string, VnPaymentResponseDto) ExecutePayment()
+        {
+            var response = _vpnPayService.PaymentExecute(Request.Query);
+
+            if (response == null || response.VnPayResponseCode != "00")
+            {
+                return (false, $"Payment Fail: {response?.VnPayResponseCode ?? "Unknown error"}", null);
+            }
+
+            return (true, "Payment Success", response);
         }
 
         private async Task<List<PetResponseDto>> LoadSelectedPetListAsync(List<int> petIdList)
@@ -142,6 +154,5 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             }
             return total;
         }
-
     }
 }
