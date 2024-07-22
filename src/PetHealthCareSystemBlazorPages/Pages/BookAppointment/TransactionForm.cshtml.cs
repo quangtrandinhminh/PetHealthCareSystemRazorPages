@@ -2,6 +2,7 @@ using Azure;
 using BusinessObject.DTO.Appointment;
 using BusinessObject.DTO.Pet;
 using BusinessObject.DTO.Service;
+using BusinessObject.DTO.TimeTable;
 using BusinessObject.DTO.Transaction;
 using BusinessObject.DTO.User;
 using BusinessObject.DTO.VNPay;
@@ -30,6 +31,9 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             _transactionService = transactionService;
             _userService = userService;
             _vnPayService = vnPayService;
+
+            // Initialize TimeTableResponseDto
+            TimeTableResponseDto = new TimeTableResponseDto();
         }
 
         public AppointmentBookRequestDto AppointmentBookRequestDto { get; set; }
@@ -37,6 +41,8 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
         public UserResponseDto SelectedVet { get; set; }
         public TransactionDropdownDto TransactionDropdownDto { get; set; }
         public List<TransactionServicesDto> TransactionServices { get; set; }
+        public TimeTableResponseDto TimeTableResponseDto { get; set; }
+        public List<ServiceResponseDto> ServicesList { get; set; }
         public decimal Total { get; set; }
         public int PaymentMethodInput { get; set; }
         public int VnPayId { get; set; }
@@ -53,11 +59,54 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             await InitializeDataAsync();
         }
 
+        private async Task InitializeDataAsync()
+        {
+            var tempData = HttpContext.Session.GetString("appointment");
+            TransactionDropdownDto = _transactionService.GetTransactionDropdownData();
+
+            try
+            {
+                AppointmentBookRequestDto = JsonSerializer.Deserialize<AppointmentBookRequestDto>(tempData);
+
+                if (AppointmentBookRequestDto != null)
+                {
+                    SelectedPets = await LoadSelectedPetListAsync(AppointmentBookRequestDto.PetIdList);
+                    SelectedVet = await _userService.GetVetByIdAsync(AppointmentBookRequestDto.VetId);
+                    var quantity = AppointmentBookRequestDto.PetIdList.Count;
+                    TransactionServices = CreateTransactionServices(AppointmentBookRequestDto.ServiceIdList, quantity);
+
+                    var serviceList = new List<ServiceResponseDto>();
+
+                    foreach (var serviceId in AppointmentBookRequestDto.ServiceIdList)
+                    {
+                        var service = await _service.GetServiceBydId(serviceId);
+                        serviceList.Add(service);
+                    }
+
+                    ServicesList = serviceList;
+
+                    Total = PaymentCalculation(1, serviceList);
+
+                    // Example of setting TimeTableResponseDto - ensure this is correct
+                    TimeTableResponseDto = await _appointmentService.GetTimeTableByIdAsync(AppointmentBookRequestDto.TimeTableId);
+
+                    if (TimeTableResponseDto == null)
+                    {
+                        TempData["Message"] = "TimeTableResponseDto is null.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Failed to initialize data: " + ex.Message;
+            }
+        }
+
+
         public async Task<IActionResult> OnPostAsync(int paymentMethod, string appointmentResponseDtoJson)
         {
             PaymentMethodInput = paymentMethod;
             AppointmentBookRequestDto = JsonSerializer.Deserialize<AppointmentBookRequestDto>(appointmentResponseDtoJson);
-            TransactionDropdownDto = _transactionService.GetTransactionDropdownData();
 
             var tempData = HttpContext.Session.GetString("appointment");
 
@@ -103,7 +152,6 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             var vnPayModel = new VnPaymentRequestDto
             {
                 Amount = (double)Total,
-                CreatedDate = DateTime.Now,
                 Description = "Appointment Payment",
                 FullName = customer.FullName,
                 OrderId = new Random().Next(10000000, 99999999),
@@ -122,7 +170,6 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             {
                 var tempData = HttpContext.Session.GetString("appointment");
                 AppointmentBookRequestDto = JsonSerializer.Deserialize<AppointmentBookRequestDto>(tempData);
-                TransactionDropdownDto = _transactionService.GetTransactionDropdownData();
 
                 if (AppointmentBookRequestDto != null)
                 {
@@ -149,39 +196,6 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             catch (Exception ex)
             {
                 TempData["Message"] = "Failed to save appointment: " + ex.Message;
-            }
-        }
-
-        private async Task InitializeDataAsync()
-        {
-            var tempData = HttpContext.Session.GetString("appointment");
-
-            try
-            {
-                AppointmentBookRequestDto = JsonSerializer.Deserialize<AppointmentBookRequestDto>(tempData);
-                TransactionDropdownDto = _transactionService.GetTransactionDropdownData();
-
-                if (AppointmentBookRequestDto != null)
-                {
-                    SelectedPets = await LoadSelectedPetListAsync(AppointmentBookRequestDto.PetIdList);
-                    SelectedVet = await _userService.GetVetByIdAsync(AppointmentBookRequestDto.VetId);
-                    var quantity = AppointmentBookRequestDto.PetIdList.Count;
-                    TransactionServices = CreateTransactionServices(AppointmentBookRequestDto.ServiceIdList, quantity);
-
-                    var serviceList = new List<ServiceResponseDto>();
-
-                    foreach (var serviceId in AppointmentBookRequestDto.ServiceIdList)
-                    {
-                        var service = await _service.GetServiceBydId(serviceId);
-                        serviceList.Add(service);
-                    }
-
-                    Total = PaymentCalculation(1, serviceList);
-                }
-            }
-            catch (Exception ex)
-            {
-                TempData["Message"] = "Failed to initialize data: " + ex.Message;
             }
         }
 

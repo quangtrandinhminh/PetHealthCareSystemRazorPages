@@ -23,6 +23,7 @@ using Utility.Constants;
 using Utility.Enum;
 using Utility.Exceptions;
 using Utility.Helpers;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Service.Services;
 
@@ -48,6 +49,31 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
     private readonly MapperlyMapper _mapper = serviceProvider.GetRequiredService<MapperlyMapper>();
     private readonly ILogger _logger = Log.Logger;
 
+    public async Task<TimeTableResponseDto> GetTimeTableByIdAsync(int timeTableId)
+    {
+        _logger.Information("Get timetable for id: " + timeTableId);
+
+        if (timeTableId == null)
+        {
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsCommon.DATA_INVALID);
+        }
+
+        var timetable = await _timeTableRepo.GetByIdAsync(timeTableId);
+
+        if (timetable != null)
+        {
+            var response = new TimeTableResponseDto
+            {
+                StartTime = timetable.StartTime,
+                EndTime = timetable.EndTime,
+                Id = timeTableId,
+            };
+
+            return response;
+        }
+
+        throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsCommon.DATA_INVALID);
+    }
     public async Task<List<TimeTableResponseDto>> GetAllTimeFramesForBookingAsync(int petId, DateOnly date)
     {
         _logger.Information("Get time frame suitable for pet at date: " + date);
