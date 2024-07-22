@@ -210,6 +210,11 @@
             </select>
             <button type="submit">Apply</button>
         </form>
+        <form method="get" class="search-by-date">
+            <label for="searchDateFrom">Search by Date:</label>
+            <input type="date" id="searchDateFrom" name="searchDate" asp-for="SearchDate" value="@Model.SearchDate" />
+            <button type="submit">Apply</button>
+        </form>
     </div>
     <div class="appointment-list-table-container">
         <table class="appointment-list-table">

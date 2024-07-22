@@ -26,32 +26,29 @@ namespace PetHealthCareSystemRazorPages.Pages.Service
             _service = service;
         }
 
-        public List<ServiceResponseDto> Service { get;set; } = default!;
-
-        public async Task OnGetAsync()
+        public PaginatedList<ServiceResponseDto> Service { get;set; } = default!;
+        [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 5;
+        public async Task OnGetAsync(int? currentPage)
         {
-            var accountId = HttpContext.Session.GetString("UserId"); // Assuming UserId is stored in Session
-            var accountRole = HttpContext.Session.GetString("Role");
-            // Check if accountId is null or empty or if accountRole is not "admin" (assuming "admin" role is stored as such)
-            if (string.IsNullOrEmpty(accountId) || !IsAdminRole(accountRole))
-            {
-                Response.Redirect("/");
-            }
             try
             {
-                Service = await _service.GetAllServiceAsync();
+                int pagenumber;
+                if (currentPage == null)
+                {
+                    pagenumber = 1;
+                }
+                else
+                {
+                    pagenumber = (int)currentPage;
+                }
+                Service = await _service.GetAllServiceAsync(pagenumber, PageSize);
             }
             catch (Exception ex)
             {
-                Service = new List<ServiceResponseDto>();
+                Service = new PaginatedList<ServiceResponseDto>();
                 ModelState.AddModelError(string.Empty, ex.Message);
             }
-        }
-        private bool IsAdminRole(string accountRole)
-        {
-            // Example check if "admin" is contained in the roles list
-            // Adjust this logic based on how roles are stored in your application
-            return !string.IsNullOrEmpty(accountRole) && accountRole.Split(',').Contains("Admin");
         }
     }
 }

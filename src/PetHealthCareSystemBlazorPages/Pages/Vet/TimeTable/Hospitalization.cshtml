@@ -223,6 +223,7 @@
         <table class="appointment-list-table">
             <thead>
                 <tr>
+                    <th>No.</th>
                     <th>
                         @Html.DisplayNameFor(model => model.Hospitalize.Items.FirstOrDefault().MedicalRecordId)
                     </th>
@@ -250,17 +251,28 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Hospitalize.Items.FirstOrDefault().Date)
                     </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Hospitalize.Items.FirstOrDefault().HospitalizationDateStatus)
+                    </th>
                     <th></th>
                     
                 </tr>
             </thead>
             <tbody>
+                @{
+                    var i = 1;
+                }
                 @if (Model.Hospitalize.Items.Count() != 0)
                 {
 
                     foreach (var item in Model.Hospitalize.Items)
                     {
                         <tr>
+                            <td>
+                                @i @{
+                                    i++;
+                                }
+                            </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.MedicalRecordId)
                             </td>
@@ -288,8 +300,15 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.Date)
                             </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.HospitalizationDateStatus)
+                            </td>
                             <td class="appointment-list-actions">
-                                <a asp-page="./Discharge" asp-route-id="@item.Id">Update</a>
+                                @if (!@item.HospitalizationDateStatus.Equals("DischargeDate"))
+                                {
+                                    <a asp-page="./Discharge" asp-route-id="@item.Id">Update</a>
+                                }
+                                
                             </td>
                         </tr>
                     }

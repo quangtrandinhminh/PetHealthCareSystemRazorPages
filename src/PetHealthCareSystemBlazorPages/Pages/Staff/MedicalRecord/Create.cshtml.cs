@@ -83,12 +83,12 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.MedicalRecord
             }
         }
 
-        public async Task<IActionResult> OnPostAsync(int? cageId)
+        public async Task<IActionResult> OnPostAsync()
         {
             ModelState.Remove("Hospitalization.Date");
             if (!ModelState.IsValid)
             {
-                return Page();
+                return await OnGetAsync(Hospitalization.MedicalRecordId);
             }
             try
             {
@@ -114,15 +114,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.MedicalRecord
                     Date = Hospitalization.Date,
                     TimetableId = Hospitalization.TimeTableId,
                 };
-                if (cageId == null)
-                {
-                    ModelState.AddModelError(string.Empty, "Ban phai chon chuong");
-                    return await OnGetAsync(Hospitalization.MedicalRecordId);
-                }
-                else
-                {
-                    Hospitalization.CageId = cageId.Value;
-                }
+                
                 var test = await _hospital.GetFreeWithTimeFrameAndDateAsync(check);
                 if (test.FirstOrDefault(x =>x.Id == Hospitalization.VetId) == null)
                 {
