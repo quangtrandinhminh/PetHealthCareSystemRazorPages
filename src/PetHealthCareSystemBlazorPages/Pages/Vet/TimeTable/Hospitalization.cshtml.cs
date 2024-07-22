@@ -69,6 +69,7 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
                 {
                     filter.FromDate = searchDateValueFrom.ToString();
                 }
+
                 if (!string.IsNullOrEmpty(SearchDateTo))
                 {
                     filter.ToDate = searchDateValueTo.ToString();
