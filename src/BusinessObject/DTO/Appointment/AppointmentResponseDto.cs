@@ -1,6 +1,7 @@
 ﻿using BusinessObject.DTO.Pet;
 using BusinessObject.DTO.Service;
 using BusinessObject.DTO.TimeTable;
+using BusinessObject.DTO.Transaction;
 using BusinessObject.DTO.User;
 using BusinessObject.DTO.Vet;
 using BusinessObject.Entities.Identity;
@@ -25,6 +26,7 @@ public class AppointmentResponseDto
     public int CustomerId { get; set; }
     public UserResponseDto Customer { get; set; }
     public UserResponseDto Vet { get; set; }
+    public TransactionResponseDto Transaction { get; set; }
     public List<PetResponseDto?> Pets { get; set; }
     public List<ServiceResponseDto?> Services { get; set; }
     public string Status { get; set; }
