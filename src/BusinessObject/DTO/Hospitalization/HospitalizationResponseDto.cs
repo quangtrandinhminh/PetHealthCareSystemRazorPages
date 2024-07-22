@@ -20,4 +20,5 @@ public class HospitalizationResponseDto
     public int VetId { get; set; }
     public string HospitalizationDateStatus { get; set; }
     public UserResponseDto Vet { get; set; }
+
 }
