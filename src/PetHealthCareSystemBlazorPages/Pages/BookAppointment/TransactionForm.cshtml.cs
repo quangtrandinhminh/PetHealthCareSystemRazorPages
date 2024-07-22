@@ -242,7 +242,7 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
 
         public async Task<IActionResult> PaymentCallBackAsync()
         {
-            var response = _vnPayService.PaymentExecute(Request.Query);
+            var response = _vnPayService.PaymentExecute(HttpContext);
 
             if (response == null || response.VnPayResponseCode != "00")
             {

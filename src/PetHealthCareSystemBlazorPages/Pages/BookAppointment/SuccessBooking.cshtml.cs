@@ -40,13 +40,14 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
         public UserResponseDto SelectedVet { get; set; }
         public List<TransactionServicesDto> TransactionServices { get; set; }
         public decimal Total { get; set; }
+        public string PaymentIdInput { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task OnGetAsync()
         {
             var role = HttpContext.Session.GetString("Role");
             if (role == null || !role.Contains(UserRole.Customer.ToString()))
             {
-                return RedirectToPage("/Login");
+                RedirectToPage("/Login");
             }
 
             var tempData = HttpContext.Session.GetString("appointment");
@@ -76,14 +77,14 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             catch (Exception ex)
             {
                 TempData["Message"] = "Failed to initialize data: " + ex.Message;
-                return Page();
+                Page();
             }
 
             var response = ExecutePayment();
             if (!response.Item1)
             {
                 TempData["Message"] = response.Item2;
-                return RedirectToPage("/BookAppointment/PaymentFail");
+                RedirectToPage("/BookAppointment/PaymentFail");
             }
 
             try
@@ -95,26 +96,26 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
                     AppointmentId = bookAppointment.Id,
                     PaymentMethod = 2,
                     PaymentDate = DateTimeOffset.Now,
-                    PaymentId = response.Item3.OrderId,
+                    PaymentId = PaymentIdInput,
                     Status = 2,
                     Services = CreateTransactionServices(AppointmentBookRequestDto.ServiceIdList, 1)
                 };
 
-                await _transactionService.CreateTransactionAsync(transactionRequest, AppointmentBookRequestDto.CustomerId);
+                 await _transactionService.CreateTransactionAsync(transactionRequest, AppointmentBookRequestDto.CustomerId);
             }
             catch (Exception ex)
             {
                 TempData["Message"] = "Failed to save appointment: " + ex.Message;
-                return Page();
+                Page();
             }
 
-            TempData["Message"] = "Payment Success!";
-            return RedirectToPage("SuccessBooking");
         }
 
         private (bool, string, VnPaymentResponseDto) ExecutePayment()
         {
-            var response = _vpnPayService.PaymentExecute(Request.Query);
+            var response = _vpnPayService.PaymentExecute(HttpContext);
+
+            PaymentIdInput = response.PaymentId;
 
             if (response == null || response.VnPayResponseCode != "00")
             {

@@ -42,8 +42,11 @@ public class VnPayService : IVnPayService
     }
 
     // returnUrl call this method
-    public VnPaymentResponseDto PaymentExecute(IQueryCollection collections)
+    public VnPaymentResponseDto PaymentExecute(HttpContext context)
     {
+        var request = context.Request;
+        var collections = request.Query;
+
         var vnpay = new VnPayLibrary();
         var vnpaySetting = VnPaySetting.Instance;
 
@@ -78,6 +81,7 @@ public class VnPayService : IVnPayService
             OrderId = vnp_orderId.ToString(),
             TransactionId = vnp_TransactionId.ToString(),
             Token = vnp_SecureHash,
+            PaymentId = request.QueryString.ToString(),
 
             // success true => 00 , false => != 00
             VnPayResponseCode = vnp_ResponseCode
