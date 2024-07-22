@@ -256,7 +256,7 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
         // if status is paid then payment method must be an online method, here is payos
         if (dto.Status == (int)TransactionStatus.Paid)
         {
-            if (dto.PaymentMethod != (int)PaymentMethod.Cash)
+            if (dto.PaymentMethod != (int)PaymentMethod.Cash && dto.PaymentMethod != (int)PaymentMethod.VnPay)
             {
                 throw new AppException(ResponseCodeConstants.BAD_REQUEST,
                     ResponseMessageConstantsTransaction.INVALID_PAYMENT_METHOD,
@@ -357,6 +357,16 @@ public class TransactionService(IServiceProvider serviceProvider) : ITransaction
         if (dto.MedicalItems != null)
         {
             medicalItemDetails = await CheckMedicalItemsAsync(dto.MedicalItems, _medicalItemRepository);
+        }
+
+        if(dto.Status == 2)
+        {
+            transactionEntity.Status = TransactionStatus.Paid;
+        }
+
+        if (dto.PaymentMethod == 2)
+        {
+            transactionEntity.PaymentMethod = PaymentMethod.VnPay;
         }
 
         var transactionDetails = serviceDetails.Concat(medicalItemDetails).ToList();
