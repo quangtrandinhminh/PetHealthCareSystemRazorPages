@@ -260,7 +260,13 @@
                                     <a>MakeRecord</a>
                                 }else
                                 {
-                                    <a asp-page="./CreateMedical" asp-route-id="@item.Id">MakeRecord</a>
+                                    var now = DateTime.Now;
+                                    var today = DateOnly.FromDateTime(now);
+                                    @if (item.AppointmentDate.Equals(today))
+                                    {
+                                        <a asp-page="./CreateMedical" asp-route-id="@item.Id">MakeRecord</a>
+                                    }
+                                    
                                 }
                             </td>
                         </tr>
