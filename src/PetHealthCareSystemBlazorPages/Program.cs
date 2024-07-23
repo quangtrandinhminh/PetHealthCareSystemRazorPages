@@ -96,5 +96,4 @@ app.UseAuthorization();
 app.UseMiddleware<ErrorHandlerMiddleware>(Log.Logger);
 
 app.MapRazorPages();
-
 app.Run();

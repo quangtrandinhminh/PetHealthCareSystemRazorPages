@@ -224,12 +224,14 @@
                 <tr>
                     <th>No.</th>
                     <th onclick="sortTable(0)" data-sort-dir="">Date</th>
+                    <th>Customer</th>
                     <th>Phone Number</th>
                     <th onclick="sortTable(1)" data-sort-dir="">Start Time</th>
                     <th onclick="sortTable(2)" data-sort-dir="">End Time</th>
                     <th onclick="sortTable(3)" data-sort-dir="">Type</th>
                     <th onclick="sortTable(4)" data-sort-dir="">Rating</th>
                     <th onclick="sortTable(5)" data-sort-dir="">Veterinarian</th>
+                    <th>Pet</th>
                     <th onclick="sortTable(6)" data-sort-dir="">Status</th>
                     <th>Payment method</th>
                     <th>Payment status</th>
@@ -249,24 +251,27 @@
                             }
                         </td>
                         <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Customer.FullName)</td>
                         <td>@Html.DisplayFor(modelItem => item.Customer.PhoneNumber)</td>
                         <td>@Html.DisplayFor(modelItem => item.TimeTable.StartTime)</td>
                         <td>@Html.DisplayFor(modelItem => item.TimeTable.EndTime)</td>
                         <td>@Html.DisplayFor(modelItem => item.BookingType)</td>
                         <td>@Html.DisplayFor(modelItem => item.Rating)</td>
                         <td>@Html.DisplayFor(modelItem => item.Vet.FullName)</td>
+                        <td>
+                            @foreach (var pet in item.Pets)
+                            {
+                                <span>@pet?.Name</span>
+                            }
+                        </td>
                         <td>@Html.DisplayFor(modelItem => item.Status)</td>
                         <td>@Html.DisplayFor(modelItem => item.Transaction.PaymentMethod)</td>
                         <td>@Html.DisplayFor(modelItem => item.Transaction.Status)</td>
                         <td class="appointment-list-actions">
                             @if (item.Transaction?.Status == TransactionStatus.Pending.ToString())
-                            @if (item.Transaction?.Status != "Paid")
                             {
                                 <a asp-page="./Edit" asp-route-id="@item.Id">Update payment</a>
-                                <a asp-page="./CreateTransaction" asp-route-id="@item.Id">Create Transaction</a>
-                                
                             }
-
                             <a asp-page="./Details" asp-route-id="@item.Id">Details</a>
                         </td>
                     </tr>
