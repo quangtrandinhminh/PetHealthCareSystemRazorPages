@@ -108,8 +108,6 @@ namespace PetHealthCareSystemRazorPages.Pages.BookAppointment
             PaymentMethodInput = paymentMethod;
             AppointmentBookRequestDto = JsonSerializer.Deserialize<AppointmentBookRequestDto>(appointmentResponseDtoJson);
 
-            var tempData = HttpContext.Session.GetString("appointment");
-
             if (AppointmentBookRequestDto == null)
             {
                 TempData["Message"] = "Appointment details are missing.";

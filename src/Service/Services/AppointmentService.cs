@@ -145,8 +145,6 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
             return obj.Id.GetHashCode();
         }
     }
-
-
     public async Task<List<UserResponseDto>> GetFreeWithTimeFrameAndDateAsync(DateTimeQueryDto qo)
     {
         _logger.Information("Get free vet with time frame and date {@qo}", qo);
@@ -402,78 +400,7 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
     public async Task<AppointmentResponseDto> BookAppointmentAsync(AppointmentBookRequestDto appointmentBookRequestDto, int createdById)
     {
         _logger.Information("Book online appointment {@appointmentBookRequestDto} by user id {@createdById}", appointmentBookRequestDto, createdById);
-
-        // Check pet list is null or empty
-        if (appointmentBookRequestDto.PetIdList.Count == 0)
-        {
-            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsCommon.DATA_NOT_ENOUGH);
-        }
-        else
-        {
-            foreach (var i in appointmentBookRequestDto.PetIdList)
-            {
-                var pet = await _petRepository.GetByIdAsync(i);
-
-                if (pet == null || (pet != null && pet.OwnerID != appointmentBookRequestDto.CustomerId))
-                {
-                    throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.NOT_YOUR_PET);
-                }
-            }
-        }
-
-        // Check vet 
-        var vet = await _userService.GetVetByIdAsync(appointmentBookRequestDto.VetId);
-
-        if (vet == null)
-        {
-            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsUser.VET_NOT_FOUND);
-        }
-
-        // Check date format
-        if (!DateOnly.TryParse(appointmentBookRequestDto.AppointmentDate, out DateOnly date))
-        {
-            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsCommon.DATE_WRONG_FORMAT);
-        }
-
-        // Check timetable
-        var existTimetable = await _timeTableRepo.GetByIdAsync(appointmentBookRequestDto.TimeTableId);
-
-        if (existTimetable == null)
-        {
-            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsTimetable.TIMETABLE_NOT_FOUND);
-        }
-
-        // Check can book
-        var canBook = await _appointmentRepo.GetSingleAsync(e => e.AppointmentDate == date && e.TimeTableId == appointmentBookRequestDto.TimeTableId && e.VetId == appointmentBookRequestDto.VetId);
-        if (canBook != null)
-        {
-            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsAppointment.APPOINTMENT_EXISTED);
-        }
-
-        // Check existed service
-        List<BusinessObject.Entities.Service> services = new();
-
-        foreach (var i in appointmentBookRequestDto.ServiceIdList)
-        {
-            var existService = await _serviceRepo.GetByIdAsync(i);
-
-            if (existService == null)
-            {
-                throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsService.SERVICE_NOT_FOUND);
-            }
-
-            services.Add(new BusinessObject.Entities.Service
-            {
-                Id = i,
-            });
-        }
-
-        var appointment = _mapper.Map(appointmentBookRequestDto);
-        appointment.Services = services;
-        appointment.AppointmentDate = date;
-        appointment.CreatedBy = appointment.LastUpdatedBy = createdById;
-        appointment.BookingType = appointment.CustomerId == appointment.CreatedBy
-            ? AppointmentBookingType.Online : AppointmentBookingType.WalkIn;
+        var appointment = await CheckAppointmentRequestDto(appointmentBookRequestDto, createdById);
 
         var addedAppointment = await _appointmentRepo.AddAppointmentAsync(appointment);
 
@@ -646,7 +573,7 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
 
     private async Task ToAppointmentResponseDto(IQueryable<Appointment> appointments, IReadOnlyCollection<AppointmentResponseDto> appointmentResponses)
     {
-        foreach (var item in appointmentResponses)
+        /*foreach (var item in appointmentResponses)
         {
             var vet = await _userRepository.GetSingleAsync(u => u.Id == item.VetId);
             if (vet != null)
@@ -682,22 +609,61 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
                 pet.HasMedicalRecord = await _medicalRecordRepository
                     .GetSingleAsync(e => e.PetId == pet.Id && e.AppointmentId == item.Id) != null;
             }
+        }*/
+
+        var vetIds = appointmentResponses.Select(a => a.VetId).Distinct().ToList();
+        var vets = new List<UserResponseDto>();
+        foreach (var id in vetIds)
+        {
+            var vet = await _userRepository.GetSingleAsync(u => u.Id == id);
+            if (vet != null)
+            {
+                vets.Add(_mapper.UserToUserResponseDto(vet));
+            }
         }
 
-        /*var vetIds = appointmentResponses.Select(a => a.VetId).Distinct().ToList();
-        var vets = await _userRepository.GetUsersByIdsAsync(vetIds);
-
         var customerIds = appointmentResponses.Select(a => a.CustomerId).Distinct().ToList();
-        var customers = await _userRepository.GetUsersByIdsAsync(customerIds);
+        var customers = new List<UserResponseDto>();
+        foreach (var id in customerIds)
+        {
+            var customer = await _userRepository.GetSingleAsync(u => u.Id == id);
+            if (customer != null)
+            {
+                customers.Add(_mapper.UserToUserResponseDto(customer));
+            }
+        }
 
-        var appointmentIds = appointmentResponses.Select(a => a.Id).Distinct().ToList();
-        var transactions = await _transactionService.GetTransactionsByAppointmentIdsAsync(appointmentIds);
-        var appointmentPets = await _petRepository.GetPetsByAppointmentIdsAsync(appointmentIds);
+        var appointmentPets = new List<AppointmentPet>();
+        var transactions = new List<TransactionResponseDto>();
+        var petIds = new List<int>();
+        var pets = new List<PetResponseDto>();
+        foreach (var appointment in appointments)
+        {
+            var transaction = await _transactionRepository.GetSingleAsync(t => t.AppointmentId == appointment.Id);
+            if (transaction != null)
+            {
+                transactions.Add(_mapper.Map(transaction));
+            }
 
-        var petIds = appointmentPets.Select(ap => ap.PetId).Distinct().ToList();
-        var pets = await _petRepository.GetPetsByIdsAsync(petIds);
+            petIds.AddRange(appointment.AppointmentPets.Select(ap => ap.PetId).Distinct());
+            appointmentPets.AddRange(appointment.AppointmentPets);
+        }
 
-        var medicalRecords = await _medicalRecordRepository.GetMedicalRecordsByPetIdsAndAppointmentIdsAsync(petIds, appointmentIds);
+        foreach (var id in petIds)
+        {
+            var pet = await _petRepository.GetSingleAsync(p => p.Id == id);
+            if (pet != null)
+            {
+                pets.Add(_mapper.Map(pet));
+            }
+        }
+
+        var medicalRecords = new List<MedicalRecord>();
+        foreach (var appointmentPet in appointmentPets)
+        {
+           var medicalRecord = await _medicalRecordRepository.GetSingleAsync(mr => mr.PetId == appointmentPet.PetId && mr.AppointmentId == appointmentPet.AppointmentId);
+        }
+        
 
         foreach (var item in appointmentResponses)
         {
@@ -706,15 +672,112 @@ public class AppointmentService(IServiceProvider serviceProvider) : IAppointment
             item.Transaction = transactions.SingleOrDefault(t => t.AppointmentId == item.Id);
 
             var petsForAppointment = appointmentPets.Where(ap => ap.AppointmentId == item.Id)
-                .Select(ap => pets.SingleOrDefault(p => p.Id == ap.PetId))
+                .Select(ap => pets.FirstOrDefault(p => p.Id == ap.PetId))
                 .ToList();
-            item.Pets = _mapper.Map(petsForAppointment);
+            item.Pets = petsForAppointment;
 
             foreach (var pet in item.Pets)
             {
                 if (pet != null) pet.OwnerName = item.Customer?.FullName;
                 pet.HasMedicalRecord = medicalRecords.Any(mr => mr.PetId == pet.Id && mr.AppointmentId == item.Id);
             }
-        }*/
+        }
+    }
+
+    public async Task<Appointment> CheckAppointmentRequestDto(AppointmentBookRequestDto appointmentBookRequestDto, int createdById)
+    {
+        // Check pet list is null or empty
+        if (appointmentBookRequestDto.PetIdList.Count == 0)
+        {
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsCommon.DATA_NOT_ENOUGH);
+        }
+        else
+        {
+            foreach (var i in appointmentBookRequestDto.PetIdList)
+            {
+                var pet = await _petRepository.GetByIdAsync(i);
+
+                if (pet == null || (pet != null && pet.OwnerID != appointmentBookRequestDto.CustomerId))
+                {
+                    throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsPet.NOT_YOUR_PET);
+                }
+            }
+        }
+
+        // Check vet 
+        var vet = await _userService.GetVetByIdAsync(appointmentBookRequestDto.VetId);
+
+        if (vet == null)
+        {
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsUser.VET_NOT_FOUND);
+        }
+
+        // Check date format
+        if (!DateOnly.TryParse(appointmentBookRequestDto.AppointmentDate, out DateOnly date))
+        {
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsCommon.DATE_WRONG_FORMAT);
+        }
+
+        // Check timetable
+        var existTimetable = await _timeTableRepo.GetByIdAsync(appointmentBookRequestDto.TimeTableId);
+
+        if (existTimetable == null)
+        {
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsTimetable.TIMETABLE_NOT_FOUND);
+        }
+
+        // Check can book
+        var canBook = await _appointmentRepo.GetSingleAsync(e => e.DeletedTime == null 
+                                                                 && e.AppointmentDate == date 
+                                                                 && e.TimeTableId == appointmentBookRequestDto.TimeTableId 
+                                                                 && e.VetId == appointmentBookRequestDto.VetId);
+        if (canBook != null)
+        {
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsAppointment.APPOINTMENT_EXISTED);
+        }
+
+        // Check existed service
+        List<BusinessObject.Entities.Service> services = new();
+
+        foreach (var i in appointmentBookRequestDto.ServiceIdList)
+        {
+            var existService = await _serviceRepo.GetByIdAsync(i);
+
+            if (existService == null)
+            {
+                throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsService.SERVICE_NOT_FOUND);
+            }
+
+            services.Add(new BusinessObject.Entities.Service
+            {
+                Id = i,
+            });
+        }
+
+        var appointment = _mapper.Map(appointmentBookRequestDto);
+        appointment.Services = services;
+        appointment.AppointmentDate = date;
+        appointment.CreatedBy = appointment.LastUpdatedBy = createdById;
+        appointment.BookingType = appointment.CustomerId == appointment.CreatedBy
+            ? AppointmentBookingType.Online : AppointmentBookingType.WalkIn;
+
+        return appointment;
+    }
+
+    public async Task<bool> DeleteAppointment(int appointmentId)
+    {
+        _logger.Information($"Delete appointment {appointmentId}");
+
+        var appointment = await _appointmentRepo.GetSingleAsync(a => a.Id == appointmentId);
+
+        if (appointment == null)
+        {
+            throw new AppException(ResponseCodeConstants.FAILED, ResponseMessageConstantsAppointment.APPOINTMENT_NOT_FOUND);
+        }
+
+        appointment.DeletedTime = CoreHelper.SystemTimeNow;
+        await _appointmentRepo.UpdateAsync(appointment);
+
+        return true;
     }
 }
