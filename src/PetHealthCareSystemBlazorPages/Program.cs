@@ -34,6 +34,10 @@ var vnPaySetting = new VnPaySetting();
 builder.Configuration.GetSection("VnPaySetting").Bind(vnPaySetting);
 VnPaySetting.Instance = vnPaySetting;
 
+var mailSettingModel = new MailSettingModel();
+builder.Configuration.GetSection("MailSetting").Bind(mailSettingModel);
+MailSettingModel.Instance = mailSettingModel;
+
 // Add services to the container
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<MapperlyMapper>();
@@ -52,6 +56,7 @@ builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAppointmentPetRepository, AppointmentPetRepository>();
 builder.Services.AddScoped<IConfigurationRepository, ConfigurationRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Register Services
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
