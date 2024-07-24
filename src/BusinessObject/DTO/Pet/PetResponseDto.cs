@@ -1,4 +1,6 @@
-﻿namespace BusinessObject.DTO.Pet;
+﻿using BusinessObject.DTO.User;
+
+namespace BusinessObject.DTO.Pet;
 
 public class PetResponseDto
 {
@@ -9,6 +11,7 @@ public class PetResponseDto
     public string? Gender { get; set; }
     public DateOnly DateOfBirth { get; set; }
     public bool IsNeutered { get; set; }
-    public string? OwnerName { get; set; } = string.Empty;
+    public UserResponseDto Owner { get; set; }
+    public string? OwnerName { get; set; }
     public bool? HasMedicalRecord { get; set; } = null;
 }
