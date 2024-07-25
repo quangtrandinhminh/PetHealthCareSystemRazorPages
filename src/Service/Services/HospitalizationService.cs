@@ -250,7 +250,8 @@ public class HospitalizationService(IServiceProvider serviceProvider) : IHospita
             throw new AppException(ResponseCodeConstants.NOT_FOUND,
                 ResponseMessageConstantsHospitalization.HOSPITALIZATION_NOT_FOUND, StatusCodes.Status404NotFound);
         }
-
+        var cage = await _cageRepository.GetSingleAsync(e => e.Id == dto.CageId);
+        
         hospitalization.Reason = dto.Reason;
         hospitalization.Diagnosis = dto.Diagnosis;
         hospitalization.Treatment = dto.Treatment;
@@ -258,12 +259,24 @@ public class HospitalizationService(IServiceProvider serviceProvider) : IHospita
         if (dto.IsDischarged == true)
         {
             hospitalization.HospitalizationDateStatus = HospitalizationStatus.DischargeDate;
+
+            if (cage == null)
+            {
+                throw new AppException(ResponseCodeConstants.NOT_FOUND, " khong thay chuong ");
+            }
+            cage.IsAvailable = true;
+            cage.LastUpdatedBy = vetId;
+            cage.LastUpdatedTime = CoreHelper.SystemTimeNow;
+
+            await _cageRepository.UpdateAsync(cage);
+            
         }
         hospitalization.LastUpdatedBy = vetId;
         hospitalization.LastUpdatedTime = CoreHelper.SystemTimeNow;
         hospitalization.MedicalRecord.DischargeDate = CoreHelper.SystemTimeNow;
 
         await _hospitalizationRepo.UpdateAsync(hospitalization);
+
     }
 
     public async Task DeleteHospitalization(int hospitalizationId, int deleteBy)

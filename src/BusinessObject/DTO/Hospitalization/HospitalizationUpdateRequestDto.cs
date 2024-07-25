@@ -8,4 +8,5 @@ public class HospitalizationUpdateRequestDto
     public string? Treatment { get; set; }
     public string? Note { get; set; }
     public bool? IsDischarged { get; set; } = false;
+    public int? CageId { get; set; }
 }

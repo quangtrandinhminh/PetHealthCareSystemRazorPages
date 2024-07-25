@@ -68,7 +68,8 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
                     Diagnosis = hospitalization.Diagnosis,
                     IsDischarged = true,
                     Note = hospitalization.Note,
-                    Treatment = hospitalization.Treatment
+                    Treatment = hospitalization.Treatment,
+                    CageId = hospitalization.CageId,
                 };
                 await _hospi.UpdateHospitalization(update, userId);
             }
