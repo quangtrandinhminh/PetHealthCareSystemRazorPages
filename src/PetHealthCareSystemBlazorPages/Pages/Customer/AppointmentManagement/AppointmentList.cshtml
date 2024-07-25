@@ -227,46 +227,61 @@
     <div class="appointment-list-table-container">
         <table class="appointment-list-table">
             <thead>
-            <tr>
-                <th>No.</th>
-                <th onclick="sortTable(0)" data-sort-dir="">Date</th>
-                <th onclick="sortTable(1)" data-sort-dir="">Start Time</th>
-                <th onclick="sortTable(2)" data-sort-dir="">End Time</th>
-                <th onclick="sortTable(3)" data-sort-dir="">Type</th>
-                <th onclick="sortTable(4)" data-sort-dir="">Rating</th>
-                <th onclick="sortTable(5)" data-sort-dir="">Veterinarian</th>
-                <th onclick="sortTable(6)" data-sort-dir="">Status</th>
-                <th>Payment method</th>
-                <th>Payment status</th>
-                <th>Actions</th>
-            </tr>
+                <tr>
+                    <th>No.</th>
+                    <th onclick="sortTable(0)" data-sort-dir="">Date</th>
+                    <th onclick="sortTable(1)" data-sort-dir="">Start Time</th>
+                    <th onclick="sortTable(2)" data-sort-dir="">End Time</th>
+                    <th onclick="sortTable(3)" data-sort-dir="">Type</th>
+                    <th onclick="sortTable(4)" data-sort-dir="">Rating</th>
+                    <th onclick="sortTable(5)" data-sort-dir="">Veterinarian</th>
+                    <th>Pet</th>
+                    <th onclick="sortTable(6)" data-sort-dir="">Status</th>
+                    <th>Payment method</th>
+                    <th>Payment status</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
             <tbody>
-            @{
-                var i = 1;
-            }
-            @foreach (var item in Model.Appointment.Items)
-            {
-                <tr onclick="window.location.href = '@Url.Page("./Detail", new { id = item.Id })'">
-                    <td>@i @{ i++;}</td>
-                    <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
-                    <td>@Html.DisplayFor(modelItem => item.TimeTable.StartTime)</td>
-                    <td>@Html.DisplayFor(modelItem => item.TimeTable.EndTime)</td>
-                    <td>@Html.DisplayFor(modelItem => item.BookingType)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Rating)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Vet.FullName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Status)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Transaction.PaymentMethod)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Transaction.Status)</td>
-                    <td class="appointment-list-actions">
-                        <a asp-page="./Cancel" asp-route-id="@item.Id">Cancel</a>
-                            @if (item.Feedback == null && item.Status == "Complete")
+                @{
+                    var i = 1;
+                }
+                @foreach (var item in Model.Appointment.Items)
+                {
+                    <tr onclick="window.location.href = '@Url.Page("./Detail", new { id = item.Id })'">
+                        <td>
+                            @i @{
+                                i++;
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.TimeTable.StartTime)</td>
+                        <td>@Html.DisplayFor(modelItem => item.TimeTable.EndTime)</td>
+                        <td>@Html.DisplayFor(modelItem => item.BookingType)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Rating)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Vet.FullName)</td>
+                        <td>
+                            @foreach (var pet in item.Pets)
+                            {
+                                <span>@pet?.Name</span>
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Transaction.PaymentMethod)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Transaction.Status)</td>
+                        <td class="appointment-list-actions">
+                            @if (item.Status == AppointmentStatus.Scheduled.ToString())
+                            {
+                                <a asp-page="./Cancel" asp-route-id="@item.Id">Cancel</a>
+                            }
+
+                            @if (item.Feedback == null && item.Status == AppointmentStatus.Completed.ToString())
                             {
                                 <a asp-page="./FeedBack" asp-route-id="@item.Id">Feedback</a>
                             }
                         </td>
-                </tr>
-            }
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
