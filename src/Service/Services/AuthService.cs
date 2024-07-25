@@ -42,6 +42,7 @@ namespace Service.Services
         private readonly ILogger _logger = Log.Logger;
         private readonly SignInManager<UserEntity> _signInManager = serviceProvider.GetRequiredService<SignInManager<UserEntity>>();
         private readonly IRefreshTokenRepository _refreshTokenRepository = serviceProvider.GetRequiredService<IRefreshTokenRepository>();
+        private readonly IEmailService _emailService = serviceProvider.GetRequiredService<IEmailService>();
 
 
         // get all roles
@@ -237,12 +238,13 @@ namespace Service.Services
             
             await _userRepository.UpdateAsync(account);
 
-            var mailRequest = new SendMailModel
+            var mailRequest = new SendMailDto()
             {
                 Name = account.NormalizedUserName,
                 Email = account.Email,
-                Token = account.ResetToken,
-                Type = MailTypeEnum.ResetPassword
+                Token = account.OTP,
+                Expired = account.OTPExpired.ToString(),
+                Type = MailType.ResetPassword
             };
             _emailService.SendMail(mailRequest);*/
         }

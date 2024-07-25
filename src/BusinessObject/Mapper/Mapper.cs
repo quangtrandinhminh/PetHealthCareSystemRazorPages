@@ -33,7 +33,7 @@ public partial class MapperlyMapper
     public partial UserResponseDto UserToUserResponseDto(UserEntity entity);
     public partial IList<UserResponseDto> Map(IList<UserEntity> entity);
     public partial IQueryable<UserResponseDto> Map(IQueryable<UserEntity> entity);
-    public partial void Map(RegisterDto request, UserEntity entity);
+    public partial void Map(UserUpdateRequestDto request, UserEntity entity);
 
     // pet 
     public partial Pet Map(PetRequestDto request);
@@ -58,6 +58,8 @@ public partial class MapperlyMapper
     {
         return entities.Select(e => Map(e)).ToList();
     }
+
+    public partial IQueryable<PetResponseDto> Map(IQueryable<Pet> entities);
 
     public partial Pet Map(PetUpdateRequestDto request);
     public partial void Map(PetRequestDto request, Pet entity);
@@ -121,7 +123,6 @@ public partial class MapperlyMapper
                Hospitalization entity);
 
     public partial Hospitalization Map(HospitalizationRequestDto request);
-
 
     // cage
     public partial CageResponseDto Map(Cage entity);

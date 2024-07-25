@@ -13,7 +13,6 @@ public class Pet : BaseEntity
     public DateTimeOffset DateOfBirth { get; set; }
     public bool IsNeutered { get; set; }
     public string? Gender { get; set; }
-
     public int OwnerID { get; set; }
     [ForeignKey(nameof(OwnerID))]
     public virtual UserEntity Owner { get; set; }
