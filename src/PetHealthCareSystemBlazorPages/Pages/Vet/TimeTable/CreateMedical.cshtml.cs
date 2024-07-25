@@ -52,9 +52,19 @@ namespace PetHealthCareSystemRazorPages.Pages.Vet.TimeTable
             {
                 Response.Redirect("/Login");
             }
+
             try
             {
                 var check = await _appointment.GetAppointmentByAppointmentId(id);
+                // Get current DateTime
+                var now = DateTime.Now;
+
+                // Convert to DateOnly
+                var today = DateOnly.FromDateTime(now);
+                if (check.AppointmentDate != today)
+                {
+                    Response.Redirect("./Appointment");
+                }
                 AppointmentItem = check;
                 var medicalItems = await _medical.GetAllMedicalItem();
                 MedicalItems = medicalItems;

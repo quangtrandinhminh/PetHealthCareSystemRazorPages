@@ -201,7 +201,18 @@
         <h1>Medical Item Management</h1>
         <a asp-page="Create">Create New</a>
     </div>
-
+    <div class="appointment-list-controls">
+        <form method="get" class="page-size-selector">
+            <label for="pageSize">Items per page:</label>
+            <select id="pageSize" name="pageSize" asp-for="PageSize">
+                <option value="5" selected="@(Model.PageSize == 5)">5</option>
+                <option value="10" selected="@(Model.PageSize == 10)">10</option>
+                <option value="20" selected="@(Model.PageSize == 20)">20</option>
+                <option value="50" selected="@(Model.PageSize == 50)">50</option>
+            </select>
+            <button type="submit">Apply</button>
+        </form>
+    </div>
     <div class="appointment-list-table-container">
         <table class="appointment-list-table">
     <thead>
@@ -224,7 +235,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.MedicalItems)
+        @foreach (var item in Model.MedicalItems.Items)
         {
             <tr>
                 <td>
@@ -247,4 +258,21 @@
         }
     </tbody>
 </table>
+        <div class="appointment-list-pagination">
+            Page @(Model.MedicalItems?.PageNumber ?? 0) of @(Model.MedicalItems?.TotalPages ?? 0)
+        </div>
+        <div class="appointment-list-pagination">
+            @if (Model.MedicalItems?.HasPreviousPage == true)
+            {
+                <a asp-page="/Admin/MedicalItemManagement/Index"
+                   asp-route-pageNumber="@(Model.MedicalItems.PageNumber - 1)"
+                   asp-route-pageSize="@(Model.PageSize)">Previous</a>
+            }
+            @if (Model.MedicalItems?.HasNextPage == true)
+            {
+                <a asp-page="/Admin/MedicalItemManagement/Index"
+                   asp-route-pageNumber="@(Model.MedicalItems.PageNumber + 1)"
+                   asp-route-pageSize="@(Model.PageSize)">Next</a>
+            }
+        </div>
 </div>

@@ -56,10 +56,23 @@ namespace PetHealthCareSystemRazorPages.Pages.Staff.MedicalRecord
             try
             {
                 var check = await _medicalService.GetMedicalRecordById((int)id);
+                
                 DisplayedCageList = await _hospital.GetAvailableCage();
                 ViewData["TimetableId"] = new SelectList(await _hospital.GetAllTimeFramesForHospitalizationAsync(), "Id", "Id");
                 DisplayedTimeTableList = await _hospital.GetAllTimeFramesForHospitalizationAsync();
                 //ViewData["CageId"] = new SelectList(cage, "Id", "Id");
+                try{
+                    var test = await _hospital.GetCurrentCageByMedicalRecordId(check.Id);
+                    if (test != null)
+                    {
+                        DisplayedCageList = new List<CageResponseDto> { test };
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+
                 Hospitalization = new HospitalizationRequestDto()
                 {
                     Date = check.Date.ToString("yyyy-MM-dd"),
